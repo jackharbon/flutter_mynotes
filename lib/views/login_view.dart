@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
+import 'package:mynotes/main.dart';
+import 'package:mynotes/views/notes_view.dart';
+import 'package:mynotes/views/verify_email_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -33,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.green,
         title: const Text('Login'),
       ),
       body: FutureBuilder(
@@ -50,10 +53,15 @@ class _LoginViewState extends State<LoginView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 160,
-                        child: Image.asset('assets/icon/icon.png'),
-                      ),
+                      const CircleAvatar(
+                        backgroundColor: Colors.green,
+                        radius: 90,
+                        child: Icon(
+                          Icons.article,
+                          color: Colors.white,
+                          size: 100.0,
+                        ), //Text
+                      ), //Circle
                       const SizedBox(
                         height: 50,
                       ),
@@ -96,6 +104,20 @@ class _LoginViewState extends State<LoginView> {
                                     email: email,
                                     password: password,
                                   );
+                                  final user =
+                                      await FirebaseAuth.instance.currentUser;
+                                  if (user?.emailVerified ?? false) {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      '/notes/',
+                                      (route) => false,
+                                    );
+                                  } else {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const VerifyEmailView()));
+                                  }
                                   // ? -----------------------------------------------------
                                   debugPrint(
                                       ' |====> login_view | TextButton | userCredentials: $userCredentials');
@@ -122,10 +144,18 @@ class _LoginViewState extends State<LoginView> {
                                       ' |====> login_view | TextButton | General Error: $e');
                                 }
                               },
-                              child: const Text(
-                                'Login',
-                              ),
+                              child: const Text('Login'),
                             ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/register/',
+                                  (route) => false,
+                                );
+                              },
+                              child:
+                                  const Text('Not registered? Register here.'),
+                            )
                           ],
                         ),
                       ),

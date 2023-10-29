@@ -53,5 +53,3 @@ firestore.indexes.json
 firestore.rules
 storage.rules
 lib/firebase_options.dart
-
-README.md

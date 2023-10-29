@@ -97,11 +97,13 @@ Install necessary software:
 - If you you use physical device to run application, switch off phone screen locking, activate developer options in the phone and check on `Stay awake`.
 - You may want to install desktop version of [GitHub](https://desktop.github.com/) (optional).
 
-## Install dependencies
+## Installation
+
+### Dependencies
 
 Clone this Github repository and open it in your IDE (f.e. Visual Studio Code)
 
-1. Change your app domain according to the format: `com.example.mynotes` (use you domain instead `com.example`), you can use find && replace IDE tool.
+1. Change your app domain according to the format: `com.example.mynotes` (use your domain instead `com.example`), you can use find && replace IDE tool.
 
 2. Clean dependencies files:
 
@@ -164,9 +166,11 @@ dependencies {
 }
 ```
 
-## Install Firebase tools, create a Firestore database project and configure the project
+## Firebase set-up
 
-Type 5 commands in a terminal:
+### Install Firebase tools, create a Firestore database project and configure the project
+
+Type thoese commands in a terminal:
 
 ```
 curl -sL https://firebase.tools | bash

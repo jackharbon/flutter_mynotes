@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
+import 'package:mynotes/views/verify_email_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -33,7 +34,7 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.amber,
         title: const Text('Register'),
       ),
       body: FutureBuilder(
@@ -50,10 +51,15 @@ class _RegisterViewState extends State<RegisterView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 160,
-                        child: Image.asset('assets/icon/icon.png'),
-                      ),
+                      const CircleAvatar(
+                        backgroundColor: Colors.amber,
+                        radius: 90,
+                        child: Icon(
+                          Icons.article,
+                          color: Colors.white,
+                          size: 100.0,
+                        ), //Text
+                      ), //Circle
                       const SizedBox(
                         height: 50,
                       ),
@@ -97,6 +103,12 @@ class _RegisterViewState extends State<RegisterView> {
                                     email: email,
                                     password: password,
                                   );
+                                  final user =
+                                      await FirebaseAuth.instance.currentUser;
+                                  user?.sendEmailVerification();
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const VerifyEmailView()));
                                   // ? -----------------------------------------------------
                                   debugPrint(
                                       ' |====> register_view | TextButton | userCredentials: $userCredentials');
@@ -127,6 +139,16 @@ class _RegisterViewState extends State<RegisterView> {
                                 'Register',
                               ),
                             ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/login/',
+                                  (route) => false,
+                                );
+                              },
+                              child:
+                                  const Text('Already registered? Login here.'),
+                            )
                           ],
                         ),
                       ),
