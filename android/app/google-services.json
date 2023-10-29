@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "273871393524",
+    "firebase_url": "https://flutter-firebase-apps-jgh-default-rtdb.firebaseio.com",
+    "project_id": "flutter-firebase-apps-jgh",
+    "storage_bucket": "flutter-firebase-apps-jgh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273871393524:android:3eaf84f003ee9d4021c4a1",
+        "android_client_info": {
+          "package_name": "com.example.learning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273871393524-iji558mp87flnp0e0gejii5c8gp63kvf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.learning",
+            "certificate_hash": "ee4056546ff01e724043340ff1fc04373113ca71"
+          }
+        },
+        {
+          "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlPdnhcwzwyMUr4ow0kN-pAQ3EHZI_dc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "273871393524-0os72ugbcbfdfeb3366glndc0vjufsai.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "uk.harbon.mynotes"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273871393524:android:4f050c937efc337321c4a1",
+        "android_client_info": {
+          "package_name": "com.example.message_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273871393524-6ccojsc4giimfbs3d8jq6earp6hgi1qe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.message_app",
+            "certificate_hash": "ee4056546ff01e724043340ff1fc04373113ca71"
+          }
+        },
+        {
+          "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlPdnhcwzwyMUr4ow0kN-pAQ3EHZI_dc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "273871393524-0os72ugbcbfdfeb3366glndc0vjufsai.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "uk.harbon.mynotes"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273871393524:android:ff665920f038fd4a21c4a1",
+        "android_client_info": {
+          "package_name": "uk.harbon.mynotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlPdnhcwzwyMUr4ow0kN-pAQ3EHZI_dc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "273871393524-1hcbdb2e7m94nltm3fvb2hcvui5bipst.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "273871393524-0os72ugbcbfdfeb3366glndc0vjufsai.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "uk.harbon.mynotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
