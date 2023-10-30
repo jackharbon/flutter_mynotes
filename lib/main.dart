@@ -1,3 +1,5 @@
+import 'dart:developer' as devtools show log;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -48,19 +50,21 @@ class HomePage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
-            if (user == null) {
-              // ? -----------------------------------------------------
-              debugPrint(' |====> main | FutureBuilder | user: $user');
-              return const RegisterView();
-            } else if (user.emailVerified) {
-              // ? -----------------------------------------------------
-              debugPrint(
-                  ' |====> main | FutureBuilder | Verified? user: $user');
-              return const LoginView();
+            if (user != null) {
+              if (user.emailVerified) {
+                // ? ----------------------------------------
+                devtools.log(
+                    'main | FutureBuilder | email verified: ${user.toString()}');
+                return const LoginView();
+              } else {
+                devtools.log(
+                    'main | FutureBuilder | email not verified: ${user.toString()}');
+                return const VerifyEmailView();
+              }
             } else {
-              // ? -----------------------------------------------------
-              debugPrint(' |====> main | FutureBuilder | verify email: $user');
-              return const VerifyEmailView();
+              devtools.log(
+                  'main | FutureBuilder | user is null: ${user.toString()}');
+              return const RegisterView();
             }
           default:
             return Scaffold(

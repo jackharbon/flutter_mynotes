@@ -1,3 +1,5 @@
+import 'dart:developer' as devtools show log;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -53,18 +55,17 @@ class _RegisterViewState extends State<RegisterView> {
                     children: [
                       const CircleAvatar(
                         backgroundColor: Colors.amber,
-                        radius: 90,
-                        child: Icon(
-                          Icons.article,
-                          color: Colors.white,
-                          size: 100.0,
-                        ), //Text
+                        radius: 60,
+                        child: Image(image: AssetImage('assets/icon/logo.png')),
                       ), //Circle
                       const SizedBox(
                         height: 50,
                       ),
                       const Text(
-                          'Please register in order to interact with and create notes!'),
+                        'Please register create notes!',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(
                         height: 50,
                       ),
@@ -92,7 +93,13 @@ class _RegisterViewState extends State<RegisterView> {
                       Center(
                         child: Column(
                           children: [
-                            TextButton(
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.amber,
+                                  textStyle: const TextStyle(fontSize: 20)),
                               onPressed: () async {
                                 final email = _email.text;
                                 final password = _password.text;
@@ -104,34 +111,34 @@ class _RegisterViewState extends State<RegisterView> {
                                     password: password,
                                   );
                                   final user =
-                                      await FirebaseAuth.instance.currentUser;
+                                      FirebaseAuth.instance.currentUser;
                                   user?.sendEmailVerification();
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
                                           const VerifyEmailView()));
                                   // ? -----------------------------------------------------
-                                  debugPrint(
+                                  devtools.log(
                                       ' |====> register_view | TextButton | userCredentials: $userCredentials');
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
                                     case 'weak-password':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Weak Password!');
                                     case 'email-already-in-use':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Email Already In Use!');
                                     case 'invalid-email':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Invalid Email!');
                                     case 'channel-error':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Chanel Error: Missing Input!');
                                     default:
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Default Error: $e');
                                   }
                                 } catch (e) {
-                                  debugPrint(
+                                  devtools.log(
                                       ' |====> register_view | TextButton | General Error: $e');
                                 }
                               },

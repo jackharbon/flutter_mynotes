@@ -1,10 +1,10 @@
+import 'dart:developer' as devtools show log;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
-import 'package:mynotes/main.dart';
-import 'package:mynotes/views/notes_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -55,17 +55,18 @@ class _LoginViewState extends State<LoginView> {
                     children: [
                       const CircleAvatar(
                         backgroundColor: Colors.green,
-                        radius: 90,
-                        child: Icon(
-                          Icons.article,
-                          color: Colors.white,
-                          size: 100.0,
-                        ), //Text
+                        radius: 60,
+                        child: Image(
+                            image: AssetImage('assets/icon/logo.png')), //Text
                       ), //Circle
                       const SizedBox(
                         height: 50,
                       ),
-                      const Text('Login to your account to see your notes.'),
+                      const Text(
+                        'Login to your account to see your notes.',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(
                         height: 50,
                       ),
@@ -93,7 +94,13 @@ class _LoginViewState extends State<LoginView> {
                       Center(
                         child: Column(
                           children: [
-                            TextButton(
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  textStyle: const TextStyle(fontSize: 20)),
                               onPressed: () async {
                                 final email = _email.text;
                                 final password = _password.text;
@@ -105,7 +112,7 @@ class _LoginViewState extends State<LoginView> {
                                     password: password,
                                   );
                                   final user =
-                                      await FirebaseAuth.instance.currentUser;
+                                      FirebaseAuth.instance.currentUser;
                                   if (user?.emailVerified ?? false) {
                                     Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
@@ -119,28 +126,28 @@ class _LoginViewState extends State<LoginView> {
                                                 const VerifyEmailView()));
                                   }
                                   // ? -----------------------------------------------------
-                                  debugPrint(
+                                  devtools.log(
                                       ' |====> login_view | TextButton | userCredentials: $userCredentials');
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
                                     case 'user-not-found':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> login_view | TextButton | User Not Found!');
                                     case 'wrong-password':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> login_view | TextButton | Wrong Password!');
                                     case 'invalid-email':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> register_view | TextButton | Invalid Email!');
                                     case 'channel-error':
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> login_view | TextButton | Chanel Error: Missing Input!');
                                     default:
-                                      debugPrint(
+                                      devtools.log(
                                           ' |====> login_view | TextButton | Default Error: $e');
                                   }
                                 } catch (e) {
-                                  debugPrint(
+                                  devtools.log(
                                       ' |====> login_view | TextButton | General Error: $e');
                                 }
                               },

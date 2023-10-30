@@ -25,29 +25,34 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
             children: [
               const CircleAvatar(
                 backgroundColor: Colors.amber,
-                radius: 90,
-                child: Icon(
-                  Icons.article,
-                  color: Colors.white,
-                  size: 100.0,
-                ), //Text
+                radius: 60,
+                child: Image(image: AssetImage('assets/icon/logo.png')), //Text
               ), //Circle
               const SizedBox(
                 height: 50,
               ),
-              const Text('Login to your account to see your notes'),
+              const Text(
+                'Last step: verify your adres email.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(
                 height: 50,
               ),
               const Text(
                   "We've sent you an email verification.\nPlease open it and follow the link to verify your account.\n\nIf you haven't received the email yet, press the button below!"),
-              TextButton(
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    textStyle: const TextStyle(fontSize: 20)),
                 onPressed: () async {
-                  final user = await FirebaseAuth.instance.currentUser;
+                  final user = FirebaseAuth.instance.currentUser;
                   user?.sendEmailVerification();
                 },
                 child: const Text(
-                  "Send verification email again",
+                  "Send again",
                 ),
               ),
               TextButton(
