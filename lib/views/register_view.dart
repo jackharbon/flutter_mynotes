@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
+import 'package:mynotes/utilities/show_error.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 
 class RegisterView extends StatefulWidget {
@@ -122,25 +123,49 @@ class _RegisterViewState extends State<RegisterView> {
                                       ' |====> register_view | TextButton | userCredentials: $userCredentials');
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
-                                    case 'weak-password':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Weak Password!');
-                                    case 'email-already-in-use':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Email Already In Use!');
-                                    case 'invalid-email':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Invalid Email!');
                                     case 'channel-error':
                                       devtools.log(
                                           ' |====> register_view | TextButton | Chanel Error: Missing Input!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Please check the form fields!',
+                                      );
+                                    case 'invalid-email':
+                                      devtools.log(
+                                          ' |====> register_view | TextButton | Invalid Email!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Please check your email address',
+                                      );
+                                    case 'email-already-in-use':
+                                      devtools.log(
+                                          ' |====> register_view | TextButton | Email Already In Use!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Email Address is already in Use!',
+                                      );
+                                    case 'weak-password':
+                                      devtools.log(
+                                          ' |====> register_view | TextButton | Weak Password!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Weak Password!',
+                                      );
                                     default:
                                       devtools.log(
-                                          ' |====> register_view | TextButton | Default Error: $e');
+                                          ' |====> register_view | TextButton | Default Error: ${e.code}');
+                                      await showErrorDialog(
+                                        context,
+                                        'Error: ${e.code}',
+                                      );
                                   }
                                 } catch (e) {
                                   devtools.log(
-                                      ' |====> register_view | TextButton | General Error: $e');
+                                      ' |====> register_view | TextButton | Generic Error: ${e.toString()}');
+                                  await showErrorDialog(
+                                    context,
+                                    'Error: ${e.toString()}!',
+                                  );
                                 }
                               },
                               child: const Text(

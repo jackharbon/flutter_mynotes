@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
+import 'package:mynotes/utilities/show_error.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -131,25 +132,51 @@ class _LoginViewState extends State<LoginView> {
                                       ' |====> login_view | TextButton | userCredentials: $userCredentials');
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
-                                    case 'user-not-found':
-                                      devtools.log(
-                                          ' |====> login_view | TextButton | User Not Found!');
-                                    case 'wrong-password':
-                                      devtools.log(
-                                          ' |====> login_view | TextButton | Wrong Password!');
-                                    case 'invalid-email':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Invalid Email!');
                                     case 'channel-error':
                                       devtools.log(
                                           ' |====> login_view | TextButton | Chanel Error: Missing Input!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Please check the form fields!',
+                                      );
+                                    case 'invalid-email':
+                                      devtools.log(
+                                          ' |====> register_view | TextButton | Invalid Email!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Please check your email address',
+                                      );
+                                    case 'user-not-found':
+                                      devtools.log(
+                                          ' |====> login_view | TextButton | User Not Found!');
+                                      await showErrorDialog(
+                                        context,
+                                        'User Not Found!',
+                                      );
+                                    case 'wrong-password':
+                                      devtools.log(
+                                          ' |====> login_view | TextButton | Wrong Password!');
+                                      await showErrorDialog(
+                                        context,
+                                        'Wrong Password!',
+                                      );
                                     default:
                                       devtools.log(
-                                          ' |====> login_view | TextButton | Default Error: $e');
+                                        ' |====> login_view | TextButton | Default Error: ${e.code}',
+                                      );
+                                      await showErrorDialog(
+                                        context,
+                                        'Error: ${e.code}!',
+                                      );
                                   }
                                 } catch (e) {
                                   devtools.log(
-                                      ' |====> login_view | TextButton | General Error: $e');
+                                    ' |====> login_view | TextButton | Generic Error: ${e.toString()}',
+                                  );
+                                  await showErrorDialog(
+                                    context,
+                                    'Error: ${e.toString()}!',
+                                  );
                                 }
                               },
                               child: const Text('Login'),
