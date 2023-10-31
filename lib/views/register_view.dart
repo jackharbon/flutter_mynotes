@@ -62,7 +62,7 @@ class _RegisterViewState extends State<RegisterView> {
                         height: 50,
                       ),
                       const Text(
-                        'Please register create notes!',
+                        'Please register create your notes!',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

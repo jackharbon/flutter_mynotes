@@ -63,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
                         height: 50,
                       ),
                       const Text(
-                        'Login to your account to see your notes.',
+                        'Login to your account to edit your notes.',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),

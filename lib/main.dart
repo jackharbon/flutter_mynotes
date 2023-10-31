@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blue,
-                title: const Text('Loading'),
+                title: const Text('Please wait...'),
               ),
               backgroundColor: Colors.blue[100],
               body: const Center(
