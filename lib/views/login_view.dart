@@ -107,8 +107,7 @@ class _LoginViewState extends State<LoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  final userCredentials = await FirebaseAuth
-                                      .instance
+                                  await FirebaseAuth.instance
                                       .signInWithEmailAndPassword(
                                     email: email,
                                     password: password,
@@ -127,43 +126,29 @@ class _LoginViewState extends State<LoginView> {
                                             builder: (context) =>
                                                 const VerifyEmailView()));
                                   }
-                                  // ? -----------------------------------------------------
-                                  devtools.log(
-                                      ' |====> login_view | TextButton | userCredentials: $userCredentials');
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
                                     case 'channel-error':
-                                      devtools.log(
-                                          ' |====> login_view | TextButton | Chanel Error: Missing Input!');
                                       await showErrorDialog(
                                         context,
                                         'Please check the form fields!',
                                       );
                                     case 'invalid-email':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Invalid Email!');
                                       await showErrorDialog(
                                         context,
                                         'Please check your email address',
                                       );
                                     case 'user-not-found':
-                                      devtools.log(
-                                          ' |====> login_view | TextButton | User Not Found!');
                                       await showErrorDialog(
                                         context,
-                                        'User Not Found!',
+                                        'User not found!',
                                       );
                                     case 'wrong-password':
-                                      devtools.log(
-                                          ' |====> login_view | TextButton | Wrong Password!');
                                       await showErrorDialog(
                                         context,
-                                        'Wrong Password!',
+                                        'Wrong password!',
                                       );
                                     default:
-                                      devtools.log(
-                                        ' |====> login_view | TextButton | Default Error: ${e.code}',
-                                      );
                                       await showErrorDialog(
                                         context,
                                         'Error: ${e.code}!',

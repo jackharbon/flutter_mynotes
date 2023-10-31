@@ -106,8 +106,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  final userCredentials = await FirebaseAuth
-                                      .instance
+                                  await FirebaseAuth.instance
                                       .createUserWithEmailAndPassword(
                                     email: email,
                                     password: password,
@@ -115,45 +114,31 @@ class _RegisterViewState extends State<RegisterView> {
                                   final user =
                                       FirebaseAuth.instance.currentUser;
                                   user?.sendEmailVerification();
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VerifyEmailView()));
-                                  // ? -----------------------------------------------------
-                                  devtools.log(
-                                      ' |====> register_view | TextButton | userCredentials: $userCredentials');
+                                  Navigator.of(context)
+                                      .pushNamed(verifyEmailRoute);
                                 } on FirebaseAuthException catch (e) {
                                   switch (e.code) {
                                     case 'channel-error':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Chanel Error: Missing Input!');
                                       await showErrorDialog(
                                         context,
                                         'Please check the form fields!',
                                       );
                                     case 'invalid-email':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Invalid Email!');
                                       await showErrorDialog(
                                         context,
                                         'Please check your email address',
                                       );
                                     case 'email-already-in-use':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Email Already In Use!');
                                       await showErrorDialog(
                                         context,
-                                        'Email Address is already in Use!',
+                                        'Email address is already in Use!',
                                       );
                                     case 'weak-password':
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Weak Password!');
                                       await showErrorDialog(
                                         context,
-                                        'Weak Password!',
+                                        'Weak password!',
                                       );
                                     default:
-                                      devtools.log(
-                                          ' |====> register_view | TextButton | Default Error: ${e.code}');
                                       await showErrorDialog(
                                         context,
                                         'Error: ${e.code}',
