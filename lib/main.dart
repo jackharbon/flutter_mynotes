@@ -3,6 +3,7 @@ import 'dart:developer' as devtools show log;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/views/login_view.dart';
@@ -27,11 +28,11 @@ void main() {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       routes: {
-        '/home/': (context) => const RegisterView(),
-        '/register/': (context) => const RegisterView(),
-        '/verify/': (context) => const VerifyEmailView(),
-        '/login/': (context) => const LoginView(),
-        '/notes/': (context) => const NotesView(),
+        homePageRoute: (context) => const RegisterView(),
+        registerRoute: (context) => const RegisterView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
+        loginRoute: (context) => const LoginView(),
+        myNotesRoute: (context) => const NotesView(),
       },
     ),
   );
