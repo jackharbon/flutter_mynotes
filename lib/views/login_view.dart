@@ -1,13 +1,13 @@
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/utilities/show_error.dart';
-import 'package:mynotes/views/verify_email_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -39,7 +39,12 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text('Login'),
+        title: const Text(
+          'Login',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -58,8 +63,11 @@ class _LoginViewState extends State<LoginView> {
                       const CircleAvatar(
                         backgroundColor: Colors.green,
                         radius: 60,
-                        child: Image(
-                            image: AssetImage('assets/icon/logo.png')), //Text
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 60.0,
+                        ), //Text
                       ), //Circle
                       const SizedBox(
                         height: 50,
@@ -107,64 +115,78 @@ class _LoginViewState extends State<LoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  await FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
+                                  await AuthService.firebase().logIn(
                                     email: email,
                                     password: password,
                                   );
                                   final user =
-                                      FirebaseAuth.instance.currentUser;
-                                  if (user?.emailVerified ?? false) {
-                                    Navigator.of(context)
+                                      AuthService.firebase().currentUser;
+                                  if (user != null) {
+                                    if (user.isEmailVerified) {
+                                      await Navigator.of(context)
+                                          .pushNamedAndRemoveUntil(
+                                        myNotesRoute,
+                                        (route) => false,
+                                      );
+                                    } else {
+                                      await Navigator.of(context)
+                                          .pushNamed(verifyEmailRoute);
+                                    }
+                                  } else {
+                                    await Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
-                                      myNotesRoute,
+                                      registerRoute,
                                       (route) => false,
                                     );
-                                  } else {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const VerifyEmailView()));
                                   }
-                                } on FirebaseAuthException catch (e) {
-                                  switch (e.code) {
-                                    case 'channel-error':
-                                      await showErrorDialog(
-                                        context,
-                                        'Please check the form fields!',
-                                      );
-                                    case 'invalid-email':
-                                      await showErrorDialog(
-                                        context,
-                                        'Please check your email address',
-                                      );
-                                    case 'user-not-found':
-                                      await showErrorDialog(
-                                        context,
-                                        'User not found!',
-                                      );
-                                    case 'wrong-password':
-                                      await showErrorDialog(
-                                        context,
-                                        'Wrong password!',
-                                      );
-                                    default:
-                                      await showErrorDialog(
-                                        context,
-                                        'Error: ${e.code}!',
-                                      );
-                                  }
-                                } catch (e) {
-                                  devtools.log(
-                                    ' |====> login_view | TextButton | Generic Error: ${e.toString()}',
-                                  );
+                                } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Error: ${e.toString()}!',
+                                    'Missing credentials.\nPlease check the form fields.',
+                                    'Login failed!',
+                                  );
+                                } on InvalidEmailAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Please check your email address.',
+                                    'Login failed!',
+                                  );
+                                } on UserNotFoundAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'User not found. Enter correct email or register.',
+                                    'Login failed!',
+                                  );
+                                } on WrongPasswordAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Wrong password. Please type again.',
+                                    'Login failed!',
+                                  );
+                                } on UnknownAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Authentication error. Please try again later.',
+                                    'Login failed!',
+                                  );
+                                } on GenericAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Authentication error. Please try again later.',
+                                    'Login failed!',
+                                  );
+                                } catch (e) {
+                                  await showErrorDialog(
+                                    context,
+                                    'Authentication error. Please try again later.',
+                                    'Login failed!',
                                   );
                                 }
                               },
-                              child: const Text('Login'),
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                             TextButton(
                               onPressed: () {

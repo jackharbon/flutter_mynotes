@@ -18,7 +18,8 @@ void main() {
       theme: ThemeData(
         primaryColor: Colors.grey[800],
         primarySwatch: Colors.blue,
-        hoverColor: Colors.deepPurple,
+        hoverColor: Colors.lightBlueAccent,
+        useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
           labelStyle: TextStyle(color: Colors.black87),
           hintStyle: TextStyle(color: Colors.grey),

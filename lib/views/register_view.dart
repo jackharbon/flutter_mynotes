@@ -1,13 +1,13 @@
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/utilities/show_error.dart';
-import 'package:mynotes/views/verify_email_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -39,7 +39,10 @@ class _RegisterViewState extends State<RegisterView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text('Register'),
+        title: const Text('Register',
+            style: TextStyle(
+              color: Colors.white,
+            )),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -58,7 +61,11 @@ class _RegisterViewState extends State<RegisterView> {
                       const CircleAvatar(
                         backgroundColor: Colors.amber,
                         radius: 60,
-                        child: Image(image: AssetImage('assets/icon/logo.png')),
+                        child: Icon(
+                          Icons.person_add,
+                          color: Colors.white,
+                          size: 60.0,
+                        ),
                       ), //Circle
                       const SizedBox(
                         height: 50,
@@ -106,55 +113,59 @@ class _RegisterViewState extends State<RegisterView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  await FirebaseAuth.instance
-                                      .createUserWithEmailAndPassword(
-                                    email: email,
-                                    password: password,
-                                  );
-                                  final user =
-                                      FirebaseAuth.instance.currentUser;
-                                  user?.sendEmailVerification();
-                                  Navigator.of(context)
+                                  await AuthService.firebase().createUser(
+                                      email: email, password: password);
+                                  await AuthService.firebase()
+                                      .sendEmailVerification();
+                                  await Navigator.of(context)
                                       .pushNamed(verifyEmailRoute);
-                                } on FirebaseAuthException catch (e) {
-                                  switch (e.code) {
-                                    case 'channel-error':
-                                      await showErrorDialog(
-                                        context,
-                                        'Please check the form fields!',
-                                      );
-                                    case 'invalid-email':
-                                      await showErrorDialog(
-                                        context,
-                                        'Please check your email address',
-                                      );
-                                    case 'email-already-in-use':
-                                      await showErrorDialog(
-                                        context,
-                                        'Email address is already in Use!',
-                                      );
-                                    case 'weak-password':
-                                      await showErrorDialog(
-                                        context,
-                                        'Weak password!',
-                                      );
-                                    default:
-                                      await showErrorDialog(
-                                        context,
-                                        'Error: ${e.code}',
-                                      );
-                                  }
-                                } catch (e) {
-                                  devtools.log(
-                                      ' |====> register_view | TextButton | Generic Error: ${e.toString()}');
+                                } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Error: ${e.toString()}!',
+                                    'Missing credentials.\nPlease check the form fields.',
+                                    'Register failed!',
+                                  );
+                                } on InvalidEmailAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Invalid email.\nPlease check your input.',
+                                    'Register failed!',
+                                  );
+                                } on EmailAlreadyInUseAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Email is already registered.\nPlease login.',
+                                    'Register failed!',
+                                  );
+                                } on WeakPasswordAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'Weak password.\nPlease enter a stronger password.',
+                                    'Register failed!',
+                                  );
+                                } on UnknownAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'failed! to register.\nPlease try again later.',
+                                    'Register failed!',
+                                  );
+                                } on GenericAuthException {
+                                  await showErrorDialog(
+                                    context,
+                                    'failed! to register.\n Please try again later.',
+                                    'Register failed!',
+                                  );
+                                } catch (e) {
+                                  await showErrorDialog(
+                                    context,
+                                    'failed! to register.n Please try again later.',
+                                    'Register failed!',
                                   );
                                 }
                               },
                               child: const Text(
                                 'Register',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                             TextButton(

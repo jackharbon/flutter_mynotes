@@ -15,7 +15,12 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text('Verify email'),
+        title: const Text(
+          'Verify email',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -27,7 +32,11 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
               const CircleAvatar(
                 backgroundColor: Colors.amber,
                 radius: 60,
-                child: Image(image: AssetImage('assets/icon/logo.png')), //Text
+                child: Icon(
+                  Icons.mark_email_read,
+                  color: Colors.white,
+                  size: 60.0,
+                ), //Text
               ), //Circle
               const SizedBox(
                 height: 50,
@@ -52,9 +61,10 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
                   final user = FirebaseAuth.instance.currentUser;
                   user?.sendEmailVerification();
                 },
-                child: const Text(
-                  "Send again",
-                ),
+                child: const Text("Send again",
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
               ),
               TextButton(
                 onPressed: () async {

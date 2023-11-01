@@ -17,7 +17,12 @@ class _NotesViewState extends State<NotesView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('My Notes'),
+        title: const Text(
+          'My Notes',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         actions: [
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             // ? ----------------------------------------
@@ -38,7 +43,20 @@ class _NotesViewState extends State<NotesView> {
             return [
               const PopupMenuItem<MenuAction>(
                 value: MenuAction.logout,
-                child: Text('Log out'),
+                child: SizedBox(
+                  width: 90,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        Icons.logout,
+                        color: Colors.black,
+                        size: 20.0,
+                      ), //Text
+                      Text('Log out'),
+                    ],
+                  ),
+                ),
               ),
             ];
           })
@@ -51,23 +69,54 @@ class _NotesViewState extends State<NotesView> {
 
 Future<bool> showLogOutDialog(BuildContext context) {
   return showDialog<bool>(
+      barrierColor: const Color.fromARGB(210, 0, 0, 0),
       context: context,
       builder: (context) {
         return AlertDialog(
-            title: const Text('Log Out'),
-            content: const Text('Are sure you want to leave?'),
+            title: const Text(
+              'Log Out',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: const Text(
+              'Are sure you want to leave?',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            icon: const Icon(
+              Icons.logout,
+              size: 60,
+            ),
+            iconColor: Colors.blue,
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
-                child: const Text('Cancel'),
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
-                child: const Text('Log out'),
+                child: const Text(
+                  'Log out',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ]);
       }).then((value) => value ?? false);
