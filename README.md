@@ -217,7 +217,7 @@ service cloud.firestore {
 
 Help:[Get started with Cloud Firestore](https://firebase.google.com/docs/firestore/quickstart#kotlin+ktx)
 
-## Run test
+## Run a test
 
 ```
 flutter test test/auth_test.dart
