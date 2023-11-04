@@ -28,11 +28,12 @@ Future<bool> showLogOutDialog(BuildContext context) {
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
-                child: const Text(
+                child: Text(
                   'Cancel',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                   ),
                 ),
               ),

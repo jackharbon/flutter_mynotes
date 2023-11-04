@@ -20,9 +20,10 @@ Future<void> showErrorDialog(
               fontSize: 18,
             ),
           ),
-          icon: const Icon(
+          icon: Icon(
             Icons.person_off_rounded,
             size: 60,
+            color: Theme.of(context).colorScheme.error,
           ),
           actions: [
             TextButton(

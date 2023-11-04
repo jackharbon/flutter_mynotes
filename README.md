@@ -138,7 +138,7 @@ flutter pub add flutter_bloc
 
 flutter pub add flutter_launcher_icons
 
-flutter pub add test
+flutter pub add test --dev
 
 flutter pub add share_plus
 
@@ -191,7 +191,7 @@ Help: [Add Firebase to your Flutter app](https://firebase.google.com/docs/flutte
 
 In the [Google Console](https://console.firebase.google.com/) go to Get Started -> Authentication -> Sign-up method -> Native providers -> Email/Password -> Enable.
 
-## Add Cloud Firestore to your project
+### Add Cloud Firestore to your project
 
 Go to [Firebase Console](https://console.firebase.google.com/)
 
@@ -216,6 +216,12 @@ service cloud.firestore {
 ```
 
 Help:[Get started with Cloud Firestore](https://firebase.google.com/docs/firestore/quickstart#kotlin+ktx)
+
+## Run test
+
+```
+flutter test test/auth_test.dart
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -297,3 +303,7 @@ Project Link: [https://github.com/jackharbon/flutter_mynotes](https://github.com
 [nodejs-url]: https://nodejs.org/
 [visualstudiocode]: https://img.shields.io/badge/visualstudio-3CA4EA?style=for-the-badge&logo=visualstudio&logoColor=white
 [visualstudiocode-url]: https://code.visualstudio.com
+
+```
+
+```

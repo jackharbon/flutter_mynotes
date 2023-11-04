@@ -143,16 +143,16 @@ class HomePage extends StatelessWidget {
               if (user.isEmailVerified) {
                 // ? ----------------------------------------
                 devtools.log(
-                    'main | FutureBuilder | email verified: ${user.toString()}');
+                    ' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
                 return const LoginView();
               } else {
                 devtools.log(
-                    'main | FutureBuilder | email not verified: ${user.toString()}');
+                    ' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
                 return const VerifyEmailView();
               }
             } else {
               devtools.log(
-                  'main | FutureBuilder | user is null: ${user.toString()}');
+                  ' ==> main | FutureBuilder | user is null: ${user.toString()}');
               return const RegisterView();
             }
           default:

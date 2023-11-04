@@ -195,7 +195,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                 Icon(
                   Icons.circle,
                   size: 26.0,
-                  color: Color(0xffE4A3AE),
+                  color: Color(0xffC00055),
                 ),
                 SizedBox(width: 18),
                 Text('Pink'),
