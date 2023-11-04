@@ -166,11 +166,15 @@ dependencies {
 }
 ```
 
+4. Create the splash screen
+
+'dart run flutter_native_splash:create'
+
 ## Firebase set-up
 
 ### Install Firebase tools, create a Firestore database project and configure the project
 
-Type thoese commands in a terminal:
+Type these commands in a terminal:
 
 ```
 curl -sL https://firebase.tools | bash

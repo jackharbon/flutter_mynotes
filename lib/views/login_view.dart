@@ -1,13 +1,10 @@
-// import 'dart:developer' as devtools show log;
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
-import 'package:mynotes/utilities/show_error.dart';
+import 'package:mynotes/utilities/menus/popup_menu.dart';
+import 'package:mynotes/utilities/dialogs/show_error.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -38,18 +35,15 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
         title: const Text(
           'Login',
-          style: TextStyle(
-            color: Colors.white,
-          ),
         ),
+        actions: [
+          popupMenuItems(context),
+        ],
       ),
       body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -61,11 +55,9 @@ class _LoginViewState extends State<LoginView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const CircleAvatar(
-                        backgroundColor: Colors.green,
                         radius: 60,
                         child: Icon(
                           Icons.person,
-                          color: Colors.white,
                           size: 60.0,
                         ), //Text
                       ), //Circle
@@ -73,9 +65,7 @@ class _LoginViewState extends State<LoginView> {
                         height: 50,
                       ),
                       const Text(
-                        'Login to your account to edit your notes.',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        'Login to your account to see your notes.',
                       ),
                       const SizedBox(
                         height: 50,
@@ -90,6 +80,9 @@ class _LoginViewState extends State<LoginView> {
                           labelText: 'Email',
                           hintText: 'Enter your email',
                         ),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       TextField(
                         controller: _password,
@@ -109,7 +102,6 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
                                   textStyle: const TextStyle(fontSize: 20)),
                               onPressed: () async {
                                 final email = _email.text;
@@ -142,50 +134,50 @@ class _LoginViewState extends State<LoginView> {
                                 } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Missing credentials.\nPlease check the form fields.',
+                                    'Missing credentials!\nPlease check the form fields.',
                                     'Login failed!',
                                   );
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Please check your email address.',
+                                    'Invalid emai!\nPlease check your email address.',
                                     'Login failed!',
                                   );
                                 } on UserNotFoundAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'User not found. Enter correct email or register.',
+                                    'User not found!\nEnter correct email or register.',
                                     'Login failed!',
                                   );
                                 } on WrongPasswordAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Wrong password. Please type again.',
+                                    'Wrong password!\nPlease type again.',
                                     'Login failed!',
                                   );
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error. Please try again later.',
+                                    'Authentication error!\nPlease try again later.',
                                     'Login failed!',
                                   );
                                 } on GenericAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error. Please try again later.',
+                                    'Authentication error!\nPlease try again later.',
                                     'Login failed!',
                                   );
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error. Please try again later.',
+                                    'Authentication error!\nPlease try again later.',
                                     'Login failed!',
                                   );
                                 }
                               },
                               child: const Text(
                                 'Login',
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(),
                               ),
                             ),
                             TextButton(
@@ -206,7 +198,6 @@ class _LoginViewState extends State<LoginView> {
                 ),
               );
             default:
-              // return const Text('Loading..');
               return const LoadingStandardProgressBar();
           }
         },

@@ -5,13 +5,14 @@ class LoadingStandardProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: Colors.blue[100],
-      child: const CircularProgressIndicator(
-        backgroundColor: Colors.white24,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+      child: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+              Theme.of(context).colorScheme.primary),
+        ),
       ),
     );
   }

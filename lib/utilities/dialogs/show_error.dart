@@ -6,16 +6,13 @@ Future<void> showErrorDialog(
   String title,
 ) {
   return showDialog(
-    barrierColor: const Color.fromARGB(200, 0, 0, 0),
+    barrierColor: const Color.fromARGB(180, 0, 0, 0),
     context: context,
     builder: (context) {
       return AlertDialog(
           title: Text(
             title,
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           content: Text(
             error,
@@ -24,10 +21,9 @@ Future<void> showErrorDialog(
             ),
           ),
           icon: const Icon(
-            Icons.error_outline,
+            Icons.person_off_rounded,
             size: 60,
           ),
-          iconColor: Colors.red,
           actions: [
             TextButton(
               onPressed: () {
@@ -36,7 +32,6 @@ Future<void> showErrorDialog(
               child: const Text(
                 'OK',
                 style: TextStyle(
-                  color: Colors.black,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

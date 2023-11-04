@@ -1,13 +1,10 @@
-// import 'dart:developer' as devtools show log;
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_exceptions.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
-import 'package:mynotes/utilities/show_error.dart';
+import 'package:mynotes/utilities/menus/popup_menu.dart';
+import 'package:mynotes/utilities/dialogs/show_error.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -38,16 +35,15 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
-        title: const Text('Register',
-            style: TextStyle(
-              color: Colors.white,
-            )),
+        title: const Text(
+          'Register',
+        ),
+        actions: [
+          popupMenuItems(context),
+        ],
       ),
       body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -59,14 +55,12 @@ class _RegisterViewState extends State<RegisterView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const CircleAvatar(
-                        backgroundColor: Colors.amber,
                         radius: 60,
                         child: Icon(
                           Icons.person_add,
-                          color: Colors.white,
                           size: 60.0,
                         ),
-                      ), //Circle
+                      ),
                       const SizedBox(
                         height: 50,
                       ),
@@ -89,6 +83,9 @@ class _RegisterViewState extends State<RegisterView> {
                           hintText: 'Enter your email',
                         ),
                       ),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       TextField(
                         controller: _password,
                         obscureText: true,
@@ -107,14 +104,15 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.amber,
                                   textStyle: const TextStyle(fontSize: 20)),
                               onPressed: () async {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
                                   await AuthService.firebase().createUser(
-                                      email: email, password: password);
+                                    email: email,
+                                    password: password,
+                                  );
                                   await AuthService.firebase()
                                       .sendEmailVerification();
                                   await Navigator.of(context)
@@ -122,50 +120,49 @@ class _RegisterViewState extends State<RegisterView> {
                                 } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Missing credentials.\nPlease check the form fields.',
+                                    'Missing credentials!\nPlease check the form fields.',
                                     'Register failed!',
                                   );
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Invalid email.\nPlease check your input.',
+                                    'Invalid email!\nPlease check your input.',
                                     'Register failed!',
                                   );
                                 } on EmailAlreadyInUseAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Email is already registered.\nPlease login.',
+                                    'Email is already registered!\nPlease login.',
                                     'Register failed!',
                                   );
                                 } on WeakPasswordAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Weak password.\nPlease enter a stronger password.',
+                                    'Weak password!\nPlease enter a stronger password.',
                                     'Register failed!',
                                   );
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'failed! to register.\nPlease try again later.',
+                                    'Failed to register!\nPlease try again later.',
                                     'Register failed!',
                                   );
                                 } on GenericAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'failed! to register.\n Please try again later.',
+                                    'Failed to register!\n Please try again later.',
                                     'Register failed!',
                                   );
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
-                                    'failed! to register.n Please try again later.',
+                                    'Failed to register.n Please try again later.',
                                     'Register failed!',
                                   );
                                 }
                               },
                               child: const Text(
                                 'Register',
-                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                             TextButton(
@@ -186,7 +183,6 @@ class _RegisterViewState extends State<RegisterView> {
                 ),
               );
             default:
-              // return const Text('Loading..');
               return const LoadingStandardProgressBar();
           }
         },

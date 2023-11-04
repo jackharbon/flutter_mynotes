@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/utilities/menus/popup_menu.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -14,13 +15,12 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
         title: const Text(
           'Verify email',
-          style: TextStyle(
-            color: Colors.white,
-          ),
         ),
+        actions: [
+          popupMenuItems(context),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -30,11 +30,9 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const CircleAvatar(
-                backgroundColor: Colors.amber,
                 radius: 60,
                 child: Icon(
                   Icons.mark_email_read,
-                  color: Colors.white,
                   size: 60.0,
                 ), //Text
               ), //Circle
@@ -55,20 +53,20 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
                     textStyle: const TextStyle(fontSize: 20)),
                 onPressed: () async {
-                  final user = FirebaseAuth.instance.currentUser;
-                  user?.sendEmailVerification();
+                  await AuthService.firebase().sendEmailVerification();
+                  await showSentEmailConfirmationDialog(
+                    context,
+                    'Email has been sent again\nPlease check your mailbox.',
+                    'Verification email',
+                  );
                 },
-                child: const Text("Send again",
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
+                child: const Text("Send again", style: TextStyle()),
               ),
               TextButton(
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
+                  await AuthService.firebase().logOut();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     loginRoute,
                     (route) => false,
@@ -82,4 +80,45 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
       ),
     );
   }
+}
+
+Future<void> showSentEmailConfirmationDialog(
+  BuildContext context,
+  String error,
+  String title,
+) {
+  return showDialog(
+    barrierColor: const Color.fromARGB(200, 0, 0, 0),
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+          title: Text(
+            title,
+          ),
+          content: Text(
+            error,
+            style: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+          icon: const Icon(
+            Icons.mark_email_unread,
+            size: 60,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ]);
+    },
+  );
 }
