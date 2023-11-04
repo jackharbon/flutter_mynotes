@@ -18,16 +18,19 @@ class NotesService {
   // ======================== NOTE STREAM ========================
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance() {
-    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
-      onListen: () {
-        _notesStreamController.sink.add(_notes);
-      },
-    );
-  }
+  NotesService._sharedInstance();
+  // NotesService._sharedInstance() {
+  //   _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+  //     onListen: () {
+  //       _notesStreamController.sink.add(_notes);
+  //     },
+  //   );
+  // }
   factory NotesService() => _shared;
+  final _notesStreamController =
+      StreamController<List<DatabaseNote>>.broadcast();
 
-  late final StreamController<List<DatabaseNote>> _notesStreamController;
+  // late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes =>
       _notesStreamController.stream.filter((note) {
@@ -39,6 +42,16 @@ class NotesService {
         }
       });
 
+  // -------------------- _cacheNotes() --------------------
+
+  Future<void> _cacheNotes() async {
+    final allNotes = await getAllNotes();
+    _notes = allNotes.toList();
+    _notesStreamController.add(_notes);
+    // ? -----------------------------------------------------------
+    devtools.log(' ==> notes_services | _cacheNotes() | _notes: $_notes');
+  }
+
 // ======================== INITIALIZE DATABASE ========================
 
   Database _getDatabaseOrThrow() {
@@ -46,6 +59,8 @@ class NotesService {
     if (db == null) {
       throw DatabaseIsNotOpenException();
     } else {
+      // ? -----------------------------------------------------------
+      devtools.log(' ==> notes_services | _getDatabaseOrThrow() | db: $db');
       return db;
     }
   }
@@ -57,6 +72,8 @@ class NotesService {
     } else {
       await db.close();
       _db = null;
+      // ? -----------------------------------------------------------
+      devtools.log(' ==> notes_services | close() | _db: $_db');
     }
   }
 
@@ -75,7 +92,7 @@ class NotesService {
     try {
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
-      // ? ----------------------------------------
+      // ? -----------------------------------------------------------
       devtools.log(' ==> notes_services | open() | dbPath: $dbPath');
       final db = await openDatabase(dbPath);
       _db = db;
@@ -84,20 +101,17 @@ class NotesService {
       // create note table
       await db.execute(createNoteTable);
       await _cacheNotes();
+      // ? -----------------------------------------------------------
+      devtools.log(
+          ' ==> notes_services | open() | createUserTable: $createUserTable');
+      devtools.log(
+          ' ==> notes_services | open() | createNoteTable: $createNoteTable');
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
     }
   }
 
 // ======================== NOTES CRUD ========================
-
-  // -------------------- _cacheNotes() --------------------
-
-  Future<void> _cacheNotes() async {
-    final allNotes = await getAllNotes();
-    _notes = allNotes.toList();
-    _notesStreamController.add(_notes);
-  }
 
   // -------------------- getNote() --------------------
 
@@ -118,7 +132,7 @@ class NotesService {
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
       _notesStreamController.add(_notes);
-      // ? ----------------------------------------
+      // ? -----------------------------------------------------------
       devtools.log(' ==> notes_services | getNote() | note: $note');
       return note;
     }
@@ -130,7 +144,7 @@ class NotesService {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | getAllNotes() | notes: $notes');
     return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
   }
@@ -156,7 +170,7 @@ class NotesService {
       textColumn: text,
       isSyncedWithCloudColumn: 1,
     });
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createNote() | noteId: $noteId');
     final note = DatabaseNote(
       id: noteId,
@@ -165,10 +179,12 @@ class NotesService {
       text: text,
       isSyncedWithCloud: true,
     );
-
+    // ? -----------------------------------------------------------
+    devtools.log(' ==> notes_services | createNote() | note: $note');
     _notes.add(note);
     _notesStreamController.add(_notes);
-
+    // ? -----------------------------------------------------------
+    devtools.log(' ==> notes_services | createNote() | _notes: $_notes');
     return note;
   }
 
@@ -198,13 +214,13 @@ class NotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotFindNoteException();
+      throw CouldNotUpdateNoteException();
     } else {
       final updatedNote = await getNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
-      // ? ----------------------------------------
+      // ? -----------------------------------------------------------
       devtools.log(
           ' ==> notes_services | updateNote() | updatedNote: $updatedNote');
       return updatedNote;
@@ -221,14 +237,17 @@ class NotesService {
       where: 'id = ?',
       whereArgs: [id],
     );
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(
         ' ==> notes_services | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
       throw ColdNotDeleteNoteException();
     } else {
+      final countBefore = _notes.length;
       _notes.removeWhere((note) => note.id == id);
-      _notesStreamController.add(_notes);
+      if (_notes.length != countBefore) {
+        _notesStreamController.add(_notes);
+      }
     }
   }
 
@@ -240,7 +259,7 @@ class NotesService {
     final numberOfDeletions = await db.delete(noteTable);
     _notes = [];
     _notesStreamController.add(_notes);
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(
         ' ==> notes_services | deleteAllNotes() | numberOfDeletions: $numberOfDeletions');
     return numberOfDeletions;
@@ -259,14 +278,14 @@ class NotesService {
       if (setAsCurrentUser) {
         _user = user;
       }
-      // ? ---------------------------------------------------------------
-      devtools.log('notes_services | getOrCreateUser | get user: $user');
+      // ? ----------------------------------------------------------------------------------
+      devtools.log(' ==> notes_services | getOrCreateUser() | get user: $user');
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
-      // ? ---------------------------------------------------------------
-      devtools
-          .log('notes_services | getOrCreateUser | createUser: $createUser');
+      // ? ----------------------------------------------------------------------------------
+      devtools.log(
+          ' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
       if (setAsCurrentUser) {
         _user = createdUser;
       }
@@ -288,7 +307,7 @@ class NotesService {
       where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | getUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
@@ -326,7 +345,7 @@ class NotesService {
       colorsSchemeColumn: colorsScheme,
       avatarUrlColumn: avatarUrl.toLowerCase(),
     });
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createUser() | userId: $userId');
 
     return DatabaseUser(
@@ -350,7 +369,7 @@ class NotesService {
       where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
-    // ? ----------------------------------------
+    // ? -----------------------------------------------------------
     devtools.log(
         ' ==> notes_services | deleteUser() | deletedCount: $deletedCount');
     if (deletedCount != 1) {

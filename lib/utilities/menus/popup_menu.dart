@@ -12,7 +12,8 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
   return PopupMenuButton<MenuAction>(
     onSelected: (value) async {
       // ? ----------------------------------------
-      devtools.log(value.toString());
+      devtools.log(
+          ' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);

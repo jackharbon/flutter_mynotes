@@ -11,7 +11,7 @@ class AuthUser {
   });
   // instance of  AuthUser
   factory AuthUser.fromFirebase(FirebaseAuth.User user) => AuthUser(
-        email: user.email!,
+        email: user.email,
         isEmailVerified: user.emailVerified,
       );
 }
