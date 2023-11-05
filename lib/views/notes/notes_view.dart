@@ -1,5 +1,6 @@
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_services.dart';
@@ -41,6 +42,11 @@ class _NotesViewState extends State<NotesView> {
           'My Notes',
         ),
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newNoteRoute);
+              },
+              icon: const Icon(Icons.add)),
           popupMenuItems(context),
         ],
       ),
@@ -60,16 +66,35 @@ class _NotesViewState extends State<NotesView> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         // ? ---------------------------------------------------------------
-                        devtools.log(' ==> notes_view | waiting');
+                        devtools.log(' ==> my_notes_view | waiting');
                         return const Text('waiting');
                       case ConnectionState.active:
-                        // ? ---------------------------------------------------------------
-                        devtools.log(' ==> notes_view | active');
-                        return const Text('active');
-                      case ConnectionState.done:
-                        // ? ---------------------------------------------------------------
-                        devtools.log(' ==> notes_view | done');
-                        return const Text('done');
+                        if (snapshot.hasData) {
+                          final allNotes = snapshot.data as List<DatabaseNote>;
+                          // ? ---------------------------------------------------------------
+                          devtools
+                              .log(' ==> my_notes_view | allNotes: $allNotes');
+                          devtools.log(
+                              ' ==> my_notes_view | Notes snapshot: $snapshot');
+                          return ListView.builder(
+                              itemCount: allNotes.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text(
+                                    allNotes[index].text,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {}),
+                                  onTap: () {},
+                                );
+                              });
+                        } else {
+                          return const LoadingStandardProgressBar();
+                        }
                       default:
                         return const LoadingStandardProgressBar();
                     }
