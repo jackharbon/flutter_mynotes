@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_services.dart';
+import 'package:mynotes/utilities/menus/popup_menu.dart';
 
 class NewNoteView extends StatefulWidget {
   const NewNoteView({Key? key}) : super(key: key);
@@ -12,22 +14,17 @@ class NewNoteView extends StatefulWidget {
 }
 
 class _NewNoteViewState extends State<NewNoteView> {
-  DatabaseNote? _note = DatabaseNote(
-    id: 1,
-    userId: 1,
-    title: '',
-    text: '',
-    isSyncedWithCloud: false,
-  );
+  DatabaseNote? _note;
+
   late final NotesService _notesService;
-  late final TextEditingController _titleController;
-  late final TextEditingController _textController;
+  late final TextEditingController _noteTitleController;
+  late final TextEditingController _noteTextController;
 
   @override
   void initState() {
     _notesService = NotesService();
-    _titleController = TextEditingController();
-    _textController = TextEditingController();
+    _noteTitleController = TextEditingController();
+    _noteTextController = TextEditingController();
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | initState()');
     super.initState();
@@ -38,22 +35,24 @@ class _NewNoteViewState extends State<NewNoteView> {
     if (note == null) {
       return;
     }
-    final title = _titleController.text;
-    final text = _textController.text;
+    final title = _noteTitleController.text;
+    final text = _noteTextController.text;
+    // TODO: final createdAt = Timestamp.now();
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | _textControllerListener() | note: $note, title: $title, text: $text,');
     await _notesService.updateNote(
       note: note,
       title: title,
       text: text,
+      // TODO: createdAt: createdAt,
     );
   }
 
   void _setupTextControllerListener() {
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
+    _noteTitleController.removeListener(_textControllerListener);
+    _noteTextController.removeListener(_textControllerListener);
+    _noteTitleController.addListener(_textControllerListener);
+    _noteTextController.addListener(_textControllerListener);
   }
 
   Future<DatabaseNote> createNewNote() async {
@@ -66,37 +65,43 @@ class _NewNoteViewState extends State<NewNoteView> {
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    final owner = await _notesService.getUser(email: email!);
+    final email = currentUser.email!;
+    final owner = await _notesService.getUser(email: email);
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | createNewNote() | currentUser: $currentUser email: $email $owner: $owner');
+    log(' ==> new_note_view | createNewNote() | currentUser email: $email owner: $owner');
     return await _notesService.createNote(owner: owner);
   }
 
-  void _deleteNoteIfTextIsEmpty() {
+  void _deleteNoteIfTextIsEmpty() async {
     final note = _note;
-    if (_textController.text.isEmpty && note != null) {
-      // ? ---------------------------------------------------------------
-      log(' ==> new_note_view | _deleteNoteIfTextIsEmpty() | note: $note');
-      _notesService.deleteNote(id: note.id);
+    if (note != null) {
+      if (_noteTextController.text.isEmpty &&
+          _noteTitleController.text.isEmpty) {
+        // ? ---------------------------------------------------------------
+        log(' ==> new_note_view | _deleteNoteIfTextIsEmpty() | deleted note: $note');
+        await _notesService.deleteNote(id: note.id);
+      }
     }
   }
 
   void _safeNoteIfTextNotEmpty() async {
     final note = _note;
-    final title = _titleController.text;
-    final text = _textController.text;
+    final title = _noteTitleController.text;
+    final text = _noteTextController.text;
+    // TODO: final createdAt = Timestamp.now();
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | note: $note, title: $title, text: $text');
-    if (note != null && text.isNotEmpty) {
-      await _notesService.updateNote(
-        note: note,
-        text: text,
-        title: title,
-      );
-    } else {
-      // ? ---------------------------------------------------------------
-      log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | note is not saved');
+    log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text');
+    if (note != null) {
+      if (title.isNotEmpty || text.isNotEmpty) {
+        await _notesService.updateNote(
+          note: note,
+          text: text,
+          title: title,
+          // TODO: createdAt: createdAt,
+        );
+        // ? ---------------------------------------------------------------
+        log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text');
+      }
     }
   }
 
@@ -104,7 +109,8 @@ class _NewNoteViewState extends State<NewNoteView> {
   void dispose() {
     _deleteNoteIfTextIsEmpty();
     _safeNoteIfTextNotEmpty();
-    _textController.dispose();
+    _noteTitleController.dispose();
+    _noteTextController.dispose();
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | dispose()');
     super.dispose();
@@ -115,8 +121,15 @@ class _NewNoteViewState extends State<NewNoteView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Note'),
-        backgroundColor: Colors.orange,
-        actions: const [],
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.of(context).pushNamed(newNoteRoute);
+              },
+              icon: const Icon(Icons.add)),
+          popupMenuItems(context),
+        ],
       ),
       body: FutureBuilder(
         future: createNewNote(),
@@ -133,21 +146,30 @@ class _NewNoteViewState extends State<NewNoteView> {
                 child: Column(
                   children: [
                     TextField(
-                      controller: _titleController,
+                      autofocus: true,
+                      controller: _noteTitleController,
                       keyboardType: TextInputType.text,
                       maxLines: null,
                       decoration: const InputDecoration(
                         labelText: 'Title',
                         hintText: 'Start typing your title here',
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                       ),
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     TextField(
-                      controller: _textController,
+                      controller: _noteTextController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: const InputDecoration(
                         labelText: 'Message',
                         hintText: 'Start typing your note here',
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        filled: false,
                       ),
                     ),
                   ],

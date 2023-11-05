@@ -22,7 +22,8 @@ class _NotesViewState extends State<NotesView> {
     _notesService = NotesService();
     _notesService.open();
     // ? ---------------------------------------------------------------
-    devtools.log(' ==> notes_view | initState()');
+    devtools
+        .log(' ==> notes_view | initState() | _notesService: $_notesService');
     super.initState();
   }
 
@@ -38,8 +39,8 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'My Notes',
+        title: Text(
+          'My Notes | $userEmail',
         ),
         actions: [
           IconButton(
@@ -54,19 +55,20 @@ class _NotesViewState extends State<NotesView> {
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
           future: _notesService.getOrCreateUser(email: userEmail),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
+          builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
-            devtools.log(' ==> notes_view | User snapshot: $snapshot');
+            devtools.log(
+                ' ==> notes_view | User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return StreamBuilder(
                   stream: _notesService.allNotes,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<DatabaseNote>> snapshot) {
+                  builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
-                        // ? ---------------------------------------------------------------
-                        devtools.log(' ==> my_notes_view | waiting');
+                        // ? ---------------------------------------widget------------------------
+                        devtools.log(
+                            ' ==> my_notes_view | Notes snapshot1: ${snapshot.connectionState}, ${snapshot.data}');
                         return const Text('waiting');
                       case ConnectionState.active:
                         if (snapshot.hasData) {
@@ -75,21 +77,43 @@ class _NotesViewState extends State<NotesView> {
                           devtools
                               .log(' ==> my_notes_view | allNotes: $allNotes');
                           devtools.log(
-                              ' ==> my_notes_view | Notes snapshot: $snapshot');
+                              ' ==> my_notes_view | Notes snapshot2 ${snapshot.connectionState}, ${snapshot.data}');
                           return ListView.builder(
                               itemCount: allNotes.length,
                               itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text(
-                                    allNotes[index].text,
-                                    maxLines: 1,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
+                                return Card(
+                                  child: ListTile(
+                                    title: Text(
+                                      allNotes[index].title ?? '...',
+                                      maxLines: 1,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    trailing: IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            final id = allNotes[index].id;
+                                            _notesService.deleteNote(id: id);
+                                          });
+                                        }),
+                                    onTap: () {
+                                      setState(() {});
+                                    },
+                                    subtitle: Text(
+                                      allNotes[index].text,
+                                      maxLines: 10,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                  trailing: IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () {}),
-                                  onTap: () {},
                                 );
                               });
                         } else {

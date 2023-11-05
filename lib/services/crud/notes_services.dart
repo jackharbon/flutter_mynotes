@@ -1,6 +1,7 @@
 import 'dart:developer' as devtools show log;
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mynotes/extensions/list/filter.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
@@ -18,19 +19,16 @@ class NotesService {
   // ======================== NOTE STREAM ========================
 
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
-  // NotesService._sharedInstance() {
-  //   _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
-  //     onListen: () {
-  //       _notesStreamController.sink.add(_notes);
-  //     },
-  //   );
-  // }
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
 
-  // late final StreamController<List<DatabaseNote>> _notesStreamController;
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes =>
       _notesStreamController.stream.filter((note) {
@@ -163,11 +161,13 @@ class NotesService {
 
     const title = '';
     const text = '';
+    // TODO:  final createdAt = Timestamp.now();
     // create the note
     final noteId = await db.insert(noteTable, {
       userIdColumn: owner.id,
       titleColumn: title,
       textColumn: text,
+      // TODO:  createdAtColumn: createdAt,
       isSyncedWithCloudColumn: 1,
     });
     // ? -----------------------------------------------------------
@@ -177,6 +177,7 @@ class NotesService {
       userId: owner.id,
       title: title,
       text: text,
+      // TODO:  createdAt: createdAt,
       isSyncedWithCloud: true,
     );
     // ? -----------------------------------------------------------
@@ -194,6 +195,7 @@ class NotesService {
     required DatabaseNote note,
     required String title,
     required String text,
+    // TODO: required Timestamp createdAt,
   }) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -207,10 +209,11 @@ class NotesService {
       {
         titleColumn: title,
         textColumn: text,
+        // TODO:  createdAtColumn: createdAt,
         isSyncedWithCloudColumn: 0,
       },
-      // where: 'id = ?',
-      // whereArgs: [note.id],
+      where: 'id = ?',
+      whereArgs: [note.id],
     );
 
     if (updatesCount == 0) {
@@ -385,6 +388,7 @@ class DatabaseNote {
   final int userId;
   final String? title;
   final String text;
+  // TODO:  final Timestamp createdAt;
   final bool isSyncedWithCloud;
 
   DatabaseNote({
@@ -392,6 +396,7 @@ class DatabaseNote {
     required this.userId,
     required this.title,
     required this.text,
+    // TODO:  required this.createdAt,
     required this.isSyncedWithCloud,
   });
 
@@ -400,12 +405,14 @@ class DatabaseNote {
         userId = map[userIdColumn] as int,
         title = map[titleColumn] as String,
         text = map[textColumn] as String,
+        // TODO:  createdAt = map[createdAtColumn] as Timestamp,
         isSyncedWithCloud =
             (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
       'Note, ID = $id, userId = $userId, title = $title, text = $text, isSyncedWithCloud = $isSyncedWithCloud,';
+  // TODO:  createdAt: ${createdAt.toDate().toString().substring(0, 16)}
 
   @override
   bool operator ==(covariant DatabaseNote other) => id == other.id;
@@ -466,6 +473,7 @@ const noteTable = 'note';
 const userIdColumn = 'user_id';
 const titleColumn = 'title';
 const textColumn = 'text';
+// TODO:  const createdAtColumn = 'createdAt';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
 
 const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
@@ -477,7 +485,7 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 	FOREIGN KEY("user_id") REFERENCES "user"("id") ON DELETE CASCADE,
 	PRIMARY KEY("id" AUTOINCREMENT)
       );''';
-
+// TODO:  "created_at"  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 // -------------------- User Database --------------------
 
 const userTable = 'user';

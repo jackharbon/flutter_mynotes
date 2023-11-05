@@ -7,11 +7,11 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/providers/theme_notifier.dart';
-import 'package:mynotes/views/login_view.dart';
+import 'package:mynotes/views/login/login_view.dart';
 import 'package:mynotes/views/notes/new_note_view.dart';
 import 'package:mynotes/views/notes/notes_view.dart';
-import 'package:mynotes/views/register_view.dart';
-import 'package:mynotes/views/verify_email_view.dart';
+import 'package:mynotes/views/login/register_view.dart';
+import 'package:mynotes/views/login/verify_email_view.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
