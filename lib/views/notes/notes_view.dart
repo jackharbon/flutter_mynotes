@@ -28,14 +28,6 @@ class _NotesViewState extends State<NotesView> {
   }
 
   @override
-  void dispose() {
-    _notesService.close();
-    // ? ---------------------------------------------------------------
-    devtools.log(' ==> notes_view | dispose()');
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -72,50 +64,56 @@ class _NotesViewState extends State<NotesView> {
                         return const Text('waiting');
                       case ConnectionState.active:
                         if (snapshot.hasData) {
-                          final allNotes = snapshot.data as List<DatabaseNote>;
-                          // ? ---------------------------------------------------------------
-                          devtools
-                              .log(' ==> my_notes_view | allNotes: $allNotes');
-                          devtools.log(
-                              ' ==> my_notes_view | Notes snapshot2 ${snapshot.connectionState}, ${snapshot.data}');
-                          return ListView.builder(
-                              itemCount: allNotes.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  child: ListTile(
-                                    title: Text(
-                                      allNotes[index].title ?? '...',
-                                      maxLines: 1,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
+                          if (snapshot.data!.isEmpty) {
+                            return const Text('Press "+" to write your note.');
+                          } else {
+                            final allNotes =
+                                snapshot.data as List<DatabaseNote>;
+                            // ? ---------------------------------------------------------------
+                            devtools.log(
+                                ' ==> my_notes_view | allNotes: $allNotes');
+                            devtools.log(
+                                ' ==> my_notes_view | Notes snapshot2 ${snapshot.connectionState}, ${snapshot.data}');
+                            return ListView.builder(
+                                itemCount: allNotes.length,
+                                itemBuilder: (context, index) {
+                                  final note = allNotes[index];
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(
+                                        note.title ?? '...',
+                                        maxLines: 1,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      trailing: IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _notesService.deleteNote(
+                                                  id: note.id);
+                                            });
+                                          }),
+                                      onTap: () {
+                                        setState(() {});
+                                      },
+                                      subtitle: Text(
+                                        note.text,
+                                        maxLines: 5,
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                    trailing: IconButton(
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            final id = allNotes[index].id;
-                                            _notesService.deleteNote(id: id);
-                                          });
-                                        }),
-                                    onTap: () {
-                                      setState(() {});
-                                    },
-                                    subtitle: Text(
-                                      allNotes[index].text,
-                                      maxLines: 10,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                );
-                              });
+                                  );
+                                });
+                          }
                         } else {
                           return const LoadingStandardProgressBar();
                         }

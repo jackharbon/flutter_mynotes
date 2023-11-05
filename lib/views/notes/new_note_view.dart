@@ -160,16 +160,23 @@ class _NewNoteViewState extends State<NewNoteView> {
                     const SizedBox(
                       height: 10,
                     ),
-                    TextField(
-                      controller: _noteTextController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        labelText: 'Message',
-                        hintText: 'Start typing your note here',
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        filled: false,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: SingleChildScrollView(
+                          child: TextField(
+                            controller: _noteTextController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              labelText: 'Message',
+                              hintText: 'Start typing your note here',
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              filled: false,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
