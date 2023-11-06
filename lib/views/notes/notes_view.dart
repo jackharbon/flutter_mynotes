@@ -7,16 +7,16 @@ import 'package:mynotes/services/crud/notes_services.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
 import 'package:mynotes/views/notes/notes_list.view.dart';
 
-class NotesView extends StatefulWidget {
-  const NotesView({
+class MyNotesView extends StatefulWidget {
+  const MyNotesView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<NotesView> createState() => _NotesViewState();
+  State<MyNotesView> createState() => _MyNotesViewState();
 }
 
-class _NotesViewState extends State<NotesView> {
+class _MyNotesViewState extends State<MyNotesView> {
   late final NotesService _notesService;
   String get userEmail => AuthService.firebase().currentUser!.email!;
 
@@ -40,7 +40,7 @@ class _NotesViewState extends State<NotesView> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(newNoteRoute);
+                Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
           popupMenuItems(context),
@@ -79,7 +79,7 @@ class _NotesViewState extends State<NotesView> {
                                 IconButton(
                                     onPressed: () {
                                       Navigator.of(context)
-                                          .pushNamed(newNoteRoute);
+                                          .pushNamed(createOrUpdateNoteRoute);
                                     },
                                     icon: Icon(
                                       Icons.add,
@@ -108,7 +108,7 @@ class _NotesViewState extends State<NotesView> {
                               },
                               onTap: (note) {
                                 Navigator.of(context).pushNamed(
-                                  newNoteRoute,
+                                  createOrUpdateNoteRoute,
                                   arguments: note,
                                 );
                               },

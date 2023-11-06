@@ -5,16 +5,17 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_services.dart';
+import 'package:mynotes/utilities/generics/get_arguments.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
 
-class NewNoteView extends StatefulWidget {
-  const NewNoteView({Key? key}) : super(key: key);
+class CreateUpdateNoteView extends StatefulWidget {
+  const CreateUpdateNoteView({Key? key}) : super(key: key);
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
 }
 
-class _NewNoteViewState extends State<NewNoteView> {
+class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   DatabaseNote? _note;
 
   late final NotesService _notesService;
@@ -59,7 +60,20 @@ class _NewNoteViewState extends State<NewNoteView> {
     _noteTextController.addListener(_textControllerListener);
   }
 
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
+    // Extracting argument T(optional - note exists on tap) = DatabaseNote from the context
+    final widgetNote = context.getArgument<DatabaseNote>();
+
+    if (widgetNote != null) {
+      _note = widgetNote;
+      // pass text from note to the CreateOrUpdateNote
+      (widgetNote.title != null)
+          ? _noteTitleController.text = widgetNote.title!
+          : null;
+      _noteTextController.text = widgetNote.text;
+      return widgetNote;
+    }
+
     final existingNote = _note;
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | createNewNote() | existingNote: $existingNote');
@@ -73,7 +87,9 @@ class _NewNoteViewState extends State<NewNoteView> {
     final owner = await _notesService.getUser(email: email);
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | createNewNote() | currentUser email: $email owner: $owner');
-    return await _notesService.createNote(owner: owner);
+    final newNote = await _notesService.createNote(owner: owner);
+    _note = newNote;
+    return newNote;
   }
 
   void _deleteNoteIfTextIsEmpty() async {
@@ -129,18 +145,18 @@ class _NewNoteViewState extends State<NewNoteView> {
           IconButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.of(context).pushNamed(newNoteRoute);
+                Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
           popupMenuItems(context),
         ],
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetExistingNote(context),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _note = snapshot.data as DatabaseNote?;
+              // _note = snapshot.data as DatabaseNote?;
               _setupTextControllerListener();
               // ? ---------------------------------------------------------------
               log(' ==> new_note_view | _note: $_note');

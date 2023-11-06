@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/services/crud/notes_services.dart';
 import 'package:mynotes/utilities/dialogs/delete_dialog.dart';
 
-typedef DeleteNoteCallback = void Function(DatabaseNote note);
+typedef NoteCallback = void Function(DatabaseNote note);
 
 class NotesListView extends StatelessWidget {
   final List<DatabaseNote> notes;
-  final DeleteNoteCallback onDeleteNote;
-  final DeleteNoteCallback onTap;
+  final NoteCallback onDeleteNote;
+  final NoteCallback onTap;
 
   const NotesListView({
     Key? key,
@@ -24,7 +24,10 @@ class NotesListView extends StatelessWidget {
           final note = notes[index];
           return Card(
             child: ListTile(
-              onTap: () {},
+              onTap: () {
+                // !!! Call back to the notes_view onTap function
+                onTap(note);
+              },
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

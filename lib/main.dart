@@ -8,7 +8,7 @@ import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/providers/theme_notifier.dart';
 import 'package:mynotes/views/login/login_view.dart';
-import 'package:mynotes/views/notes/new_note_view.dart';
+import 'package:mynotes/views/notes/create_update_note_view.dart';
 import 'package:mynotes/views/notes/notes_view.dart';
 import 'package:mynotes/views/login/register_view.dart';
 import 'package:mynotes/views/login/verify_email_view.dart';
@@ -121,8 +121,8 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
             registerRoute: (context) => const RegisterView(),
             verifyEmailRoute: (context) => const VerifyEmailView(),
             loginRoute: (context) => const LoginView(),
-            myNotesRoute: (context) => const NotesView(),
-            newNoteRoute: (context) => const NewNoteView(),
+            myNotesRoute: (context) => const MyNotesView(),
+            createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
           },
         );
       },
