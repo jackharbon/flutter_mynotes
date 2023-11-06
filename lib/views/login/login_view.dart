@@ -4,7 +4,7 @@ import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
-import 'package:mynotes/utilities/dialogs/show_error.dart';
+import 'package:mynotes/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -66,6 +66,8 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       const Text(
                         'Login to your account to see your notes.',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
                         height: 50,
@@ -136,42 +138,84 @@ class _LoginViewState extends State<LoginView> {
                                     context,
                                     'Missing credentials!\nPlease check the form fields.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.text_fields,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Invalid emai!\nPlease check your email address.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.email,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on UserNotFoundAuthException {
                                   await showErrorDialog(
                                     context,
                                     'User not found!\nEnter correct email or register.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.person_off_rounded,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on WrongPasswordAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Wrong password!\nPlease type again.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.password,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Authentication error!\nPlease try again later.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.person_off_rounded,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on GenericAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Authentication error!\nPlease try again later.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.person_off_rounded,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
                                     'Authentication error!\nPlease try again later.',
                                     'Login failed!',
+                                    Icon(
+                                      Icons.person_off_rounded,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 }
                               },

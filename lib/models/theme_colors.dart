@@ -1,7 +1,8 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 class ThemeColorsSchemes {
-  final FlexScheme schemeBlue = FlexScheme.blue;
+  final FlexScheme schemeBlue = FlexScheme.blueM3;
+  final FlexScheme schemeHippieBlue = FlexScheme.hippieBlue;
   final FlexScheme schemeBigStone = FlexScheme.bigStone;
   final FlexScheme schemePurpleBrown = FlexScheme.purpleBrown;
   final FlexScheme schemePinkM3 = FlexScheme.pinkM3;

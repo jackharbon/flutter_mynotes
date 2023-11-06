@@ -2,7 +2,6 @@ import 'dart:developer' as devtools show log;
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mynotes/extensions/list/filter.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
@@ -161,13 +160,13 @@ class NotesService {
 
     const title = '';
     const text = '';
-    // TODO:  final createdAt = Timestamp.now();
+    final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // create the note
     final noteId = await db.insert(noteTable, {
       userIdColumn: owner.id,
       titleColumn: title,
       textColumn: text,
-      // TODO:  createdAtColumn: createdAt,
+      createdAtColumn: createdAt,
       isSyncedWithCloudColumn: 1,
     });
     // ? -----------------------------------------------------------
@@ -177,7 +176,7 @@ class NotesService {
       userId: owner.id,
       title: title,
       text: text,
-      // TODO:  createdAt: createdAt,
+      createdAt: createdAt,
       isSyncedWithCloud: true,
     );
     // ? -----------------------------------------------------------
@@ -195,7 +194,7 @@ class NotesService {
     required DatabaseNote note,
     required String title,
     required String text,
-    // TODO: required Timestamp createdAt,
+    required String createdAt,
   }) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -209,7 +208,7 @@ class NotesService {
       {
         titleColumn: title,
         textColumn: text,
-        // TODO:  createdAtColumn: createdAt,
+        createdAtColumn: createdAt,
         isSyncedWithCloudColumn: 0,
       },
       where: 'id = ?',
@@ -339,6 +338,7 @@ class NotesService {
     const themeMode = '';
     const colorsScheme = '';
     const avatarUrl = '';
+    final createdAtUser = Timestamp.now().toDate().toString().substring(0, 16);
 
     final userId = await db.insert(userTable, {
       emailColumn: email.toLowerCase(),
@@ -347,6 +347,7 @@ class NotesService {
       themeModeColumn: themeMode,
       colorsSchemeColumn: colorsScheme,
       avatarUrlColumn: avatarUrl.toLowerCase(),
+      createdAtUserColumn: createdAtUser,
     });
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createUser() | userId: $userId');
@@ -359,6 +360,7 @@ class NotesService {
       themeMode: themeMode,
       colorsScheme: colorsScheme,
       avatarUrl: avatarUrl,
+      createdAtUser: createdAtUser,
     );
   }
 
@@ -388,7 +390,7 @@ class DatabaseNote {
   final int userId;
   final String? title;
   final String text;
-  // TODO:  final Timestamp createdAt;
+  final String createdAt;
   final bool isSyncedWithCloud;
 
   DatabaseNote({
@@ -396,7 +398,7 @@ class DatabaseNote {
     required this.userId,
     required this.title,
     required this.text,
-    // TODO:  required this.createdAt,
+    required this.createdAt,
     required this.isSyncedWithCloud,
   });
 
@@ -405,14 +407,13 @@ class DatabaseNote {
         userId = map[userIdColumn] as int,
         title = map[titleColumn] as String,
         text = map[textColumn] as String,
-        // TODO:  createdAt = map[createdAtColumn] as Timestamp,
+        createdAt = map[createdAtColumn] as String,
         isSyncedWithCloud =
             (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
-      'Note, ID = $id, userId = $userId, title = $title, text = $text, isSyncedWithCloud = $isSyncedWithCloud,';
-  // TODO:  createdAt: ${createdAt.toDate().toString().substring(0, 16)}
+      'Note, ID = $id, userId = $userId, title = $title, text = $text, createdAt: $createdAt, isSyncedWithCloud = $isSyncedWithCloud,';
 
   @override
   bool operator ==(covariant DatabaseNote other) => id == other.id;
@@ -423,7 +424,7 @@ class DatabaseNote {
 
 // ========================== User Database ==========================
 
-@immutable
+// @immutable
 class DatabaseUser {
   final int id;
   final String email;
@@ -432,13 +433,15 @@ class DatabaseUser {
   final String? themeMode;
   final String? colorsScheme;
   final String? avatarUrl;
+  final String createdAtUser;
 
-  const DatabaseUser({
+  DatabaseUser({
     this.firstName,
     this.lastName,
     this.themeMode,
     this.colorsScheme,
     this.avatarUrl,
+    required this.createdAtUser,
     required this.id,
     required this.email,
   });
@@ -450,11 +453,12 @@ class DatabaseUser {
         lastName = map[lastNameColumn] as String,
         themeMode = map[themeModeColumn] as String,
         colorsScheme = map[colorsSchemeColumn] as String,
-        avatarUrl = map[avatarUrlColumn] as String;
+        avatarUrl = map[avatarUrlColumn] as String,
+        createdAtUser = map[createdAtUserColumn] as String;
 
   @override
   String toString() =>
-      'Person, ID = $id, email = $email, firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $colorsScheme, avatarUrl: $avatarUrl';
+      'Person, ID = $id, email = $email, firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $colorsScheme, avatarUrl: $avatarUrl, createdAtUser: $createdAtUser,';
 
   @override
   bool operator ==(covariant DatabaseUser other) => id == other.id;
@@ -473,7 +477,7 @@ const noteTable = 'note';
 const userIdColumn = 'user_id';
 const titleColumn = 'title';
 const textColumn = 'text';
-// TODO:  const createdAtColumn = 'createdAt';
+const createdAtColumn = 'created_at';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
 
 const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
@@ -481,11 +485,11 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 	"user_id"	INTEGER NOT NULL,
 	"title"	TEXT,
 	"text"	TEXT,
+  "created_at"  TEXT NOT NULL,
 	"is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
 	FOREIGN KEY("user_id") REFERENCES "user"("id") ON DELETE CASCADE,
 	PRIMARY KEY("id" AUTOINCREMENT)
       );''';
-// TODO:  "created_at"  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 // -------------------- User Database --------------------
 
 const userTable = 'user';
@@ -496,6 +500,7 @@ const lastNameColumn = 'last_name';
 const themeModeColumn = 'theme_mode';
 const colorsSchemeColumn = 'colors_scheme';
 const avatarUrlColumn = 'avatar_url';
+const createdAtUserColumn = 'created_at_user';
 
 const createUserTable = '''CREATE TABLE IF NOT EXISTS  "user" (
 	"id"	INTEGER NOT NULL,
@@ -505,5 +510,6 @@ const createUserTable = '''CREATE TABLE IF NOT EXISTS  "user" (
 	"theme_mode"	TEXT,
 	"colors_scheme"	TEXT,
 	"avatar_url"	TEXT,
+  "created_at_user"  TEXT NOT NULL,
 	PRIMARY KEY("id" AUTOINCREMENT)
       );''';

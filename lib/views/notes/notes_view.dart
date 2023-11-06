@@ -5,9 +5,12 @@ import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_services.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
+import 'package:mynotes/views/notes/notes_list.view.dart';
 
 class NotesView extends StatefulWidget {
-  const NotesView({super.key});
+  const NotesView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<NotesView> createState() => _NotesViewState();
@@ -20,7 +23,7 @@ class _NotesViewState extends State<NotesView> {
   @override
   void initState() {
     _notesService = NotesService();
-    _notesService.open();
+    // _notesService.open();
     // ? ---------------------------------------------------------------
     devtools
         .log(' ==> notes_view | initState() | _notesService: $_notesService');
@@ -52,72 +55,71 @@ class _NotesViewState extends State<NotesView> {
             devtools.log(
                 ' ==> notes_view | User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
             switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
               case ConnectionState.done:
                 return StreamBuilder(
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
-                        // ? ---------------------------------------widget------------------------
-                        devtools.log(
-                            ' ==> my_notes_view | Notes snapshot1: ${snapshot.connectionState}, ${snapshot.data}');
-                        return const Text('waiting');
                       case ConnectionState.active:
                         if (snapshot.hasData) {
                           if (snapshot.data!.isEmpty) {
-                            return const Text('Press "+" to write your note.');
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Press',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pushNamed(newNoteRoute);
+                                    },
+                                    icon: Icon(
+                                      Icons.add,
+                                      size: 40,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    )),
+                                const Text(
+                                  'to write your first note.',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                ),
+                              ],
+                            );
                           } else {
+                            //  snapshot.data is NOT Empty
                             final allNotes =
                                 snapshot.data as List<DatabaseNote>;
-                            // ? ---------------------------------------------------------------
-                            devtools.log(
-                                ' ==> my_notes_view | allNotes: $allNotes');
-                            devtools.log(
-                                ' ==> my_notes_view | Notes snapshot2 ${snapshot.connectionState}, ${snapshot.data}');
-                            return ListView.builder(
-                                itemCount: allNotes.length,
-                                itemBuilder: (context, index) {
-                                  final note = allNotes[index];
-                                  return Card(
-                                    child: ListTile(
-                                      title: Text(
-                                        note.title ?? '...',
-                                        maxLines: 1,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: IconButton(
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _notesService.deleteNote(
-                                                  id: note.id);
-                                            });
-                                          }),
-                                      onTap: () {
-                                        setState(() {});
-                                      },
-                                      subtitle: Text(
-                                        note.text,
-                                        maxLines: 5,
-                                        softWrap: true,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  );
-                                });
+                            return NotesListView(
+                              notes: allNotes,
+                              onDeleteNote: (note) async {
+                                await _notesService.deleteNote(id: note.id);
+                              },
+                              onTap: (note) {
+                                Navigator.of(context).pushNamed(
+                                  newNoteRoute,
+                                  arguments: note,
+                                );
+                              },
+                            );
                           }
                         } else {
+                          // snapshot has NOT data
                           return const LoadingStandardProgressBar();
                         }
                       default:
+                        // switch connection.status DONE
                         return const LoadingStandardProgressBar();
                     }
                   },

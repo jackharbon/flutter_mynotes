@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
@@ -19,12 +20,15 @@ class _NewNoteViewState extends State<NewNoteView> {
   late final NotesService _notesService;
   late final TextEditingController _noteTitleController;
   late final TextEditingController _noteTextController;
+  late final Timestamp createdAt;
 
   @override
   void initState() {
     _notesService = NotesService();
     _noteTitleController = TextEditingController();
     _noteTextController = TextEditingController();
+    createdAt = Timestamp.now();
+
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | initState()');
     super.initState();
@@ -37,14 +41,14 @@ class _NewNoteViewState extends State<NewNoteView> {
     }
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
-    // TODO: final createdAt = Timestamp.now();
+    final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | _textControllerListener() | note: $note, title: $title, text: $text,');
+    log(' ==> new_note_view | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
     await _notesService.updateNote(
       note: note,
       title: title,
       text: text,
-      // TODO: createdAt: createdAt,
+      createdAt: createdAt,
     );
   }
 
@@ -88,19 +92,19 @@ class _NewNoteViewState extends State<NewNoteView> {
     final note = _note;
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
-    // TODO: final createdAt = Timestamp.now();
+    final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text');
+    log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
         await _notesService.updateNote(
           note: note,
           text: text,
           title: title,
-          // TODO: createdAt: createdAt,
+          createdAt: createdAt,
         );
         // ? ---------------------------------------------------------------
-        log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text');
+        log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
       }
     }
   }

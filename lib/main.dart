@@ -47,7 +47,7 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
           theme: FlexThemeData.light(
             scheme: themeColorsNotifier.themeScheme,
             surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-            blendLevel: 18,
+            blendLevel: 10,
             appBarStyle: FlexAppBarStyle.primary,
             appBarOpacity: 0.92,
             appBarElevation: 2.5,
@@ -59,7 +59,7 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
             visualDensity: FlexColorScheme.comfortablePlatformDensity,
             fontFamily: 'TitilliumWeb',
             subThemesData: const FlexSubThemesData(
-              blendOnLevel: 10,
+              blendOnLevel: 20,
               blendOnColors: false,
               useTextTheme: true,
               useM2StyleDividerInM3: true,
@@ -93,7 +93,7 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
             visualDensity: FlexColorScheme.comfortablePlatformDensity,
             fontFamily: 'TitilliumWeb',
             subThemesData: const FlexSubThemesData(
-              blendOnLevel: 10,
+              blendOnLevel: 20,
               blendOnColors: false,
               useTextTheme: true,
               useM2StyleDividerInM3: true,

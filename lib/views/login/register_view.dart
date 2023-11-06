@@ -4,7 +4,7 @@ import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
-import 'package:mynotes/utilities/dialogs/show_error.dart';
+import 'package:mynotes/utilities/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -122,42 +122,84 @@ class _RegisterViewState extends State<RegisterView> {
                                     context,
                                     'Missing credentials!\nPlease check the form fields.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.text_fields,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Invalid email!\nPlease check your input.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.email,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on EmailAlreadyInUseAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Email is already registered!\nPlease login.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.email,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on WeakPasswordAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Weak password!\nPlease enter a stronger password.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.password,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Failed to register!\nPlease try again later.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.person_add_disabled,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } on GenericAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Failed to register!\n Please try again later.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.person_add_disabled,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
                                     'Failed to register.n Please try again later.',
                                     'Register failed!',
+                                    Icon(
+                                      Icons.person_add_disabled,
+                                      size: 60,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
+                                    ),
                                   );
                                 }
                               },

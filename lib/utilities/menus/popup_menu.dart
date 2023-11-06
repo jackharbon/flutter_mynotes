@@ -4,8 +4,8 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
 import 'package:mynotes/services/auth/auth_service.dart';
-import 'package:mynotes/utilities/dialogs/show_logout.dart';
 import 'package:mynotes/providers/theme_notifier.dart';
+import 'package:mynotes/utilities/dialogs/logout_dialog.dart';
 import 'package:provider/provider.dart';
 
 PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
@@ -33,9 +33,12 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         case MenuAction.darkMode:
           Provider.of<ColorThemeNotifier>(context, listen: false)
               .toggleLightDarkMode(ThemeMode.dark);
-        case MenuAction.blue:
+        case MenuAction.blueM3:
           Provider.of<ColorThemeNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.blue);
+              .changeColorScheme(FlexScheme.blueM3);
+        case MenuAction.hippieBlue:
+          Provider.of<ColorThemeNotifier>(context, listen: false)
+              .changeColorScheme(FlexScheme.hippieBlue);
         case MenuAction.deepPurple:
           Provider.of<ColorThemeNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.deepPurple);
@@ -133,7 +136,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         ),
         const PopupMenuDivider(height: 20),
         const PopupMenuItem<MenuAction>(
-          value: MenuAction.blue,
+          value: MenuAction.blueM3,
           child: SizedBox(
             width: 140,
             child: Row(
@@ -142,10 +145,28 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                 Icon(
                   Icons.circle,
                   size: 26.0,
-                  color: Colors.blue,
+                  color: Color(0xff156DAA),
                 ),
                 SizedBox(width: 18),
                 Text('Sea Blue'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
+          value: MenuAction.hippieBlue,
+          child: SizedBox(
+            width: 140,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xff57A1BE),
+                ),
+                SizedBox(width: 18),
+                Text('Hippie Blue'),
               ],
             ),
           ),
