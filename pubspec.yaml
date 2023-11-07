@@ -58,7 +58,7 @@ flutter:
           weight: 400
   assets:
     - assets/icon/icon.png
-    - assets/icon/logo.png
-    - assets/icon/logo_big.png
-    - assets/icon/splash.png
-    - assets/icon/branding.png
+    - assets/splash/branding_dark.png
+    - assets/splash/branding.png
+    - assets/splash/splash-invert.png
+    - assets/splash/splash.png

@@ -33,7 +33,8 @@ class NotesService {
       _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
-          return note.userId == currentUser.id;
+          return note.userId ==
+              currentUser.id; // we return boolean in filter function
         } else {
           throw UserShouldBeSetBeforeReadingAllNotes();
         }
@@ -273,7 +274,8 @@ class NotesService {
 
   Future<DatabaseUser> getOrCreateUser({
     required String email,
-    bool setAsCurrentUser = true,
+    bool setAsCurrentUser =
+        true, // set retrieved user as a current user to filter notes
   }) async {
     try {
       final user = await getUser(email: email);
@@ -281,16 +283,17 @@ class NotesService {
         _user = user;
       }
       // ? ----------------------------------------------------------------------------------
-      devtools.log(' ==> notes_services | getOrCreateUser() | get user: $user');
+      devtools
+          .log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
-      // ? ----------------------------------------------------------------------------------
-      devtools.log(
-          ' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
       if (setAsCurrentUser) {
         _user = createdUser;
       }
+      // ? ----------------------------------------------------------------------------------
+      devtools.log(
+          ' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
       return createdUser;
     } catch (e) {
       rethrow;

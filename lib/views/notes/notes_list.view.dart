@@ -33,11 +33,15 @@ class NotesListView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      note.title ?? "...",
+                      (note.title != '') ? note.title! : "...",
                       maxLines: 1,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                   Text(
@@ -47,7 +51,7 @@ class NotesListView extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontWeight: FontWeight.w200,
-                      fontSize: 9,
+                      fontSize: 12,
                       fontStyle: FontStyle.italic,
                       color: Theme.of(context).colorScheme.outline,
                     ),
