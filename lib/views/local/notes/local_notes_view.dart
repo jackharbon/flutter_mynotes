@@ -1,29 +1,28 @@
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/constants/local/local_routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
-import 'package:mynotes/services/crud/notes_services.dart';
+import 'package:mynotes/services/local/auth/local_auth_service.dart';
+import 'package:mynotes/services/local/crud/local_notes_services.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
-import 'package:mynotes/views/notes/notes_list.view.dart';
+import 'package:mynotes/views/local/notes/local_notes_list.view.dart';
 
-class MyNotesView extends StatefulWidget {
-  const MyNotesView({
+class MyNotesViewLocal extends StatefulWidget {
+  const MyNotesViewLocal({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MyNotesView> createState() => _MyNotesViewState();
+  State<MyNotesViewLocal> createState() => _MyNotesViewLocalState();
 }
 
-class _MyNotesViewState extends State<MyNotesView> {
-  late final NotesService _notesService;
-  String get userEmail => AuthService.firebase().currentUser!.email!;
+class _MyNotesViewLocalState extends State<MyNotesViewLocal> {
+  late final NotesServiceLocal _notesService;
+  String get userEmail => AuthServiceLocal.firebase().currentUser!.email!;
 
   @override
   void initState() {
-    _notesService = NotesService();
-    // _notesService.open();
+    _notesService = NotesServiceLocal();
     // ? ---------------------------------------------------------------
     devtools
         .log(' ==> notes_view | initState() | _notesService: $_notesService');
@@ -40,7 +39,7 @@ class _MyNotesViewState extends State<MyNotesView> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+                Navigator.of(context).pushNamed(createOrUpdateNoteRouteLocal);
               },
               icon: const Icon(Icons.add)),
           popupMenuItems(context),
@@ -49,7 +48,7 @@ class _MyNotesViewState extends State<MyNotesView> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
-          future: _notesService.getOrCreateUser(email: userEmail),
+          future: _notesService.getOrCreateUserLocal(email: userEmail),
           builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
             devtools.log(
@@ -78,8 +77,8 @@ class _MyNotesViewState extends State<MyNotesView> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pushNamed(createOrUpdateNoteRoute);
+                                      Navigator.of(context).pushNamed(
+                                          createOrUpdateNoteRouteLocal);
                                     },
                                     icon: Icon(
                                       Icons.add,
@@ -100,15 +99,16 @@ class _MyNotesViewState extends State<MyNotesView> {
                           } else {
                             //  snapshot.data is NOT Empty
                             final allNotes =
-                                snapshot.data as List<DatabaseNote>;
-                            return NotesListView(
+                                snapshot.data as List<DatabaseNoteLocal>;
+                            return NotesListViewLocal(
                               notes: allNotes,
                               onDeleteNote: (note) async {
-                                await _notesService.deleteNote(id: note.id);
+                                await _notesService.deleteNoteLocal(
+                                    id: note.id);
                               },
                               onTap: (note) {
                                 Navigator.of(context).pushNamed(
-                                  createOrUpdateNoteRoute,
+                                  createOrUpdateNoteRouteLocal,
                                   arguments: note,
                                 );
                               },

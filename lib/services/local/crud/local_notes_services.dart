@@ -2,34 +2,35 @@ import 'dart:developer' as devtools show log;
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mynotes/extensions/list/filter.dart';
-import 'package:mynotes/services/crud/crud_exceptions.dart';
+import 'package:mynotes/extensions/local/list/local_filter.dart';
+import 'package:mynotes/services/local/crud/local_crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
 
-class NotesService {
+class NotesServiceLocal {
   Database? _db;
 
-  List<DatabaseNote> _notes = [];
+  List<DatabaseNoteLocal> _notes = [];
 
   DatabaseUser? _user;
 
   // ======================== NOTE STREAM ========================
 
-  static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance() {
-    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+  static final NotesServiceLocal _shared = NotesServiceLocal._sharedInstance();
+  NotesServiceLocal._sharedInstance() {
+    _notesStreamController =
+        StreamController<List<DatabaseNoteLocal>>.broadcast(
       onListen: () {
         _notesStreamController.sink.add(_notes);
       },
     );
   }
-  factory NotesService() => _shared;
+  factory NotesServiceLocal() => _shared;
 
-  late final StreamController<List<DatabaseNote>> _notesStreamController;
+  late final StreamController<List<DatabaseNoteLocal>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes =>
+  Stream<List<DatabaseNoteLocal>> get allNotes =>
       _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
@@ -42,8 +43,8 @@ class NotesService {
 
   // -------------------- _cacheNotes() --------------------
 
-  Future<void> _cacheNotes() async {
-    final allNotes = await getAllNotes();
+  Future<void> _cacheNotesLocal() async {
+    final allNotes = await getAllNotesLocal();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
@@ -52,7 +53,7 @@ class NotesService {
 
 // ======================== INITIALIZE DATABASE ========================
 
-  Database _getDatabaseOrThrow() {
+  Database _getDatabaseOrThrowLocal() {
     final db = _db;
     if (db == null) {
       throw DatabaseIsNotOpenException();
@@ -63,7 +64,7 @@ class NotesService {
     }
   }
 
-  Future<void> close() async {
+  Future<void> closeLocal() async {
     final db = _db;
     if (db == null) {
       throw DatabaseIsNotOpenException();
@@ -75,15 +76,15 @@ class NotesService {
     }
   }
 
-  Future<void> _ensureDbIsOpen() async {
+  Future<void> _ensureDbIsOpenLocal() async {
     try {
-      await open();
+      await openLocal();
     } on DatabaseAlreadyOpenException {
       // empty
     }
   }
 
-  Future<void> open() async {
+  Future<void> openLocal() async {
     if (_db != null) {
       throw DatabaseAlreadyOpenException();
     }
@@ -98,7 +99,7 @@ class NotesService {
       await db.execute(createUserTable);
       // create note table
       await db.execute(createNoteTable);
-      await _cacheNotes();
+      await _cacheNotesLocal();
       // ? -----------------------------------------------------------
       devtools.log(
           ' ==> notes_services | open() | createUserTable: $createUserTable');
@@ -113,9 +114,9 @@ class NotesService {
 
   // -------------------- getNote() --------------------
 
-  Future<DatabaseNote> getNote({required int id}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<DatabaseNoteLocal> getNoteLocal({required int id}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final notes = await db.query(
       noteTable,
       limit: 1,
@@ -126,7 +127,7 @@ class NotesService {
     if (notes.isEmpty) {
       throw CouldNotFindNoteException();
     } else {
-      final note = DatabaseNote.fromRow(notes.first);
+      final note = DatabaseNoteLocal.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
       _notesStreamController.add(_notes);
@@ -138,23 +139,24 @@ class NotesService {
 
   // -------------------- getAllNotes() --------------------
 
-  Future<Iterable<DatabaseNote>> getAllNotes() async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<Iterable<DatabaseNoteLocal>> getAllNotesLocal() async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final notes = await db.query(noteTable);
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | getAllNotes() | notes: $notes');
-    return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
+    return notes.map((noteRow) => DatabaseNoteLocal.fromRow(noteRow));
   }
 
   // -------------------- createNote() --------------------
 
-  Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<DatabaseNoteLocal> createNoteLocal(
+      {required DatabaseUser owner}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
 
     // make sure owner exists in the database with the correct id
-    final dbUser = await getUser(email: owner.email);
+    final dbUser = await getUserLocal(email: owner.email);
     if (dbUser != owner) {
       throw CouldNotFindUserException();
     }
@@ -172,7 +174,7 @@ class NotesService {
     });
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createNote() | noteId: $noteId');
-    final note = DatabaseNote(
+    final note = DatabaseNoteLocal(
       id: noteId,
       userId: owner.id,
       title: title,
@@ -191,17 +193,17 @@ class NotesService {
 
   // -------------------- updateNote() --------------------
 
-  Future<DatabaseNote> updateNote({
-    required DatabaseNote note,
+  Future<DatabaseNoteLocal> updateNoteLocal({
+    required DatabaseNoteLocal note,
     required String title,
     required String text,
     required String createdAt,
   }) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
 
     // make sure note exists
-    await getNote(id: note.id);
+    await getNoteLocal(id: note.id);
 
     // update DB
     final updatesCount = await db.update(
@@ -219,7 +221,7 @@ class NotesService {
     if (updatesCount == 0) {
       throw CouldNotUpdateNoteException();
     } else {
-      final updatedNote = await getNote(id: note.id);
+      final updatedNote = await getNoteLocal(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
@@ -232,9 +234,9 @@ class NotesService {
 
   // -------------------- deleteNote() --------------------
 
-  Future<void> deleteNote({required int id}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<void> deleteNoteLocal({required int id}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final deletedCount = await db.delete(
       noteTable,
       where: 'id = ?',
@@ -256,9 +258,9 @@ class NotesService {
 
   // -------------------- deleteAllNotes() --------------------
 
-  Future<int> deleteAllNotes() async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<int> deleteAllNotesLocal() async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final numberOfDeletions = await db.delete(noteTable);
     _notes = [];
     _notesStreamController.add(_notes);
@@ -272,13 +274,13 @@ class NotesService {
 
   // -------------------- getOrCreateUser() --------------------
 
-  Future<DatabaseUser> getOrCreateUser({
+  Future<DatabaseUser> getOrCreateUserLocal({
     required String email,
     bool setAsCurrentUser =
         true, // set retrieved user as a current user to filter notes
   }) async {
     try {
-      final user = await getUser(email: email);
+      final user = await getUserLocal(email: email);
       if (setAsCurrentUser) {
         _user = user;
       }
@@ -287,7 +289,7 @@ class NotesService {
           .log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
-      final createdUser = await createUser(email: email);
+      final createdUser = await createUserLocal(email: email);
       if (setAsCurrentUser) {
         _user = createdUser;
       }
@@ -302,9 +304,9 @@ class NotesService {
 
 // -------------------- getUser() --------------------
 
-  Future<DatabaseUser> getUser({required String email}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<DatabaseUser> getUserLocal({required String email}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
 
     final results = await db.query(
       userTable,
@@ -323,9 +325,9 @@ class NotesService {
 
 // -------------------- createUser() --------------------
 
-  Future<DatabaseUser> createUser({required String email}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<DatabaseUser> createUserLocal({required String email}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final results = await db.query(
       userTable,
       limit: 1,
@@ -369,9 +371,9 @@ class NotesService {
 
   // -------------------- deleteUser() --------------------
 
-  Future<void> deleteUser({required String email}) async {
-    await _ensureDbIsOpen();
-    final db = _getDatabaseOrThrow();
+  Future<void> deleteUserLocal({required String email}) async {
+    await _ensureDbIsOpenLocal();
+    final db = _getDatabaseOrThrowLocal();
     final deletedCount = await db.delete(
       userTable,
       where: 'email = ?',
@@ -388,7 +390,7 @@ class NotesService {
 
 // ======================== Note Database ========================
 
-class DatabaseNote {
+class DatabaseNoteLocal {
   final int id;
   final int userId;
   final String? title;
@@ -396,7 +398,7 @@ class DatabaseNote {
   final String createdAt;
   final bool isSyncedWithCloud;
 
-  DatabaseNote({
+  DatabaseNoteLocal({
     required this.id,
     required this.userId,
     required this.title,
@@ -405,7 +407,7 @@ class DatabaseNote {
     required this.isSyncedWithCloud,
   });
 
-  DatabaseNote.fromRow(Map<String, Object?> map)
+  DatabaseNoteLocal.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
         userId = map[userIdColumn] as int,
         title = map[titleColumn] as String,
@@ -419,7 +421,7 @@ class DatabaseNote {
       'Note, ID = $id, userId = $userId, title = $title, text = $text, createdAt: $createdAt, isSyncedWithCloud = $isSyncedWithCloud,';
 
   @override
-  bool operator ==(covariant DatabaseNote other) => id == other.id;
+  bool operator ==(covariant DatabaseNoteLocal other) => id == other.id;
 
   @override
   int get hashCode => id.hashCode;

@@ -1,19 +1,19 @@
-import 'package:mynotes/services/auth/auth_provider.dart';
-import 'package:mynotes/services/auth/auth_user.dart';
-import 'package:mynotes/services/auth/firebase_auth_provider.dart';
+import 'package:mynotes/services/local/auth/local_auth_provider.dart';
+import 'package:mynotes/services/local/auth/local_auth_user.dart';
+import 'package:mynotes/services/local/auth/firebase_auth_provider.dart';
 
 // service can deliver more providers and logic than one authProvider
-class AuthService implements AuthProvider {
-  final AuthProvider provider;
+class AuthServiceLocal implements AuthProviderLocal {
+  final AuthProviderLocal provider;
 
-  const AuthService(this.provider);
+  const AuthServiceLocal(this.provider);
 
-  factory AuthService.firebase() => AuthService(
+  factory AuthServiceLocal.firebase() => AuthServiceLocal(
         FirebaseAuthProvider(),
       );
 
   @override
-  Future<AuthUser> createUser({
+  Future<AuthUserLocal> createUser({
     required String email,
     required String password,
   }) =>
@@ -23,10 +23,10 @@ class AuthService implements AuthProvider {
       );
 
   @override
-  AuthUser? get currentUser => provider.currentUser;
+  AuthUserLocal? get currentUser => provider.currentUser;
 
   @override
-  Future<AuthUser> logIn({
+  Future<AuthUserLocal> logIn({
     required String email,
     required String password,
   }) =>

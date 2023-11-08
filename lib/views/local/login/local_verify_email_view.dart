@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/constants/local/local_routes.dart';
+import 'package:mynotes/services/local/auth/local_auth_service.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
 
-class VerifyEmailView extends StatefulWidget {
-  const VerifyEmailView({Key? key}) : super(key: key);
+class VerifyEmailViewLocal extends StatefulWidget {
+  const VerifyEmailViewLocal({Key? key}) : super(key: key);
 
   @override
-  VerifyEmailViewState createState() => VerifyEmailViewState();
+  VerifyEmailViewLocalState createState() => VerifyEmailViewLocalState();
 }
 
-class VerifyEmailViewState extends State<VerifyEmailView> {
+class VerifyEmailViewLocalState extends State<VerifyEmailViewLocal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +55,7 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
                 style: ElevatedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)),
                 onPressed: () async {
-                  await AuthService.firebase().sendEmailVerification();
+                  await AuthServiceLocal.firebase().sendEmailVerification();
                   await showSentEmailConfirmationDialog(
                     context,
                     'Email has been sent again\nPlease check your mailbox.',
@@ -66,9 +66,9 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
               ),
               TextButton(
                 onPressed: () async {
-                  await AuthService.firebase().logOut();
+                  await AuthServiceLocal.firebase().logOut();
                   Navigator.of(context).pushNamedAndRemoveUntil(
-                    loginRoute,
+                    loginRouteLocal,
                     (route) => false,
                   );
                 },

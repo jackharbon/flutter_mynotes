@@ -1,9 +1,9 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/constants/local/local_routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
-import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/local/auth/local_auth_service.dart';
 import 'package:mynotes/providers/theme_notifier.dart';
 import 'package:mynotes/utilities/dialogs/logout_dialog.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +18,9 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
           if (shouldLogout) {
-            await AuthService.firebase().logOut();
+            await AuthServiceLocal.firebase().logOut();
             Navigator.of(context).pushNamedAndRemoveUntil(
-              loginRoute,
+              loginRouteLocal,
               (_) => false,
             );
           }

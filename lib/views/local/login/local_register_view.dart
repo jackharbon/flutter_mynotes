@@ -1,21 +1,19 @@
-// import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
-import 'package:mynotes/services/auth/auth_exceptions.dart';
-import 'package:mynotes/services/auth/auth_service.dart';
-import 'package:mynotes/constants/routes.dart';
+import 'package:mynotes/services/local/auth/local_auth_exceptions.dart';
+import 'package:mynotes/services/local/auth/local_auth_service.dart';
+import 'package:mynotes/constants/local/local_routes.dart';
 import 'package:mynotes/helpers/loading/loading_widget.dart';
 import 'package:mynotes/utilities/menus/popup_menu.dart';
 import 'package:mynotes/utilities/dialogs/error_dialog.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class RegisterViewLocal extends StatefulWidget {
+  const RegisterViewLocal({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<RegisterViewLocal> createState() => _RegisterViewLocalState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _RegisterViewLocalState extends State<RegisterViewLocal> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -38,14 +36,14 @@ class _LoginViewState extends State<LoginView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Login',
+          'Register',
         ),
         actions: [
           popupMenuItems(context),
         ],
       ),
       body: FutureBuilder(
-        future: AuthService.firebase().initialize(),
+        future: AuthServiceLocal.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -59,15 +57,15 @@ class _LoginViewState extends State<LoginView> {
                       const CircleAvatar(
                         radius: 60,
                         child: Icon(
-                          Icons.person,
+                          Icons.person_add,
                           size: 60.0,
-                        ), //Text
-                      ), //Circle
+                        ),
+                      ),
                       const SizedBox(
                         height: 50,
                       ),
                       const Text(
-                        'Login to your account to see your notes.',
+                        'Please register create your notes!',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -78,7 +76,7 @@ class _LoginViewState extends State<LoginView> {
                         controller: _email,
                         enableSuggestions: false,
                         autocorrect: false,
-                        autofocus: false,
+                        autofocus: true,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           labelText: 'Email',
@@ -111,35 +109,19 @@ class _LoginViewState extends State<LoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  await AuthService.firebase().logIn(
+                                  await AuthServiceLocal.firebase().createUser(
                                     email: email,
                                     password: password,
                                   );
-                                  final user =
-                                      AuthService.firebase().currentUser;
-                                  if (user != null) {
-                                    if (user.isEmailVerified) {
-                                      await Navigator.of(context)
-                                          .pushNamedAndRemoveUntil(
-                                        myNotesRoute,
-                                        (route) => false,
-                                      );
-                                    } else {
-                                      await Navigator.of(context)
-                                          .pushNamed(verifyEmailRoute);
-                                    }
-                                  } else {
-                                    await Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
-                                      registerRoute,
-                                      (route) => false,
-                                    );
-                                  }
+                                  await AuthServiceLocal.firebase()
+                                      .sendEmailVerification();
+                                  await Navigator.of(context)
+                                      .pushNamed(verifyEmailRouteLocal);
                                 } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Missing credentials!\nPlease check the form fields.',
-                                    'Login failed!',
+                                    'Register failed!',
                                     Icon(
                                       Icons.text_fields,
                                       size: 60,
@@ -150,8 +132,8 @@ class _LoginViewState extends State<LoginView> {
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Invalid emai!\nPlease check your email address.',
-                                    'Login failed!',
+                                    'Invalid email!\nPlease check your input.',
+                                    'Register failed!',
                                     Icon(
                                       Icons.email,
                                       size: 60,
@@ -159,23 +141,23 @@ class _LoginViewState extends State<LoginView> {
                                           Theme.of(context).colorScheme.error,
                                     ),
                                   );
-                                } on UserNotFoundAuthException {
+                                } on EmailAlreadyInUseAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'User not found!\nEnter correct email or register.',
-                                    'Login failed!',
+                                    'Email is already registered!\nPlease login.',
+                                    'Register failed!',
                                     Icon(
-                                      Icons.person_off_rounded,
+                                      Icons.email,
                                       size: 60,
                                       color:
                                           Theme.of(context).colorScheme.error,
                                     ),
                                   );
-                                } on WrongPasswordAuthException {
+                                } on WeakPasswordAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Wrong password!\nPlease type again.',
-                                    'Login failed!',
+                                    'Weak password!\nPlease enter a stronger password.',
+                                    'Register failed!',
                                     Icon(
                                       Icons.password,
                                       size: 60,
@@ -186,10 +168,10 @@ class _LoginViewState extends State<LoginView> {
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
+                                    'Failed to register!\nPlease try again later.',
+                                    'Register failed!',
                                     Icon(
-                                      Icons.person_off_rounded,
+                                      Icons.person_add_disabled,
                                       size: 60,
                                       color:
                                           Theme.of(context).colorScheme.error,
@@ -198,10 +180,10 @@ class _LoginViewState extends State<LoginView> {
                                 } on GenericAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
+                                    'Failed to register!\n Please try again later.',
+                                    'Register failed!',
                                     Icon(
-                                      Icons.person_off_rounded,
+                                      Icons.person_add_disabled,
                                       size: 60,
                                       color:
                                           Theme.of(context).colorScheme.error,
@@ -210,10 +192,10 @@ class _LoginViewState extends State<LoginView> {
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
+                                    'Failed to register.n Please try again later.',
+                                    'Register failed!',
                                     Icon(
-                                      Icons.person_off_rounded,
+                                      Icons.person_add_disabled,
                                       size: 60,
                                       color:
                                           Theme.of(context).colorScheme.error,
@@ -222,19 +204,18 @@ class _LoginViewState extends State<LoginView> {
                                 }
                               },
                               child: const Text(
-                                'Login',
-                                style: TextStyle(),
+                                'Register',
                               ),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pushNamedAndRemoveUntil(
-                                  registerRoute,
+                                  loginRouteLocal,
                                   (route) => false,
                                 );
                               },
                               child:
-                                  const Text('Not registered? Register here.'),
+                                  const Text('Already registered? Login here.'),
                             )
                           ],
                         ),
