@@ -1,18 +1,18 @@
 import 'dart:developer' as devtools show log;
-
+import 'package:provider/provider.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:mynotes/constants/local/local_routes.dart';
-import 'package:mynotes/helpers/loading/loading_widget.dart';
-import 'package:mynotes/services/local/auth/local_auth_service.dart';
-import 'package:mynotes/providers/theme_notifier.dart';
-import 'package:mynotes/views/local/login/local_login_view.dart';
-import 'package:mynotes/views/local/notes/local_create_update_note_view.dart';
-import 'package:mynotes/views/local/notes/local_notes_view.dart';
-import 'package:mynotes/views/local/login/local_register_view.dart';
-import 'package:mynotes/views/local/login/local_verify_email_view.dart';
-import 'package:provider/provider.dart';
+
+import 'shared/providers/theme_notifier.dart';
+import 'shared/helpers/loading/loading_widget.dart';
+import 'local/constants/routes.dart';
+import 'local/services/auth/auth_service.dart';
+import 'local/views/login/login_view.dart';
+import 'local/views/notes/create_update_note_view.dart';
+import 'local/views/notes/notes_view.dart';
+import 'local/views/login/register_view.dart';
+import 'local/views/login/verify_email_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -117,13 +117,12 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
           debugShowCheckedModeBanner: false,
           home: const HomePage(),
           routes: {
-            homePageRouteLocal: (context) => const RegisterViewLocal(),
-            registerRouteLocal: (context) => const RegisterViewLocal(),
-            verifyEmailRouteLocal: (context) => const VerifyEmailViewLocal(),
-            loginRouteLocal: (context) => const LoginViewLocal(),
-            myNotesRouteLocal: (context) => const MyNotesViewLocal(),
-            createOrUpdateNoteRouteLocal: (context) =>
-                const CreateUpdateNoteViewLocal(),
+            homePageRoute: (context) => const RegisterView(),
+            registerRoute: (context) => const RegisterView(),
+            verifyEmailRoute: (context) => const VerifyEmailView(),
+            loginRoute: (context) => const LoginView(),
+            myNotesRoute: (context) => const MyNotesView(),
+            createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
           },
         );
       },
@@ -137,26 +136,26 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: AuthServiceLocal.firebase().initialize(),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            final user = AuthServiceLocal.firebase().currentUser;
+            final user = AuthService.firebase().currentUser;
             if (user != null) {
               if (user.isEmailVerified) {
                 // ? ----------------------------------------
                 devtools.log(
                     ' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
-                return const LoginViewLocal();
+                return const LoginView();
               } else {
                 devtools.log(
                     ' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
-                return const VerifyEmailViewLocal();
+                return const VerifyEmailView();
               }
             } else {
               devtools.log(
                   ' ==> main | FutureBuilder | user is null: ${user.toString()}');
-              return const RegisterViewLocal();
+              return const RegisterView();
             }
           default:
             return Scaffold(

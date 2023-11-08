@@ -193,15 +193,19 @@ In the [Google Console](https://console.firebase.google.com/) go to Get Started 
 
 ### Add Cloud Firestore to your project
 
-Go to [Firebase Console](https://console.firebase.google.com/)
+- Open your [Firebase Console](https://console.firebase.google.com/).
 
-Open `Firestore Database` from the left menu
+- Go to the `Firestore Database` in the left menu, click `Create database`.
 
-Switch to the `Native` mode
+- Switch to the `Native` mode (if you are asked for) and go back to the current panel.
 
-Click `Start Collection` to start
+- Choose `Start in production mode` or `Start in test mode`.
 
-Open the tab `Rules`, change permission read/write to `request.auth != null`
+- Choose preferred Cloud Firestore location and click `Enable`.
+
+- When Cloud Firestore dashboard is ready you can start setting up the Cloud Firestore.
+
+- If you've chosen `Start in production mode` open the tab `Rules` -> `Edit rules` and change permission read/write to `request.auth != null` (to allow user to write, if is authenticated).
 
 ```
 rules_version = '2';
@@ -214,6 +218,18 @@ service cloud.firestore {
   }
 }
 ```
+
+- Click `Publish` to publish new security rules
+
+- Click `Start Collection` to start, then in the popup windows insert data:
+
+  - Collection ID: `notes` (as a collection name),
+
+  - Document ID: click `Auto ID`,
+
+  - Then add fields: `user_id` -> `string`; `title`->`string`; `text`->`string`; `created_at` -> `timestamp`; and click `Save`.
+
+- Check `Data` tab, to confirm if database structure was created correctly.
 
 Help:[Get started with Cloud Firestore](https://firebase.google.com/docs/firestore/quickstart#kotlin+ktx)
 

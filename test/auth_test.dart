@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mynotes/services/local/auth/local_auth_exceptions.dart';
-import 'package:mynotes/services/local/auth/local_auth_provider.dart';
-import 'package:mynotes/services/local/auth/local_auth_user.dart';
+import 'package:mynotes/local/services/auth/auth_exceptions.dart';
+import 'package:mynotes/local/services/auth/auth_provider.dart';
+import 'package:mynotes/local/services/auth/auth_user.dart';
 
 void main() {
   // ========================= TESTS =========================
@@ -83,14 +83,14 @@ void main() {
 
 class NotInitializedException implements Exception {}
 
-class MockAuthProvider implements AuthProviderLocal {
-  AuthUserLocal? _user;
+class MockAuthProvider implements AuthProvider {
+  AuthUser? _user;
   var _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
 // ------------ Create user
   @override
-  Future<AuthUserLocal> createUser({
+  Future<AuthUser> createUser({
     required String email,
     required String password,
   }) async {
@@ -104,7 +104,7 @@ class MockAuthProvider implements AuthProviderLocal {
 
 // ------------ Current user
   @override
-  AuthUserLocal? get currentUser => _user;
+  AuthUser? get currentUser => _user;
 
   @override
   Future<void> initialize() async {
@@ -114,14 +114,14 @@ class MockAuthProvider implements AuthProviderLocal {
 
 // ------------ Login
   @override
-  Future<AuthUserLocal> logIn({
+  Future<AuthUser> logIn({
     required String email,
     required String password,
   }) {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
     if (password == 'foobar') throw WrongPasswordAuthException();
-    const user = AuthUserLocal(
+    const user = AuthUser(
       isEmailVerified: false,
       email: 'foo@bar.com',
     );
@@ -144,7 +144,7 @@ class MockAuthProvider implements AuthProviderLocal {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUserLocal(
+    const newUser = AuthUser(
       isEmailVerified: true,
       email: 'foo@bar.com',
     );
