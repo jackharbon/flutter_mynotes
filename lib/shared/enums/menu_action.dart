@@ -1,5 +1,6 @@
 enum MenuAction {
   logout,
+  deleteAccount,
   lightMode,
   systemMode,
   darkMode,

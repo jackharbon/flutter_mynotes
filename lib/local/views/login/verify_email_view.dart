@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/utilities/dialogs/resend_verification.dart';
+import '../../../shared/utilities/menus/popup_menu.dart';
 import '../../constants/routes.dart';
 import '../../services/auth/auth_service.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({Key? key}) : super(key: key);
@@ -42,7 +43,10 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
               ),
               const Text(
                 'Last step: verify your adres email.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(
                 height: 50,
@@ -60,20 +64,57 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
                   await showSentEmailConfirmationDialog(
                     context,
                     'Email has been sent again\nPlease check your mailbox.',
-                    'Verification email',
+                    'Email Verification',
+                    Icon(
+                      Icons.mark_email_unread,
+                      size: 60,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   );
                 },
                 child: const Text("Send again", style: TextStyle()),
               ),
-              TextButton(
-                onPressed: () async {
-                  await AuthService.firebase().logOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    loginRoute,
-                    (route) => false,
-                  );
-                },
-                child: const Text("Already clicked? Go to the login page"),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already clicked?",
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.outline,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await AuthService.firebase().logOut();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
+                        (route) => false,
+                      );
+                    },
+                    child: Text(
+                      "Go to the login page.",
+                      style: TextStyle(
+                        shadows: [
+                          Shadow(
+                              color: Theme.of(context).colorScheme.primary,
+                              offset: const Offset(0, -2))
+                        ],
+                        fontSize: 16,
+                        color: Colors.transparent,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Theme.of(context).colorScheme.primary,
+                        decorationThickness: 2,
+                        decorationStyle: TextDecorationStyle.dashed,
+                      ),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
@@ -81,45 +122,4 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
       ),
     );
   }
-}
-
-Future<void> showSentEmailConfirmationDialog(
-  BuildContext context,
-  String error,
-  String title,
-) {
-  return showDialog(
-    barrierColor: const Color.fromARGB(200, 0, 0, 0),
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-          title: Text(
-            title,
-          ),
-          content: Text(
-            error,
-            style: const TextStyle(
-              fontSize: 18,
-            ),
-          ),
-          icon: const Icon(
-            Icons.mark_email_unread,
-            size: 60,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'OK',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-          ]);
-    },
-  );
 }

@@ -257,16 +257,24 @@ class NotesService {
 
   // -------------------- deleteAllNotes() --------------------
 
-  Future<int> deleteAllNotes() async {
+  Future<int> deleteAllNotes({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    final numberOfDeletions = await db.delete(noteTable);
+    final user = await getUser(email: email);
+    // ? -----------------------------------------------------------
+    devtools
+        .log(' ==> notes_services | deleteAllNotes() | user.id: ${user.id}');
+    final numberOfDeletedNotes = await db.delete(
+      noteTable,
+      where: 'user_id = ?',
+      whereArgs: [user.id],
+    );
     _notes = [];
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
     devtools.log(
-        ' ==> notes_services | deleteAllNotes() | numberOfDeletions: $numberOfDeletions');
-    return numberOfDeletions;
+        ' ==> notes_services | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
+    return numberOfDeletedNotes;
   }
 
   // ======================== USER CRUD ========================
@@ -339,8 +347,8 @@ class NotesService {
 
     const firstName = '';
     const lastName = '';
-    const themeMode = '';
-    const colorsScheme = '';
+    const themeMode = 'ThemeMode.system';
+    const colorsScheme = 'FlexScheme.gold';
     const avatarUrl = '';
     final createdAtUser = Timestamp.now().toDate().toString().substring(0, 16);
 
@@ -373,15 +381,15 @@ class NotesService {
   Future<void> deleteUser({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    final deletedCount = await db.delete(
+    final deletedAccounts = await db.delete(
       userTable,
       where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
     devtools.log(
-        ' ==> notes_services | deleteUser() | deletedCount: $deletedCount');
-    if (deletedCount != 1) {
+        ' ==> notes_services | deleteUser() | deletedAccounts: $deletedAccounts');
+    if (deletedAccounts != 1) {
       throw ColdNotDeleteUserException();
     }
   }
@@ -491,7 +499,7 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 	"text"	TEXT,
   "created_at"  TEXT NOT NULL,
 	"is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
-	FOREIGN KEY("user_id") REFERENCES "user"("id") ON DELETE CASCADE,
+	FOREIGN KEY("user_id") REFERENCES "user"("id"),
 	PRIMARY KEY("id" AUTOINCREMENT)
       );''';
 // -------------------- User Database --------------------

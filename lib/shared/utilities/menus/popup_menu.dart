@@ -6,8 +6,11 @@ import 'package:provider/provider.dart';
 
 import '../../../local/constants/routes.dart';
 import '../../../local/services/auth/auth_service.dart';
+import '../../../local/services/crud/notes_services.dart';
+import '../../../local/views/login/register_view.dart';
 import '../../enums/menu_action.dart';
 import '../../providers/theme_notifier.dart';
+import '../dialogs/delete_account_dialog.dart';
 import '../dialogs/logout_dialog.dart';
 
 PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
@@ -59,6 +62,25 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         case MenuAction.bigStone:
           Provider.of<ColorThemeNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.bigStone);
+        case MenuAction.deleteAccount:
+          final shouldDeleteAccount = await showDeleteAccountDialog(context);
+          if (shouldDeleteAccount) {
+            // ? ----------------------------------------
+            devtools.log(
+                ' ==> popup_menu |  MenuAction.deleteAccount |  MenuAction.deleteAccount: $shouldDeleteAccount');
+            final String email = AuthService.firebase().currentUser!.email!;
+            final _email = email;
+            // ? ----------------------------------------
+            devtools.log(
+                ' ==> popup_menu |  MenuAction.deleteAccount | _email: $_email');
+            await NotesService().deleteAllNotes(email: _email);
+            await NotesService().deleteUser(email: _email);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              registerRoute,
+              (_) => false,
+            );
+            await AuthService.firebase().deleteUserAccount(email: _email);
+          }
       }
     },
     itemBuilder: (context) {
@@ -66,7 +88,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         PopupMenuItem<MenuAction>(
           value: MenuAction.logout,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -76,7 +98,9 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 18),
-                const Text('Log out'),
+                const Text(
+                  'Log Out',
+                ),
               ],
             ),
           ),
@@ -85,7 +109,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         PopupMenuItem<MenuAction>(
           value: MenuAction.lightMode,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -103,7 +127,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         PopupMenuItem<MenuAction>(
           value: MenuAction.systemMode,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -121,7 +145,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         PopupMenuItem<MenuAction>(
           value: MenuAction.darkMode,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -140,7 +164,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.blueM3,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -158,7 +182,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.hippieBlue,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -176,7 +200,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.deepPurple,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -194,7 +218,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.purpleBrown,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -212,7 +236,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.pinkM3,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -230,7 +254,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.gold,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -248,7 +272,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.greenM3,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -266,7 +290,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         const PopupMenuItem<MenuAction>(
           value: MenuAction.bigStone,
           child: SizedBox(
-            width: 140,
+            width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -277,6 +301,33 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                 ),
                 SizedBox(width: 18),
                 Text('Big Stone'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuDivider(
+          height: 20,
+        ),
+        PopupMenuItem<MenuAction>(
+          value: MenuAction.deleteAccount,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.person_remove_alt_1,
+                  size: 26.0,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                const SizedBox(width: 18),
+                Text(
+                  'Delete Account',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
               ],
             ),
           ),

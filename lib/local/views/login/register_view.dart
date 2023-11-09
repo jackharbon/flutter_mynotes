@@ -208,16 +208,53 @@ class _RegisterViewState extends State<RegisterView> {
                                 'Register',
                               ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  loginRoute,
-                                  (route) => false,
-                                );
-                              },
-                              child:
-                                  const Text('Already registered? Login here.'),
-                            )
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Already registered?",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      loginRoute,
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: Text(
+                                    "Login here.",
+                                    style: TextStyle(
+                                      shadows: [
+                                        Shadow(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            offset: const Offset(0, -2))
+                                      ],
+                                      fontSize: 16,
+                                      color: Colors.transparent,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      decorationThickness: 2,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),

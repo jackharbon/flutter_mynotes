@@ -150,4 +150,10 @@ class MockAuthProvider implements AuthProvider {
     );
     _user = newUser;
   }
+
+  @override
+  Future<AuthUser> deleteUserAccount({required String email}) {
+    // TODO: implement deleteUserAccount
+    throw UnimplementedError();
+  }
 }

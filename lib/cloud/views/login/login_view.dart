@@ -227,16 +227,53 @@ class _LoginViewState extends State<LoginView> {
                                 style: TextStyle(),
                               ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  registerRoute,
-                                  (route) => false,
-                                );
-                              },
-                              child:
-                                  const Text('Not registered? Register here.'),
-                            )
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Not registered?",
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      registerRoute,
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: Text(
+                                    "Register here.",
+                                    style: TextStyle(
+                                      shadows: [
+                                        Shadow(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            offset: const Offset(0, -2))
+                                      ],
+                                      fontSize: 16,
+                                      color: Colors.transparent,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      decorationThickness: 2,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),

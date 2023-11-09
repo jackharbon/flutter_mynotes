@@ -50,8 +50,8 @@ class NotesListView extends StatelessWidget {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 13,
                       fontStyle: FontStyle.italic,
                       color: Theme.of(context).colorScheme.outline,
                     ),

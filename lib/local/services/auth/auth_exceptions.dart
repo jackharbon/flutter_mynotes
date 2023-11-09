@@ -19,6 +19,9 @@ class WrongPasswordAuthException implements Exception {}
 // Password: weak-password
 class WeakPasswordAuthException implements Exception {}
 
+// Delete Account
+class ColdNotDeleteUserException implements Exception {}
+
 // Default
 class UnknownAuthException implements Exception {}
 

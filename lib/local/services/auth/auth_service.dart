@@ -21,6 +21,13 @@ class AuthService implements AuthProvider {
         email: email,
         password: password,
       );
+  @override
+  Future<AuthUser> deleteUserAccount({
+    required String email,
+  }) =>
+      provider.deleteUserAccount(
+        email: email,
+      );
 
   @override
   AuthUser? get currentUser => provider.currentUser;
