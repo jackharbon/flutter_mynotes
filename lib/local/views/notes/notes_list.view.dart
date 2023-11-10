@@ -4,12 +4,12 @@ import '../../../shared/utilities/dialogs/delete_dialog.dart';
 
 typedef NoteCallback = void Function(DatabaseNote note);
 
-class NotesListView extends StatelessWidget {
+class LocalNotesListView extends StatelessWidget {
   final List<DatabaseNote> notes;
   final NoteCallback onDeleteNote;
   final NoteCallback onTap;
 
-  const NotesListView({
+  const LocalNotesListView({
     Key? key,
     required this.notes,
     required this.onDeleteNote,

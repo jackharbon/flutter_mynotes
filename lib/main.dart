@@ -1,18 +1,22 @@
 import 'dart:developer' as devtools show log;
-import 'package:provider/provider.dart';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'shared/providers/theme_notifier.dart';
-import 'shared/helpers/loading/loading_widget.dart';
-import 'local/constants/routes.dart';
-import 'local/services/auth/auth_service.dart';
+import 'cloud/views/home_view.dart';
+import 'cloud/views/login/login_view.dart';
+import 'shared/views/login/register_view.dart';
+import 'shared/views/login/verify_email_view.dart';
+import 'cloud/views/notes/create_update_note_view.dart';
+import 'cloud/views/notes/notes_view.dart';
+import 'local/views/home_view.dart';
 import 'local/views/login/login_view.dart';
 import 'local/views/notes/create_update_note_view.dart';
 import 'local/views/notes/notes_view.dart';
-import 'local/views/login/register_view.dart';
-import 'local/views/login/verify_email_view.dart';
+import 'shared/constants/routes.dart';
+import 'shared/providers/theme_notifier.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,11 +25,10 @@ Future<void> main() async {
 
   runApp(
     ChangeNotifierProvider<ColorThemeNotifier>(
-      create: (BuildContext context) {
-        return ColorThemeNotifier();
-      },
-      child: const ColorThemeNotifierLayer(),
-    ),
+        create: (BuildContext context) {
+          return ColorThemeNotifier();
+        },
+        child: const ColorThemeNotifierLayer()),
   );
   FlutterNativeSplash.remove();
 }
@@ -43,6 +46,8 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
   Widget build(BuildContext context) {
     return Consumer<ColorThemeNotifier>(
       builder: (context, themeColorsNotifier, child) {
+        devtools.log(
+            ' ==> main | Consumer isOnline: ${themeColorsNotifier.isOnline}');
         return MaterialApp(
           theme: FlexThemeData.light(
             scheme: themeColorsNotifier.themeScheme,
@@ -115,64 +120,26 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
           themeMode: themeColorsNotifier.colorMode,
           title: 'My Notes',
           debugShowCheckedModeBanner: false,
-          home: const HomePage(),
+          home: (themeColorsNotifier.isOnline)
+              ? const CloudHomePage()
+              : const LocalHomePage(),
           routes: {
-            homePageRoute: (context) => const RegisterView(),
-            registerRoute: (context) => const RegisterView(),
-            verifyEmailRoute: (context) => const VerifyEmailView(),
-            loginRoute: (context) => const LoginView(),
-            myNotesRoute: (context) => const MyNotesView(),
-            createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+            homePageRoute: (context) => (themeColorsNotifier.isOnline)
+                ? const CloudHomePage()
+                : const LocalHomePage(),
+            registerRoute: (context) => const CloudRegisterView(),
+            verifyEmailRoute: (context) => const CloudVerifyEmailView(),
+            loginRoute: (context) => (themeColorsNotifier.isOnline)
+                ? const CloudLoginView()
+                : const LocalLoginView(),
+            myNotesRoute: (context) => (themeColorsNotifier.isOnline)
+                ? const CloudMyNotesView()
+                : const LocalMyNotesView(),
+            createOrUpdateNoteRoute: (context) => (themeColorsNotifier.isOnline)
+                ? const CloudCreateUpdateNoteView()
+                : const LocalCreateUpdateNoteView(),
           },
         );
-      },
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: AuthService.firebase().initialize(),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            final user = AuthService.firebase().currentUser;
-            if (user != null) {
-              if (user.isEmailVerified) {
-                // ? ----------------------------------------
-                devtools.log(
-                    ' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
-                return const LoginView();
-              } else {
-                devtools.log(
-                    ' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
-                return const VerifyEmailView();
-              }
-            } else {
-              devtools.log(
-                  ' ==> main | FutureBuilder | user is null: ${user.toString()}');
-              return const RegisterView();
-            }
-          default:
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                  'Please wait...',
-                ),
-              ),
-              body: const Center(
-                child: SizedBox(
-                  height: 40,
-                  width: 40,
-                  child: LoadingStandardProgressBar(),
-                ),
-              ),
-            );
-        }
       },
     );
   }

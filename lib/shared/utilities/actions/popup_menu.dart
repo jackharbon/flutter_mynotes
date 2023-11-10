@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 
-import '../../../local/constants/routes.dart';
+import '../../constants/routes.dart';
 import '../../../local/services/auth/auth_service.dart';
 import '../../../local/services/crud/notes_services.dart';
-import '../../../local/views/login/register_view.dart';
 import '../../enums/menu_action.dart';
 import '../../providers/theme_notifier.dart';
 import '../dialogs/delete_account_dialog.dart';

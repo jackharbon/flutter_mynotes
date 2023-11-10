@@ -1,20 +1,22 @@
+// import 'dart:developer' as devtools show log;
+
 import 'package:flutter/material.dart';
 
-import '../../services/auth/auth_exceptions.dart';
-import '../../services/auth/auth_service.dart';
+import '../../../cloud/services/auth/auth_exceptions.dart';
+import '../../../cloud/services/auth/auth_service.dart';
 import '../../constants/routes.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
-import '../../../shared/utilities/dialogs/error_dialog.dart';
+import '../../helpers/loading/loading_widget.dart';
+import '../../utilities/actions/popup_menu.dart';
+import '../../utilities/dialogs/error_dialog.dart';
 
-class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+class CloudRegisterView extends StatefulWidget {
+  const CloudRegisterView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<CloudRegisterView> createState() => _CloudRegisterViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _CloudRegisterViewState extends State<CloudRegisterView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -37,7 +39,7 @@ class _RegisterViewState extends State<RegisterView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Register (Local)',
+          'Register (Cloud)',
         ),
         actions: [
           popupMenuItems(context),

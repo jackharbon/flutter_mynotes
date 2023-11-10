@@ -8,17 +8,26 @@ class ColorThemeNotifier extends ChangeNotifier {
   //
   ThemeMode colorMode = ThemeMode.system;
   FlexScheme themeScheme = ThemeColorsSchemes().schemeBlue;
+  bool isOnline = false;
 
   void toggleLightDarkMode(ThemeMode colorMode) {
     this.colorMode = colorMode;
     notifyListeners();
-    // ? -------------------------
+    // ? -------------------------------------
     devtools.log(
-        ' ==> theme_notifier | ColorThemeNotifier() | toggleLightDarkMode() colorMode: $colorMode');
+        ' ==> theme_notifier | toggleLightDarkMode() colorMode: $colorMode');
   }
 
   void changeColorScheme(FlexScheme themeScheme) {
     this.themeScheme = themeScheme;
+    notifyListeners();
+  }
+
+  void toggleOnlineStatus(bool isOnline) {
+    this.isOnline = isOnline;
+    // ? -------------------------------------
+    devtools.log(
+        ' ==> theme_notifier | toggleOnlineStatus() | isOnline: $isOnline');
     notifyListeners();
   }
 }

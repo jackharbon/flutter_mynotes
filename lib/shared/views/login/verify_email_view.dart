@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/utilities/dialogs/resend_verification.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
+import '../../utilities/dialogs/resend_verification.dart';
 import '../../constants/routes.dart';
-import '../../services/auth/auth_service.dart';
+import '../../../cloud/services/auth/auth_service.dart';
+import '../../utilities/actions/popup_menu.dart';
 
-class VerifyEmailView extends StatefulWidget {
-  const VerifyEmailView({Key? key}) : super(key: key);
+class CloudVerifyEmailView extends StatefulWidget {
+  const CloudVerifyEmailView({Key? key}) : super(key: key);
 
   @override
-  VerifyEmailViewState createState() => VerifyEmailViewState();
+  CloudVerifyEmailViewState createState() => CloudVerifyEmailViewState();
 }
 
-class VerifyEmailViewState extends State<VerifyEmailView> {
+class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Verify Email (Local)',
+          'Verify Email (Cloud)',
         ),
         actions: [
           popupMenuItems(context),
@@ -43,10 +43,7 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
               ),
               const Text(
                 'Last step: verify your adres email.',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(
                 height: 50,
@@ -64,7 +61,7 @@ class VerifyEmailViewState extends State<VerifyEmailView> {
                   await showSentEmailConfirmationDialog(
                     context,
                     'Email has been sent again\nPlease check your mailbox.',
-                    'Email Verification',
+                    'Verification email',
                     Icon(
                       Icons.mark_email_unread,
                       size: 60,

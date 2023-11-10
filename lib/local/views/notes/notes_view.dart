@@ -1,23 +1,24 @@
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 
-import '../../constants/routes.dart';
+import '../../../shared/constants/routes.dart';
+import '../../../shared/utilities/actions/toggle_online.dart';
 import '../../services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
+import '../../../shared/utilities/actions/popup_menu.dart';
 import 'notes_list.view.dart';
 
-class MyNotesView extends StatefulWidget {
-  const MyNotesView({
+class LocalMyNotesView extends StatefulWidget {
+  const LocalMyNotesView({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MyNotesView> createState() => _MyNotesViewState();
+  State<LocalMyNotesView> createState() => _LocalMyNotesViewState();
 }
 
-class _MyNotesViewState extends State<MyNotesView> {
+class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   late final NotesService _notesService;
   String get userEmail => AuthService.firebase().currentUser!.email!;
 
@@ -39,10 +40,12 @@ class _MyNotesViewState extends State<MyNotesView> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
-              },
-              icon: const Icon(Icons.add)),
+            onPressed: () {
+              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
+          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),
@@ -101,7 +104,7 @@ class _MyNotesViewState extends State<MyNotesView> {
                             //  snapshot.data is NOT Empty
                             final allNotes =
                                 snapshot.data as List<DatabaseNote>;
-                            return NotesListView(
+                            return LocalNotesListView(
                               notes: allNotes,
                               onDeleteNote: (note) async {
                                 await _notesService.deleteNote(id: note.id);

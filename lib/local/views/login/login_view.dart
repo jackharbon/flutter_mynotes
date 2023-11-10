@@ -2,21 +2,22 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../shared/utilities/actions/toggle_online.dart';
 import '../../services/auth/auth_exceptions.dart';
 import '../../services/auth/auth_service.dart';
-import '../../constants/routes.dart';
+import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
+import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class LocalLoginView extends StatefulWidget {
+  const LocalLoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<LocalLoginView> createState() => _LocalLoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LocalLoginViewState extends State<LocalLoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -42,6 +43,7 @@ class _LoginViewState extends State<LoginView> {
           'Login (Local)',
         ),
         actions: [
+          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),

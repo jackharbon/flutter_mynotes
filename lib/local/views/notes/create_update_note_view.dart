@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../constants/routes.dart';
+import '../../../shared/constants/routes.dart';
+import '../../../shared/utilities/actions/toggle_online.dart';
 import '../../services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
-import '../../../shared/utilities/menus/popup_menu.dart';
+import '../../../shared/utilities/actions/popup_menu.dart';
 
-class CreateUpdateNoteView extends StatefulWidget {
-  const CreateUpdateNoteView({Key? key}) : super(key: key);
+class LocalCreateUpdateNoteView extends StatefulWidget {
+  const LocalCreateUpdateNoteView({Key? key}) : super(key: key);
 
   @override
-  State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
+  State<LocalCreateUpdateNoteView> createState() =>
+      _LocalCreateUpdateNoteViewState();
 }
 
-class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
+class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
   DatabaseNote? _note;
 
   late final NotesService _notesService;
@@ -150,6 +152,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
+          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),
