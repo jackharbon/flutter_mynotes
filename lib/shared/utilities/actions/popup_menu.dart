@@ -8,7 +8,7 @@ import '../../constants/routes.dart';
 import '../../../local/services/auth/auth_service.dart';
 import '../../../local/services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
-import '../../providers/theme_notifier.dart';
+import '../../providers/app_notifier.dart';
 import '../dialogs/delete_account_dialog.dart';
 import '../dialogs/logout_dialog.dart';
 
@@ -29,37 +29,37 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
             );
           }
         case MenuAction.lightMode:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .toggleLightDarkMode(ThemeMode.light);
         case MenuAction.systemMode:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .toggleLightDarkMode(ThemeMode.system);
         case MenuAction.darkMode:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .toggleLightDarkMode(ThemeMode.dark);
         case MenuAction.blueM3:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.blueM3);
         case MenuAction.hippieBlue:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.hippieBlue);
         case MenuAction.deepPurple:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.deepPurple);
         case MenuAction.purpleBrown:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.purpleBrown);
         case MenuAction.pinkM3:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.pinkM3);
         case MenuAction.gold:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.gold);
         case MenuAction.greenM3:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.greenM3);
         case MenuAction.bigStone:
-          Provider.of<ColorThemeNotifier>(context, listen: false)
+          Provider.of<AppNotifier>(context, listen: false)
               .changeColorScheme(FlexScheme.bigStone);
         case MenuAction.deleteAccount:
           final shouldDeleteAccount = await showDeleteAccountDialog(context);

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../shared/utilities/actions/toggle_online.dart';
+import '../../../shared/utilities/actions/toggle_database_source.dart';
 import '../../services/auth/auth_exceptions.dart';
 import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
@@ -39,11 +39,16 @@ class _CloudLoginViewState extends State<CloudLoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Login (Cloud)',
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ToggleDatabaseSource(),
+            Text(
+              'Login',
+            ),
+          ],
         ),
         actions: [
-          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),

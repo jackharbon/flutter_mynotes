@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../shared/constants/routes.dart';
-import '../../../shared/utilities/actions/toggle_online.dart';
+import '../../../shared/utilities/actions/toggle_database_source.dart';
 import '../../services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
@@ -144,7 +144,13 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Note (Local)'),
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ToggleDatabaseSource(),
+            Text('New Note'),
+          ],
+        ),
         actions: [
           IconButton(
               onPressed: () {
@@ -152,7 +158,6 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
                 Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
-          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),

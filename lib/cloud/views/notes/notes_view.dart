@@ -2,7 +2,7 @@ import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 
 import '../../../shared/constants/routes.dart';
-import '../../../shared/utilities/actions/toggle_online.dart';
+import '../../../shared/utilities/actions/toggle_database_source.dart';
 import '../../services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
@@ -35,8 +35,14 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'My Notes (Cloud)',
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ToggleDatabaseSource(),
+            Text(
+              'My Notes',
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -45,7 +51,6 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
             },
             icon: const Icon(Icons.add),
           ),
-          const ToggleOnline(),
           popupMenuItems(context),
         ],
       ),

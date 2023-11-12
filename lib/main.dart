@@ -16,7 +16,7 @@ import 'local/views/login/login_view.dart';
 import 'local/views/notes/create_update_note_view.dart';
 import 'local/views/notes/notes_view.dart';
 import 'shared/constants/routes.dart';
-import 'shared/providers/theme_notifier.dart';
+import 'shared/providers/app_notifier.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,33 +24,32 @@ Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(
-    ChangeNotifierProvider<ColorThemeNotifier>(
+    ChangeNotifierProvider<AppNotifier>(
         create: (BuildContext context) {
-          return ColorThemeNotifier();
+          return AppNotifier();
         },
-        child: const ColorThemeNotifierLayer()),
+        child: const AppStateNotifierLayer()),
   );
   FlutterNativeSplash.remove();
 }
 
-class ColorThemeNotifierLayer extends StatefulWidget {
-  const ColorThemeNotifierLayer({super.key});
+class AppStateNotifierLayer extends StatefulWidget {
+  const AppStateNotifierLayer({super.key});
 
   @override
-  State<ColorThemeNotifierLayer> createState() =>
-      _ColorThemeNotifierLayerState();
+  State<AppStateNotifierLayer> createState() => _AppStateNotifierLayerState();
 }
 
-class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
+class _AppStateNotifierLayerState extends State<AppStateNotifierLayer> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ColorThemeNotifier>(
-      builder: (context, themeColorsNotifier, child) {
+    return Consumer<AppNotifier>(
+      builder: (context, appStateNotifier, child) {
         devtools.log(
-            ' ==> main | Consumer isOnline: ${themeColorsNotifier.isOnline}');
+            ' ==> main | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
         return MaterialApp(
           theme: FlexThemeData.light(
-            scheme: themeColorsNotifier.themeScheme,
+            scheme: appStateNotifier.themeScheme,
             surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
             blendLevel: 10,
             appBarStyle: FlexAppBarStyle.primary,
@@ -84,7 +83,7 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
             ),
           ),
           darkTheme: FlexThemeData.dark(
-            scheme: themeColorsNotifier.themeScheme,
+            scheme: appStateNotifier.themeScheme,
             surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
             blendLevel: 10,
             appBarStyle: FlexAppBarStyle.primary,
@@ -117,27 +116,38 @@ class _ColorThemeNotifierLayerState extends State<ColorThemeNotifierLayer> {
               popupMenuOpacity: 0.95,
             ),
           ),
-          themeMode: themeColorsNotifier.colorMode,
+          themeMode: appStateNotifier.colorMode,
           title: 'My Notes',
           debugShowCheckedModeBanner: false,
-          home: (themeColorsNotifier.isOnline)
-              ? const CloudHomePage()
+          home: (appStateNotifier.isCloudStorage)
+              ? (appStateNotifier.isOnline)
+                  ? const CloudHomePage()
+                  : const LocalHomePage()
               : const LocalHomePage(),
           routes: {
-            homePageRoute: (context) => (themeColorsNotifier.isOnline)
-                ? const CloudHomePage()
+            homePageRoute: (context) => (appStateNotifier.isCloudStorage)
+                ? (appStateNotifier.isOnline)
+                    ? const CloudHomePage()
+                    : const LocalHomePage()
                 : const LocalHomePage(),
             registerRoute: (context) => const CloudRegisterView(),
             verifyEmailRoute: (context) => const CloudVerifyEmailView(),
-            loginRoute: (context) => (themeColorsNotifier.isOnline)
-                ? const CloudLoginView()
+            loginRoute: (context) => (appStateNotifier.isCloudStorage)
+                ? (appStateNotifier.isOnline)
+                    ? const CloudLoginView()
+                    : const LocalLoginView()
                 : const LocalLoginView(),
-            myNotesRoute: (context) => (themeColorsNotifier.isOnline)
-                ? const CloudMyNotesView()
+            myNotesRoute: (context) => (appStateNotifier.isCloudStorage)
+                ? (appStateNotifier.isOnline)
+                    ? const CloudMyNotesView()
+                    : const LocalMyNotesView()
                 : const LocalMyNotesView(),
-            createOrUpdateNoteRoute: (context) => (themeColorsNotifier.isOnline)
-                ? const CloudCreateUpdateNoteView()
-                : const LocalCreateUpdateNoteView(),
+            createOrUpdateNoteRoute: (context) =>
+                (appStateNotifier.isCloudStorage)
+                    ? (appStateNotifier.isOnline)
+                        ? const CloudCreateUpdateNoteView()
+                        : const LocalCreateUpdateNoteView()
+                    : const LocalCreateUpdateNoteView(),
           },
         );
       },
