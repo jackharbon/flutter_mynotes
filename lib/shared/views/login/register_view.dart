@@ -91,7 +91,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                         ),
                         (!appStateNotifier.isOnline)
                             ? Text(
-                                'Please connect to the Internet to register!',
+                                'Connect to the Internet to register!',
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

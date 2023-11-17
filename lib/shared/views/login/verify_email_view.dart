@@ -86,7 +86,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                 ),
                 (!appStateNotifier.isOnline)
                     ? Text(
-                        'Please connect to the Internet to verify your email!',
+                        'Connect to the Internet to verify an email!',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
                       )

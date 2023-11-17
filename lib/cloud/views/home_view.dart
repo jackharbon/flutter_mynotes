@@ -21,24 +21,21 @@ class CloudHomePage extends StatelessWidget {
             if (user != null) {
               if (user.isEmailVerified) {
                 // ? ----------------------------------------
-                devtools.log(
-                    ' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
+                devtools.log(' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
                 return const CloudLoginView();
               } else {
-                devtools.log(
-                    ' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
+                devtools.log(' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
                 return const CloudVerifyEmailView();
               }
             } else {
-              devtools.log(
-                  ' ==> main | FutureBuilder | user is null: ${user.toString()}');
+              devtools.log(' ==> main | FutureBuilder | user is null: ${user.toString()}');
               return const CloudRegisterView();
             }
           default:
             return Scaffold(
               appBar: AppBar(
                 title: const Text(
-                  'Please wait...',
+                  'Please wait...(cloud)',
                 ),
               ),
               body: const LoadingStandardProgressBar(),
