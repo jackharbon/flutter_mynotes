@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants/routes.dart';
 import '../../../local/services/auth/auth_service.dart';
-import '../../../local/services/crud/notes_services.dart';
+import '../../services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
 import '../../providers/app_notifier.dart';
 import '../dialogs/delete_account_dialog.dart';
@@ -16,69 +16,55 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
   return PopupMenuButton<MenuAction>(
     onSelected: (value) async {
       // ? ----------------------------------------
-      devtools.log(
-          ' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
+      devtools.log(' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
           if (shouldLogout) {
-            await AuthService.firebase().logOut();
+            // await AuthService.firebase().logOut();
             Navigator.of(context).pushNamedAndRemoveUntil(
               loginRoute,
               (_) => false,
             );
           }
         case MenuAction.lightMode:
-          Provider.of<AppNotifier>(context, listen: false)
-              .toggleLightDarkMode(ThemeMode.light);
+          Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.light);
         case MenuAction.systemMode:
-          Provider.of<AppNotifier>(context, listen: false)
-              .toggleLightDarkMode(ThemeMode.system);
+          Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.system);
         case MenuAction.darkMode:
-          Provider.of<AppNotifier>(context, listen: false)
-              .toggleLightDarkMode(ThemeMode.dark);
+          Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.dark);
         case MenuAction.blueM3:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.blueM3);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.blueM3);
         case MenuAction.hippieBlue:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.hippieBlue);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.hippieBlue);
         case MenuAction.deepPurple:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.deepPurple);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.deepPurple);
         case MenuAction.purpleBrown:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.purpleBrown);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.purpleBrown);
         case MenuAction.pinkM3:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.pinkM3);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.pinkM3);
         case MenuAction.gold:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.gold);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.gold);
         case MenuAction.greenM3:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.greenM3);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.greenM3);
         case MenuAction.bigStone:
-          Provider.of<AppNotifier>(context, listen: false)
-              .changeColorScheme(FlexScheme.bigStone);
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.bigStone);
         case MenuAction.deleteAccount:
           final shouldDeleteAccount = await showDeleteAccountDialog(context);
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
-            devtools.log(
-                ' ==> popup_menu |  MenuAction.deleteAccount |  MenuAction.deleteAccount: $shouldDeleteAccount');
+            devtools
+                .log(' ==> popup_menu |  MenuAction.deleteAccount |  MenuAction.deleteAccount: $shouldDeleteAccount');
             final String email = AuthService.firebase().currentUser!.email!;
-            final _email = email;
             // ? ----------------------------------------
-            devtools.log(
-                ' ==> popup_menu |  MenuAction.deleteAccount | _email: $_email');
-            await NotesService().deleteAllNotes(email: _email);
-            await NotesService().deleteUser(email: _email);
+            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
+            await NotesService().deleteAllNotes(email: email);
+            await NotesService().deleteUser(email: email);
             Navigator.of(context).pushNamedAndRemoveUntil(
               registerRoute,
               (_) => false,
             );
-            await AuthService.firebase().deleteUserAccount(email: _email);
+            await AuthService.firebase().deleteUserAccount(email: email);
           }
       }
     },

@@ -1,10 +1,13 @@
-// import 'dart:developer' as devtools show log;
+import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../shared/services/crud/notes_services.dart';
+import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/toggle_database_source.dart';
-import '../../services/auth/auth_exceptions.dart';
-import '../../services/auth/auth_service.dart';
+import '../../../shared/services/crud/crud_exceptions.dart';
+// import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
@@ -18,11 +21,14 @@ class LocalLoginView extends StatefulWidget {
 }
 
 class _LocalLoginViewState extends State<LocalLoginView> {
+  late final NotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
+  DatabaseUser? user;
 
   @override
   void initState() {
+    _notesService = NotesService();
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -53,7 +59,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
         ],
       ),
       body: FutureBuilder(
-        future: AuthService.firebase().initialize(),
+        future: _notesService.open(),
+        // future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -123,26 +130,34 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  await AuthService.firebase().logIn(
-                                    email: email,
-                                    password: password,
-                                  );
-                                  final user =
-                                      AuthService.firebase().currentUser;
+                                  // await AuthService.firebase().logIn(
+                                  //   email: email,
+                                  //   password: password,
+                                  // );
+
+                                  // final user =
+                                  //     AuthService.firebase().currentUser;
+                                  // _user = await _notesService.getUser(
+                                  //   email: email,
+                                  // );
+                                  user = await _notesService.logInUser(email: email, password: password);
+                                  // ? --------------------------------
+                                  devtools.log(' ==> login_view (local) | login button | user: $user');
                                   if (user != null) {
-                                    if (user.isEmailVerified) {
-                                      await Navigator.of(context)
-                                          .pushNamedAndRemoveUntil(
+                                    Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
+                                    if (user!.isEmailVerified) {
+                                      await Navigator.of(context).pushNamedAndRemoveUntil(
                                         myNotesRoute,
                                         (route) => false,
                                       );
+                                      // ? --------------------------------
+                                      devtools.log(
+                                          ' ==> login_view (local) | login button | user: $user, user!.isEmailVerified: ${user!.isEmailVerified}');
                                     } else {
-                                      await Navigator.of(context)
-                                          .pushNamed(verifyEmailRoute);
+                                      await Navigator.of(context).pushNamed(verifyEmailRoute);
                                     }
                                   } else {
-                                    await Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
+                                    await Navigator.of(context).pushNamedAndRemoveUntil(
                                       registerRoute,
                                       (route) => false,
                                     );
@@ -151,84 +166,66 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   await showErrorDialog(
                                     context,
                                     'Missing credentials!\nPlease check the form fields.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.text_fields,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Invalid emai!\nPlease check your email address.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.email,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
-                                } on UserNotFoundAuthException {
+                                } on CouldNotFindUserException {
                                   await showErrorDialog(
                                     context,
                                     'User not found!\nEnter correct email or register.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
                                 } on WrongPasswordAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Wrong password!\nPlease type again.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.password,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
                                     'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
-                                    ),
-                                  );
-                                } on GenericAuthException {
-                                  await showErrorDialog(
-                                    context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
-                                    Icon(
-                                      Icons.person_off_rounded,
-                                      size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
                                     'Authentication error!\nPlease try again later.',
-                                    'Login failed!',
+                                    'Login Failed!',
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                                      color: Theme.of(context).colorScheme.error,
                                     ),
                                   );
                                 }
@@ -247,8 +244,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 Text(
                                   "Not registered?",
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
+                                    color: Theme.of(context).colorScheme.outline,
                                     fontWeight: FontWeight.normal,
                                     fontSize: 16,
                                     fontStyle: FontStyle.italic,
@@ -256,8 +252,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 ),
                                 TextButton(
                                   onPressed: () async {
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil(
+                                    Navigator.of(context).pushNamedAndRemoveUntil(
                                       registerRoute,
                                       (route) => false,
                                     );
@@ -267,19 +262,14 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                     style: TextStyle(
                                       shadows: [
                                         Shadow(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            offset: const Offset(0, -2))
+                                            color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))
                                       ],
                                       fontSize: 16,
                                       color: Colors.transparent,
                                       decoration: TextDecoration.underline,
-                                      decorationColor:
-                                          Theme.of(context).colorScheme.primary,
+                                      decorationColor: Theme.of(context).colorScheme.primary,
                                       decorationThickness: 2,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed,
+                                      decorationStyle: TextDecorationStyle.dashed,
                                     ),
                                   ),
                                 ),

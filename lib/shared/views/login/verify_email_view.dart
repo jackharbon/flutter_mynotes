@@ -1,6 +1,9 @@
+import 'dart:developer' as devtools show log;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/dialogs/resend_verification.dart';
 import '../../constants/routes.dart';
@@ -15,6 +18,36 @@ class CloudVerifyEmailView extends StatefulWidget {
 }
 
 class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
+  late final NotesService _notesService;
+  bool isTimeToSendAgain = false;
+
+  @override
+  void initState() {
+    _notesService = NotesService();
+    Future.delayed(const Duration(seconds: 20));
+    setState(() => isTimeToSendAgain = true);
+    // ? --------------------------------
+    devtools.log(' ==> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
+    super.initState();
+  }
+
+  Future sendVerificationEmailAgain() async {
+    try {
+      await AuthService.firebase().sendEmailVerification();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
+      setState(() => isTimeToSendAgain = false);
+      // ? --------------------------------
+      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      await Future.delayed(const Duration(seconds: 30));
+      setState(() => isTimeToSendAgain = true);
+      // ? --------------------------------
+      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+    } catch (e) {
+      // ? --------------------------------
+      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
@@ -71,20 +104,33 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 20)),
+                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
                   onPressed: () async {
-                    await AuthService.firebase().sendEmailVerification();
-                    await showSentEmailConfirmationDialog(
-                      context,
-                      'Email has been sent again\nPlease check your mailbox.',
-                      'Verification email',
-                      Icon(
-                        Icons.mark_email_unread,
-                        size: 60,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    );
+                    if (appStateNotifier.isOnline) {
+                      (isTimeToSendAgain)
+                          ? sendVerificationEmailAgain()
+                          : await showSentEmailConfirmationDialog(
+                              context,
+                              "Email has been already send.\nPlease wait a few minutes before next request.",
+                              'Verification Email',
+                              Icon(
+                                Icons.hourglass_top,
+                                size: 60,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            );
+                    } else {
+                      await showSentEmailConfirmationDialog(
+                        context,
+                        "Please switch on your internet connection to send the email.",
+                        'No Internet Connection',
+                        Icon(
+                          Icons.cloud_off_outlined,
+                          size: 60,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }
                   },
                   child: const Text("Send again", style: TextStyle()),
                 ),
@@ -105,7 +151,13 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                     ),
                     TextButton(
                       onPressed: () async {
+                        final user = AuthService.firebase().currentUser;
+                        bool isUserEmailVerified = user!.isEmailVerified;
+                        (isUserEmailVerified) ? await _notesService.updateIsEmailVerified(email: user.email!) : null;
+                        // ? --------------------------------
                         await AuthService.firebase().logOut();
+                        devtools.log(
+                            ' ==> verify_email_view | login button | email: ${user.email}, user.isEmailVerified: ${user.isEmailVerified}');
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           loginRoute,
                           (route) => false,
@@ -114,16 +166,11 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                       child: Text(
                         "Go to the login page.",
                         style: TextStyle(
-                          shadows: [
-                            Shadow(
-                                color: Theme.of(context).colorScheme.primary,
-                                offset: const Offset(0, -2))
-                          ],
+                          shadows: [Shadow(color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))],
                           fontSize: 16,
                           color: Colors.transparent,
                           decoration: TextDecoration.underline,
-                          decorationColor:
-                              Theme.of(context).colorScheme.primary,
+                          decorationColor: Theme.of(context).colorScheme.primary,
                           decorationThickness: 2,
                           decorationStyle: TextDecorationStyle.dashed,
                         ),
