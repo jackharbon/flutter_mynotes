@@ -52,7 +52,7 @@ class _LocalHomePageState extends State<LocalHomePage> {
               return Scaffold(
                 appBar: AppBar(
                   title: const Text(
-                    'Please wait...',
+                    'Please wait..(local).',
                   ),
                 ),
                 body: const LoadingStandardProgressBar(),

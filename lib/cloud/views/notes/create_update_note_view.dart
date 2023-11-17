@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../shared/constants/routes.dart';
-import '../../../shared/utilities/actions/toggle_database_source.dart';
+import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../services/auth/auth_service.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
@@ -143,8 +143,8 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ToggleDatabaseSource(),
-            Text('New Note'),
+            OnlineStatusIcon(),
+            Text('New Note(cloud)'),
           ],
         ),
         actions: [

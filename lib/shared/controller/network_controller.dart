@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class NetworkController extends GetxController {
           'No Internet! You are in the offline mode.',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 18,
           ),
         ),
         isDismissible: true,
@@ -34,18 +34,13 @@ class NetworkController extends GetxController {
         margin: const EdgeInsets.all(0),
         snackStyle: SnackStyle.GROUNDED,
       );
-      // ? --------------------------------
-      devtools.log(' ==> network_controller | _updateConnectionStatus() | Offline');
     } else {
-      // if (Get.isSnackbarOpen) {
-      //   Get.closeCurrentSnackbar();
-      // }
       Get.rawSnackbar(
         messageText: const Text(
           'Internet is on!',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 18,
           ),
         ),
         isDismissible: true,
@@ -59,8 +54,6 @@ class NetworkController extends GetxController {
         margin: const EdgeInsets.all(0),
         snackStyle: SnackStyle.GROUNDED,
       );
-      // ? --------------------------------
-      devtools.log(' ==> network_controller | _updateConnectionStatus() | Online');
     }
   }
 }

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../local/views/notes/notes_list.view.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/providers/app_notifier.dart';
-import '../../../shared/utilities/actions/toggle_database_source.dart';
+import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/services/crud/notes_services.dart';
@@ -38,9 +38,9 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ToggleDatabaseSource(),
+            OnlineStatusIcon(),
             Text(
-              'My Notes',
+              'My Notes(local)',
             ),
           ],
         ),

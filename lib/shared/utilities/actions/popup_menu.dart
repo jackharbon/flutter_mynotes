@@ -53,11 +53,8 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           final shouldDeleteAccount = await showDeleteAccountDialog(context);
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
-            devtools
-                .log(' ==> popup_menu |  MenuAction.deleteAccount |  MenuAction.deleteAccount: $shouldDeleteAccount');
+            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
             final String email = AuthService.firebase().currentUser!.email!;
-            // ? ----------------------------------------
-            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
             await NotesService().deleteAllNotes(email: email);
             await NotesService().deleteUser(email: email);
             Navigator.of(context).pushNamedAndRemoveUntil(
@@ -65,6 +62,8 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
               (_) => false,
             );
             await AuthService.firebase().deleteUserAccount(email: email);
+            // ? ----------------------------------------
+            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
           }
       }
     },

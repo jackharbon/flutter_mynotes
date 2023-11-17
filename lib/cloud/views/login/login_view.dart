@@ -3,7 +3,7 @@ import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 
 import '../../../shared/services/crud/notes_services.dart';
-import '../../../shared/utilities/actions/toggle_database_source.dart';
+import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../services/auth/auth_exceptions.dart';
 import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
@@ -45,9 +45,9 @@ class _CloudLoginViewState extends State<CloudLoginView> {
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ToggleDatabaseSource(),
+            OnlineStatusIcon(),
             Text(
-              'Login',
+              'Login(cloud)',
             ),
           ],
         ),

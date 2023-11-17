@@ -50,6 +50,8 @@ class _AppStateNotifierLayerState extends State<AppStateNotifierLayer> {
     return StreamBuilder(
       stream: Connectivity().onConnectivityChanged,
       builder: (context, AsyncSnapshot<ConnectivityResult> snapshot) {
+        // ? --------------------------------
+        devtools.log(' ==> main | StreamBuilder() | snapshot.data: ${snapshot.data}');
         return snapshot.data == ConnectivityResult.mobile || snapshot.data == ConnectivityResult.wifi
             ? const GetOnlineMaterialApp()
             : const GetOfflineMaterialApp();
@@ -67,6 +69,7 @@ class GetOnlineMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(true);
+      // ? --------------------------------
       devtools.log(
           ' ==> main | GetOnlineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
       return GetMaterialApp(
@@ -139,36 +142,18 @@ class GetOnlineMaterialApp extends StatelessWidget {
           ),
         ),
         themeMode: appStateNotifier.colorMode,
-        title: 'My Notes',
+        title: 'My Notes Main',
         debugShowCheckedModeBanner: false,
-        home: (appStateNotifier.isOnline)
-            ? (appStateNotifier.isCloudStorage)
-                ? const CloudHomePage()
-                : const LocalHomePage()
-            : const LocalHomePage(),
+        home: (appStateNotifier.isCloudStorage) ? const CloudHomePage() : const LocalHomePage(),
         routes: {
-          homePageRoute: (context) => (appStateNotifier.isOnline)
-              ? (appStateNotifier.isCloudStorage)
-                  ? const CloudHomePage()
-                  : const LocalHomePage()
-              : const LocalHomePage(),
+          homePageRoute: (context) => (appStateNotifier.isCloudStorage) ? const CloudHomePage() : const LocalHomePage(),
           registerRoute: (context) => const CloudRegisterView(),
           verifyEmailRoute: (context) => const CloudVerifyEmailView(),
-          loginRoute: (context) => (appStateNotifier.isOnline)
-              ? (appStateNotifier.isCloudStorage)
-                  ? const CloudLoginView()
-                  : const LocalLoginView()
-              : const LocalLoginView(),
-          myNotesRoute: (context) => (appStateNotifier.isOnline)
-              ? (appStateNotifier.isCloudStorage)
-                  ? const CloudMyNotesView()
-                  : const LocalMyNotesView()
-              : const LocalMyNotesView(),
-          createOrUpdateNoteRoute: (context) => (appStateNotifier.isOnline)
-              ? (appStateNotifier.isCloudStorage)
-                  ? const CloudCreateUpdateNoteView()
-                  : const LocalCreateUpdateNoteView()
-              : const LocalCreateUpdateNoteView(),
+          loginRoute: (context) => (appStateNotifier.isCloudStorage) ? const CloudLoginView() : const LocalLoginView(),
+          myNotesRoute: (context) =>
+              (appStateNotifier.isCloudStorage) ? const CloudMyNotesView() : const LocalMyNotesView(),
+          createOrUpdateNoteRoute: (context) =>
+              (appStateNotifier.isCloudStorage) ? const CloudCreateUpdateNoteView() : const LocalCreateUpdateNoteView(),
         },
       );
     });
@@ -184,6 +169,7 @@ class GetOfflineMaterialApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
+      // ? --------------------------------
       devtools.log(
           ' ==> main | GetOnlineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
       return GetMaterialApp(
