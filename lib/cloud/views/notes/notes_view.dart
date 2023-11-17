@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/utilities/actions/toggle_database_source.dart';
 import '../../services/auth/auth_service.dart';
-import '../../services/crud/notes_services.dart';
+import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 import 'notes_list.view.dart';
@@ -25,9 +25,9 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   @override
   void initState() {
     _notesService = NotesService();
+    AuthService.firebase().initialize();
     // ? ---------------------------------------------------------------
-    devtools
-        .log(' ==> notes_view | initState() | _notesService: $_notesService');
+    devtools.log(' ==> notes_view (cloud) | initState() | _notesService: $_notesService, userEmail: $userEmail');
     super.initState();
   }
 
@@ -61,7 +61,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
           builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
             devtools.log(
-                ' ==> notes_view | User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
+                ' ==> notes_view (cloud) | User snapshot: ${snapshot.connectionState}, ${snapshot.data}, userEmail: $userEmail');
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
               case ConnectionState.done:
@@ -71,6 +71,9 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                       case ConnectionState.active:
+                        // ? ---------------------------------------------------------------
+                        devtools.log(
+                            ' ==> notes_view (cloud) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
                         if (snapshot.hasData) {
                           if (snapshot.data!.isEmpty) {
                             return Row(
@@ -86,14 +89,12 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pushNamed(createOrUpdateNoteRoute);
+                                      Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
                                     },
                                     icon: Icon(
                                       Icons.add,
                                       size: 40,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(context).colorScheme.primary,
                                     )),
                                 const Text(
                                   'to write your first note.',
@@ -107,9 +108,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             );
                           } else {
                             //  snapshot.data is NOT Empty
-                            final allNotes =
-                                snapshot.data as List<DatabaseNote>;
-                            return NotesListView(
+                            final allNotes = snapshot.data as List<DatabaseNote>;
+                            return CloudNotesListView(
                               notes: allNotes,
                               onDeleteNote: (note) async {
                                 await _notesService.deleteNote(id: note.id);

@@ -6,7 +6,7 @@ import 'package:path/path.dart' show join;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../shared/extensions/list/filter.dart';
+import '../../extensions/list/filter.dart';
 import 'crud_exceptions.dart';
 
 class NotesService {
@@ -30,12 +30,10 @@ class NotesService {
 
   late final StreamController<List<DatabaseNote>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes =>
-      _notesStreamController.stream.filter((note) {
+  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
-          return note.userId ==
-              currentUser.id; // we return boolean in filter function
+          return note.userId == currentUser.id; // we return boolean in filter function
         } else {
           throw UserShouldBeSetBeforeReadingAllNotes();
         }
@@ -101,10 +99,8 @@ class NotesService {
       await db.execute(createNoteTable);
       await _cacheNotes();
       // ? -----------------------------------------------------------
-      devtools.log(
-          ' ==> notes_services | open() | createUserTable: $createUserTable');
-      devtools.log(
-          ' ==> notes_services | open() | createNoteTable: $createNoteTable');
+      devtools.log(' ==> notes_services | open() | createUserTable: $createUserTable');
+      devtools.log(' ==> notes_services | open() | createNoteTable: $createNoteTable');
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
     }
@@ -225,8 +221,7 @@ class NotesService {
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       // ? -----------------------------------------------------------
-      devtools.log(
-          ' ==> notes_services | updateNote() | updatedNote: $updatedNote');
+      devtools.log(' ==> notes_services | updateNote() | updatedNote: $updatedNote');
       return updatedNote;
     }
   }
@@ -242,8 +237,7 @@ class NotesService {
       whereArgs: [id],
     );
     // ? -----------------------------------------------------------
-    devtools.log(
-        ' ==> notes_services | deleteNote() | deletedCount: $deletedCount');
+    devtools.log(' ==> notes_services | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
       throw ColdNotDeleteNoteException();
     } else {
@@ -262,8 +256,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     final user = await getUser(email: email);
     // ? -----------------------------------------------------------
-    devtools
-        .log(' ==> notes_services | deleteAllNotes() | user.id: ${user.id}');
+    devtools.log(' ==> notes_services | deleteAllNotes() | user.id: ${user.id}');
     final numberOfDeletedNotes = await db.delete(
       noteTable,
       where: 'user_id = ?',
@@ -272,8 +265,7 @@ class NotesService {
     _notes = [];
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    devtools.log(
-        ' ==> notes_services | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
+    devtools.log(' ==> notes_services | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
     return numberOfDeletedNotes;
   }
 
@@ -283,8 +275,7 @@ class NotesService {
 
   Future<DatabaseUser> getOrCreateUser({
     required String email,
-    bool setAsCurrentUser =
-        true, // set retrieved user as a current user to filter notes
+    bool setAsCurrentUser = true, // set retrieved user as a current user to filter notes
   }) async {
     try {
       final user = await getUser(email: email);
@@ -292,20 +283,39 @@ class NotesService {
         _user = user;
       }
       // ? ----------------------------------------------------------------------------------
-      devtools
-          .log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
+      devtools.log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
-      final createdUser = await createUser(email: email);
+      final createdUser = await createUser(email: email, password: _user!.password);
       if (setAsCurrentUser) {
         _user = createdUser;
       }
       // ? ----------------------------------------------------------------------------------
-      devtools.log(
-          ' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
+      devtools.log(' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
       return createdUser;
     } catch (e) {
       rethrow;
+    }
+  }
+
+// -------------------- checkUser() --------------------
+
+  Future<DatabaseUser> logInUser({required String email, required String password}) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    List<Map<String, dynamic>> results = await db.query(
+      userTable,
+      limit: 1,
+      where: 'email = ? and password = ?',
+      whereArgs: [email, password],
+    );
+    // ? --------------------------------
+    devtools.log(' ==> notes_services | checkUser() | results: $results');
+    if (results.isEmpty) {
+      throw CouldNotFindUserException();
+    } else {
+      return DatabaseUser.fromRow(results.first);
     }
   }
 
@@ -332,7 +342,7 @@ class NotesService {
 
 // -------------------- createUser() --------------------
 
-  Future<DatabaseUser> createUser({required String email}) async {
+  Future<DatabaseUser> createUser({required String email, required String password}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
@@ -348,18 +358,21 @@ class NotesService {
     const firstName = '';
     const lastName = '';
     const themeMode = 'ThemeMode.system';
-    const colorsScheme = 'FlexScheme.gold';
+    const colorsScheme = 'FlexScheme.blueM3';
     const avatarUrl = '';
+    const isEmailVerified = 0;
     final createdAtUser = Timestamp.now().toDate().toString().substring(0, 16);
 
     final userId = await db.insert(userTable, {
       emailColumn: email.toLowerCase(),
+      passwordColumn: password,
       firstNameColumn: firstName,
       lastNameColumn: lastName,
       themeModeColumn: themeMode,
       colorsSchemeColumn: colorsScheme,
       avatarUrlColumn: avatarUrl.toLowerCase(),
       createdAtUserColumn: createdAtUser,
+      isEmailVerifiedColumn: isEmailVerified,
     });
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createUser() | userId: $userId');
@@ -367,13 +380,52 @@ class NotesService {
     return DatabaseUser(
       id: userId,
       email: email,
+      password: password,
       firstName: firstName,
       lastName: lastName,
       themeMode: themeMode,
       colorsScheme: colorsScheme,
       avatarUrl: avatarUrl,
       createdAtUser: createdAtUser,
+      isEmailVerified: false,
     );
+  }
+
+  // -------------------- updateUser() --------------------
+
+  Future<DatabaseUser> updateIsEmailVerified({
+    required String email,
+  }) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    // update DB
+    final updatesCount = await db.update(
+      userTable,
+      {
+        isEmailVerifiedColumn: 1,
+      },
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateNoteException();
+    } else {
+      final results = await db.query(
+        userTable,
+        limit: 1,
+        where: 'email = ?',
+        whereArgs: [email.toLowerCase()],
+      );
+      // ? -----------------------------------------------------------
+      devtools.log(' ==> notes_services | updateIsEmailVerified() | results: $results');
+      if (results.isEmpty) {
+        throw CouldNotFindUserException();
+      } else {
+        return DatabaseUser.fromRow(results.first);
+      }
+    }
   }
 
   // -------------------- deleteUser() --------------------
@@ -387,8 +439,7 @@ class NotesService {
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
-    devtools.log(
-        ' ==> notes_services | deleteUser() | deletedAccounts: $deletedAccounts');
+    devtools.log(' ==> notes_services | deleteUser() | deletedAccounts: $deletedAccounts');
     if (deletedAccounts != 1) {
       throw ColdNotDeleteUserException();
     }
@@ -420,8 +471,7 @@ class DatabaseNote {
         title = map[titleColumn] as String,
         text = map[textColumn] as String,
         createdAt = map[createdAtColumn] as String,
-        isSyncedWithCloud =
-            (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
+        isSyncedWithCloud = (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
@@ -440,12 +490,14 @@ class DatabaseNote {
 class DatabaseUser {
   final int id;
   final String email;
+  final String password;
   final String? firstName;
   final String? lastName;
   final String? themeMode;
   final String? colorsScheme;
   final String? avatarUrl;
   final String createdAtUser;
+  final bool isEmailVerified;
 
   DatabaseUser({
     this.firstName,
@@ -456,21 +508,25 @@ class DatabaseUser {
     required this.createdAtUser,
     required this.id,
     required this.email,
+    required this.password,
+    required this.isEmailVerified,
   });
 
   DatabaseUser.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
         email = map[emailColumn] as String,
+        password = map[passwordColumn] as String,
         firstName = map[firstNameColumn] as String,
         lastName = map[lastNameColumn] as String,
         themeMode = map[themeModeColumn] as String,
         colorsScheme = map[colorsSchemeColumn] as String,
         avatarUrl = map[avatarUrlColumn] as String,
-        createdAtUser = map[createdAtUserColumn] as String;
+        createdAtUser = map[createdAtUserColumn] as String,
+        isEmailVerified = (map[isEmailVerifiedColumn] as int) == 1 ? true : false;
 
   @override
   String toString() =>
-      'Person, ID = $id, email = $email, firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $colorsScheme, avatarUrl: $avatarUrl, createdAtUser: $createdAtUser,';
+      'Person, ID = $id, email = $email, password: $password,firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $colorsScheme, avatarUrl: $avatarUrl, createdAtUser: $createdAtUser, isEmailVerified: $isEmailVerified';
 
   @override
   bool operator ==(covariant DatabaseUser other) => id == other.id;
@@ -507,21 +563,25 @@ const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 const userTable = 'user';
 const idColumn = 'id';
 const emailColumn = 'email';
+const passwordColumn = 'password';
 const firstNameColumn = 'first_name';
 const lastNameColumn = 'last_name';
 const themeModeColumn = 'theme_mode';
 const colorsSchemeColumn = 'colors_scheme';
 const avatarUrlColumn = 'avatar_url';
 const createdAtUserColumn = 'created_at_user';
+const isEmailVerifiedColumn = 'is_email_verified';
 
 const createUserTable = '''CREATE TABLE IF NOT EXISTS  "user" (
 	"id"	INTEGER NOT NULL,
 	"email"	TEXT NOT NULL UNIQUE,
+  "password" TEXT NOT NULL,
 	"first_name"	TEXT,
 	"last_name"	TEXT,
 	"theme_mode"	TEXT,
 	"colors_scheme"	TEXT,
 	"avatar_url"	TEXT,
   "created_at_user"  TEXT NOT NULL,
+  "is_email_verified"	INTEGER NOT NULL DEFAULT 0,
 	PRIMARY KEY("id" AUTOINCREMENT)
       );''';

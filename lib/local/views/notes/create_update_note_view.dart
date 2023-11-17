@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/utilities/actions/toggle_database_source.dart';
 import '../../services/auth/auth_service.dart';
-import '../../services/crud/notes_services.dart';
+import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
@@ -15,8 +15,7 @@ class LocalCreateUpdateNoteView extends StatefulWidget {
   const LocalCreateUpdateNoteView({Key? key}) : super(key: key);
 
   @override
-  State<LocalCreateUpdateNoteView> createState() =>
-      _LocalCreateUpdateNoteViewState();
+  State<LocalCreateUpdateNoteView> createState() => _LocalCreateUpdateNoteViewState();
 }
 
 class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
@@ -35,7 +34,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     createdAt = Timestamp.now();
 
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | initState()');
+    log(' ==> create_update_note_view | initState()');
     super.initState();
   }
 
@@ -71,9 +70,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     if (widgetNote != null) {
       _note = widgetNote;
       // pass text from note to the CreateOrUpdateNote
-      (widgetNote.title != null)
-          ? _noteTitleController.text = widgetNote.title!
-          : null;
+      (widgetNote.title != null) ? _noteTitleController.text = widgetNote.title! : null;
       _noteTextController.text = widgetNote.text;
       return widgetNote;
     }
@@ -99,8 +96,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
   void _deleteNoteIfTextIsEmpty() async {
     final note = _note;
     if (note != null) {
-      if (_noteTextController.text.isEmpty &&
-          _noteTitleController.text.isEmpty) {
+      if (_noteTextController.text.isEmpty && _noteTitleController.text.isEmpty) {
         // ? ---------------------------------------------------------------
         log(' ==> new_note_view | _deleteNoteIfTextIsEmpty() | deleted note: $note');
         await _notesService.deleteNote(id: note.id);

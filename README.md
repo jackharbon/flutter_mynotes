@@ -142,6 +142,8 @@ flutter pub add test --dev
 
 flutter pub add share_plus
 
+flutter pub add internet_connection_checker
+
 ```
 
 (`share_plus` may be a cause of error duplicated Sdk)
