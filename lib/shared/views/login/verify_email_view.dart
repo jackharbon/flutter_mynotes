@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
+import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/dialogs/resend_verification.dart';
 import '../../constants/routes.dart';
 import '../../../cloud/services/auth/auth_service.dart';
@@ -53,19 +54,11 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       return Scaffold(
         appBar: AppBar(
-          title: Row(
+          title: const Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              IconButton(
-                icon: (appStateNotifier.isOnline)
-                    ? const Icon(Icons.cloud_done_outlined)
-                    : const Icon(Icons.cloud_outlined),
-                color: (appStateNotifier.isOnline)
-                    ? Theme.of(context).colorScheme.onPrimary
-                    : Theme.of(context).colorScheme.onError,
-                onPressed: () {},
-              ),
-              const Text(
+              OnlineStatusIcon(),
+              Text(
                 'Verify Email',
               ),
             ],
@@ -89,19 +82,24 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                   ), //Text
                 ), //Circle
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
-                const Text(
-                  'Last step: verify your adres email.',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                (!appStateNotifier.isOnline)
+                    ? Text(
+                        'Please connect to the Internet to verify your email!',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
+                      )
+                    : const SizedBox(
+                        height: 25,
+                      ),
                 const SizedBox(
-                  height: 50,
+                  height: 25,
                 ),
                 const Text(
                     "We've sent you an email verification.\nPlease open it and follow the link to verify your account.\n\nIf you haven't received the email yet, press the button below!"),
                 const SizedBox(
-                  height: 20,
+                  height: 25,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),

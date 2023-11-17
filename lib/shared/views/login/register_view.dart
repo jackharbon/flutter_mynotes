@@ -9,8 +9,8 @@ import '../../services/crud/notes_services.dart';
 import '../../constants/routes.dart';
 import '../../helpers/loading/loading_widget.dart';
 import '../../providers/app_notifier.dart';
+import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/actions/popup_menu.dart';
-import '../../utilities/actions/toggle_database_source.dart';
 import '../../utilities/dialogs/error_dialog.dart';
 
 class CloudRegisterView extends StatefulWidget {
@@ -53,7 +53,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
           title: const Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ToggleDatabaseSource(),
+              OnlineStatusIcon(),
               Text(
                 'Register',
               ),
@@ -83,14 +83,25 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                           ),
                         ),
                         const SizedBox(
-                          height: 50,
+                          height: 30,
                         ),
                         const Text(
                           'Please register create your notes!',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
+                        (!appStateNotifier.isOnline)
+                            ? Text(
+                                'Please connect to the Internet to register!',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.error),
+                              )
+                            : const SizedBox(
+                                height: 25,
+                              ),
                         const SizedBox(
-                          height: 50,
+                          height: 25,
                         ),
                         TextField(
                           enabled: (appStateNotifier.isOnline) ? true : false,

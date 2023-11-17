@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/providers/app_notifier.dart';
-import '../../../shared/utilities/actions/toggle_database_source.dart';
+import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/crud_exceptions.dart';
 // import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
@@ -48,9 +48,9 @@ class _LocalLoginViewState extends State<LocalLoginView> {
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            ToggleDatabaseSource(),
+            OnlineStatusIcon(),
             Text(
-              'Login',
+              'Login(local)',
             ),
           ],
         ),
