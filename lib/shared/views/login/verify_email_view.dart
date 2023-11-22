@@ -19,12 +19,12 @@ class CloudVerifyEmailView extends StatefulWidget {
 }
 
 class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   bool isTimeToSendAgain = false;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     Future.delayed(const Duration(seconds: 20));
     setState(() => isTimeToSendAgain = true);
     // ? --------------------------------
@@ -151,7 +151,9 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                       onPressed: () async {
                         final user = AuthService.firebase().currentUser;
                         bool isUserEmailVerified = user!.isEmailVerified;
-                        (isUserEmailVerified) ? await _notesService.updateIsEmailVerified(email: user.email!) : null;
+                        (isUserEmailVerified)
+                            ? await _notesService.updateLocalIsEmailVerified(email: user.email)
+                            : null;
                         // ? --------------------------------
                         await AuthService.firebase().logOut();
                         devtools.log(

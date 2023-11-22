@@ -5,7 +5,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/routes.dart';
-import '../../../local/services/auth/auth_service.dart';
+import '../../../cloud/services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
 import '../../providers/app_notifier.dart';
@@ -54,9 +54,9 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
             devtools.log(' ==> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
-            final String email = AuthService.firebase().currentUser!.email!;
-            await NotesService().deleteAllNotes(email: email);
-            await NotesService().deleteUser(email: email);
+            final String email = AuthService.firebase().currentUser!.email;
+            await LocalNotesService().deleteAllLocalNotes(email: email);
+            await LocalNotesService().deleteLocalUser(email: email);
             Navigator.of(context).pushNamedAndRemoveUntil(
               registerRoute,
               (_) => false,

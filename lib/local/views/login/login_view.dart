@@ -21,14 +21,14 @@ class LocalLoginView extends StatefulWidget {
 }
 
 class _LocalLoginViewState extends State<LocalLoginView> {
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
   DatabaseUser? user;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -140,7 +140,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   // _user = await _notesService.getUser(
                                   //   email: email,
                                   // );
-                                  user = await _notesService.logInUser(email: email, password: password);
+                                  user = await _notesService.logInLocalUser(email: email, password: password);
                                   // ? --------------------------------
                                   devtools.log(' ==> login_view (local) | login button | user: $user');
                                   if (user != null) {
@@ -150,10 +150,10 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                         myNotesRoute,
                                         (route) => false,
                                       );
+                                    } else {
                                       // ? --------------------------------
                                       devtools.log(
-                                          ' ==> login_view (local) | login button | user: $user, user!.isEmailVerified: ${user!.isEmailVerified}');
-                                    } else {
+                                          ' ==> login_view (local) | login button | user!.isEmailVerified: ${user!.isEmailVerified}');
                                       await Navigator.of(context).pushNamed(verifyEmailRoute);
                                     }
                                   } else {

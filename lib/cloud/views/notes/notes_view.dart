@@ -19,12 +19,12 @@ class CloudMyNotesView extends StatefulWidget {
 }
 
 class _CloudMyNotesViewState extends State<CloudMyNotesView> {
-  late final NotesService _notesService;
-  String get userEmail => AuthService.firebase().currentUser!.email!;
+  late final LocalNotesService _notesService;
+  String get userEmail => AuthService.firebase().currentUser!.email;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     AuthService.firebase().initialize();
     // ? ---------------------------------------------------------------
     devtools.log(' ==> notes_view (cloud) | initState() | _notesService: $_notesService, userEmail: $userEmail');
@@ -57,7 +57,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FutureBuilder(
-          future: _notesService.getOrCreateUser(email: userEmail),
+          future: _notesService.getOrCreateLocalUser(email: userEmail),
           builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
             devtools.log(
@@ -108,11 +108,11 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             );
                           } else {
                             //  snapshot.data is NOT Empty
-                            final allNotes = snapshot.data as List<DatabaseNote>;
+                            final allNotes = snapshot.data as List<LocalDatabaseNote>;
                             return CloudNotesListView(
                               notes: allNotes,
                               onDeleteNote: (note) async {
-                                await _notesService.deleteNote(id: note.id);
+                                await _notesService.deleteLocalNote(id: note.id);
                               },
                               onTap: (note) {
                                 Navigator.of(context).pushNamed(

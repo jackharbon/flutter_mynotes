@@ -1,4 +1,4 @@
-// import 'dart:developer' as devtools show log;
+import 'dart:developer' as devtools show log;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +15,10 @@ class NetworkController extends GetxController {
 
   void _updateConnectionStatus(ConnectivityResult connectivityResult) {
     if (connectivityResult == ConnectivityResult.none) {
+      // ? --------------------------------
+      devtools.log(' ----------- currentRoute ----------- ');
+      devtools.log(Get.currentRoute);
+      Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(
           'No Internet! You are in the offline mode.',
@@ -35,6 +39,10 @@ class NetworkController extends GetxController {
         snackStyle: SnackStyle.GROUNDED,
       );
     } else {
+      // ? --------------------------------
+      devtools.log(' ----------- currentRoute ----------- ');
+      devtools.log(Get.currentRoute);
+      Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(
           'Internet is on!',

@@ -14,7 +14,7 @@ class MissingDataAuthException implements Exception {}
 
 class InvalidEmailAuthException implements Exception {}
 
-class ColdNotDeleteUserException implements Exception {}
+class CouldNotDeleteUserException implements Exception {}
 
 class UserAlreadyExistException implements Exception {}
 
@@ -24,12 +24,12 @@ class WrongPasswordAuthException implements Exception {}
 
 // ------ Note Exceptions ------
 
-class ColdNotDeleteNoteException implements Exception {}
+class ColdNotDeleteLocalNoteException implements Exception {}
 
-class NoteAlreadyExistException implements Exception {}
+class LocalNoteAlreadyExistException implements Exception {}
 
-class CouldNotFindNoteException implements Exception {}
+class CouldNotFindLocalNoteException implements Exception {}
 
-class CouldNotUpdateNoteException implements Exception {}
+class CouldNotUpdateLocalNoteException implements Exception {}
 
 class UserShouldBeSetBeforeReadingAllNotes implements Exception {}

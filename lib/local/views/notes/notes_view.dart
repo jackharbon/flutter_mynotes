@@ -20,12 +20,12 @@ class LocalMyNotesView extends StatefulWidget {
 }
 
 class _LocalMyNotesViewState extends State<LocalMyNotesView> {
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   // String get userEmail => AuthService.firebase().currentUser!.email!;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     // ? ---------------------------------------------------------------
     devtools.log(' ==> notes_view (local) | initState() | _notesService: $_notesService');
     super.initState();
@@ -59,7 +59,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
         child: Builder(builder: (context) {
           return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
             return FutureBuilder(
-              future: _notesService.getOrCreateUser(email: appStateNotifier.userEmail),
+              future: _notesService.getOrCreateLocalUser(email: appStateNotifier.userEmail),
               builder: (context, snapshot) {
                 // ? ---------------------------------------------------------------
                 devtools.log(
@@ -110,11 +110,11 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                 );
                               } else {
                                 //  snapshot.data is NOT Empty
-                                final allNotes = snapshot.data as List<DatabaseNote>;
+                                final allNotes = snapshot.data as List<LocalDatabaseNote>;
                                 return LocalNotesListView(
                                   notes: allNotes,
                                   onDeleteNote: (note) async {
-                                    await _notesService.deleteNote(id: note.id);
+                                    await _notesService.deleteLocalNote(id: note.id);
                                   },
                                   onTap: (note) {
                                     Navigator.of(context).pushNamed(

@@ -19,13 +19,13 @@ class CloudLoginView extends StatefulWidget {
 }
 
 class _CloudLoginViewState extends State<CloudLoginView> {
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -127,7 +127,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                   final user = AuthService.firebase().currentUser;
                                   if (user != null) {
                                     if (user.isEmailVerified) {
-                                      _notesService.updateIsEmailVerified(email: email);
+                                      _notesService.updateLocalIsEmailVerified(email: email);
                                       await Navigator.of(context).pushNamedAndRemoveUntil(
                                         myNotesRoute,
                                         (route) => false,

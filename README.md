@@ -24,7 +24,7 @@
 <h1 align="center">MY NOTES</h1>
 
   <p align="center">
-    My Notes is the Flutter/Dart app based on YouTube Tutorial
+    My Notes is the Flutter/Dart app based on YouTube Tutorial<br />
      <a href="https://www.youtube.com/playlist?list=PL6yRaaP0WPkVtoeNIGqILtRAgd3h2CNpT">Free Flutter Course 35+ hours</a> by Vandad Nahavandipoor.<br /> November 2023.
     <br />
     <br />
@@ -60,21 +60,36 @@
 
 # About The Project
 
+<img src="assets/screenshots.jpg" alt="screenshots">
+
 ## App Description
 
-Learning Fluttter/Dart | App based on YT tutorial 'Free Flutter Course'.
+<b>Learning Fluttter/Dart | App based on YT tutorial 'Free Flutter Course' from Vandad Nahavandipoor.</br>
+
+As a user, after registering with an email and a password or Google account you can create, edit and delete your notes (with a title, content and a timestamp). Notes are stored simultaneously in the local database and a cloud, which means that you can synchronize your notes with other Android devices. In case of loosing the internet connection, your notes are continuously stored in the local database, and synchronized after regaining the connection.
 
 ## Built With
 
 <div align="center">
 
-| Coding                                           | Back-end                                  | Front-end                              |
-| ------------------------------------------------ | ----------------------------------------- | -------------------------------------- |
-| planning, version control, code editing          | database, authentication, environment     | framework and language                 |
-| [![GitHub][github.com]][github-url]              | [![Node.js][nodejs.org]][nodejs-url]      | [![Flutter][flutter.dev]][flutter-url] |
-| [![VSC][visualstudiocode]][visualstudiocode-url] | [![Firebase][firebase.com]][firebase-url] | [![Dart][dart.dev]][dart-url]          |
+| Coding                                           | Back-end                                     | Front-end                              |
+| ------------------------------------------------ | -------------------------------------------- | -------------------------------------- |
+| <i>planning, version control, code editing</i>   | <i>database, authentication, environment</i> | <i>framework and language</i>          |
+| [![GitHub][github.com]][github-url]              | [![Node.js][nodejs.org]][nodejs-url]         | [![Flutter][flutter.dev]][flutter-url] |
+| [![VSC][visualstudiocode]][visualstudiocode-url] | [![Firebase][firebase.com]][firebase-url]    | [![Dart][dart.dev]][dart-url]          |
 
 </div>
+
+## Features/tech
+
+- [x] Firebase authentication
+- [x] Flutter native splash
+- [x] SQLite CRUD local storage
+- [x] Flex color themes
+- [x] GetX Internet connection check snackbar
+- [x] Connectivity plus Internet connection check
+- [x] App state change notification
+- [x] Firestore Database cloud storage
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -142,7 +157,7 @@ flutter pub add test --dev
 
 flutter pub add share_plus
 
-flutter pub add internet_connection_checker
+flutter pub add get
 
 ```
 
@@ -203,11 +218,11 @@ In the [Google Console](https://console.firebase.google.com/) go to Get Started 
 
 - Choose `Start in production mode` or `Start in test mode`.
 
-- Choose preferred Cloud Firestore location and click `Enable`.
+- Choose preferred Cloud Firestore location (country) and click `Enable`.
 
 - When Cloud Firestore dashboard is ready you can start setting up the Cloud Firestore.
 
-- If you've chosen `Start in production mode` open the tab `Rules` -> `Edit rules` and change permission read/write to `request.auth != null` (to allow user to write, if is authenticated).
+- If you've chosen `Start in production mode` open the tab `Rules` -> `Edit rules` and change permission read/write to `allow read, write: if request.auth != null;` (to allow user to write, if is authenticated).
 
 ```
 rules_version = '2';
@@ -229,7 +244,14 @@ service cloud.firestore {
 
   - Document ID: click `Auto ID`,
 
-  - Then add fields: `user_id` -> `string`; `title`->`string`; `text`->`string`; `created_at` -> `timestamp`; and click `Save`.
+  - Then add fields:
+
+    - `user_id` -> `string`;
+    - `title`->`string`;
+    - `text`->`string`;
+    - `created_at` -> `timestamp`;
+
+    and click `Save`.
 
 - Check `Data` tab, to confirm if database structure was created correctly.
 
@@ -247,8 +269,21 @@ flutter test test/auth_test.dart
 
 # Roadmap
 
-- [ ] Login/register page
-- [ ] Notes
+- [x] Loading screen
+- [x] Themes, light/dark mode
+- [x] Internet connection checking
+- [x] Delete user option
+- [x] Local (offline) notes storage
+- [ ] Store (local/cloud) user preferences
+- [ ] Cloud (online) notes storage
+- [ ] Offline/online synchronizing
+- [ ] Swipe note to delete
+- [ ] Sorting notes
+- [ ] Filtering (search) notes
+- [ ] App icon
+- [ ] Note's tagging (flags)
+- [ ] Registering with Google account
+- [ ] User settings (first/last name, avatar, themes)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -142,7 +142,7 @@ class GetOnlineMaterialApp extends StatelessWidget {
           ),
         ),
         themeMode: appStateNotifier.colorMode,
-        title: 'My Notes Main',
+        title: 'Main Page (cloud)',
         debugShowCheckedModeBanner: false,
         home: (appStateNotifier.isCloudStorage) ? const CloudHomePage() : const LocalHomePage(),
         routes: {
@@ -171,7 +171,7 @@ class GetOfflineMaterialApp extends StatelessWidget {
       Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
       // ? --------------------------------
       devtools.log(
-          ' ==> main | GetOnlineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
+          ' ==> main | GetOfflineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
       return GetMaterialApp(
         theme: FlexThemeData.light(
           scheme: appStateNotifier.themeScheme,
@@ -242,7 +242,7 @@ class GetOfflineMaterialApp extends StatelessWidget {
           ),
         ),
         themeMode: appStateNotifier.colorMode,
-        title: 'My Notes',
+        title: 'Main Page (local)',
         debugShowCheckedModeBanner: false,
         home: const LocalHomePage(),
         routes: {

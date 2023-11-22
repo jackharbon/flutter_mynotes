@@ -21,13 +21,13 @@ class CloudRegisterView extends StatefulWidget {
 }
 
 class _CloudRegisterViewState extends State<CloudRegisterView> {
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -152,7 +152,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text("I'm sending a verification email")));
                                     // await _notesService.getOrCreateUser(email: email);
-                                    await _notesService.createUser(email: email, password: password);
+                                    await _notesService.createLocalUser(email: email, password: password);
                                     await Navigator.of(context).pushNamed(verifyEmailRoute);
                                     Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
                                   } on MissingDataAuthException {

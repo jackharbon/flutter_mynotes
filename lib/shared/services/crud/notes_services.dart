@@ -8,29 +8,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../extensions/list/filter.dart';
 import 'crud_exceptions.dart';
+import 'local_storage_constants.dart';
 
-class NotesService {
+class LocalNotesService {
   Database? _db;
 
-  List<DatabaseNote> _notes = [];
+  List<LocalDatabaseNote> _notes = [];
 
   DatabaseUser? _user;
 
   // ======================== NOTE STREAM ========================
 
-  static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance() {
-    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+  static final LocalNotesService _shared = LocalNotesService._sharedInstance();
+  LocalNotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<LocalDatabaseNote>>.broadcast(
       onListen: () {
         _notesStreamController.sink.add(_notes);
       },
     );
   }
-  factory NotesService() => _shared;
+  factory LocalNotesService() => _shared;
 
-  late final StreamController<List<DatabaseNote>> _notesStreamController;
+  late final StreamController<List<LocalDatabaseNote>> _notesStreamController;
 
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream.filter((note) {
+  Stream<List<LocalDatabaseNote>> get allNotes => _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
           return note.userId == currentUser.id; // we return boolean in filter function
@@ -41,8 +42,8 @@ class NotesService {
 
   // -------------------- _cacheNotes() --------------------
 
-  Future<void> _cacheNotes() async {
-    final allNotes = await getAllNotes();
+  Future<void> _cacheLocalNotes() async {
+    final allNotes = await getAllLocalNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
@@ -97,7 +98,7 @@ class NotesService {
       await db.execute(createUserTable);
       // create note table
       await db.execute(createNoteTable);
-      await _cacheNotes();
+      await _cacheLocalNotes();
       // ? -----------------------------------------------------------
       devtools.log(' ==> notes_services | open() | createUserTable: $createUserTable');
       devtools.log(' ==> notes_services | open() | createNoteTable: $createNoteTable');
@@ -110,7 +111,7 @@ class NotesService {
 
   // -------------------- getNote() --------------------
 
-  Future<DatabaseNote> getNote({required int id}) async {
+  Future<LocalDatabaseNote> getLocalNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(
@@ -121,9 +122,9 @@ class NotesService {
     );
 
     if (notes.isEmpty) {
-      throw CouldNotFindNoteException();
+      throw CouldNotFindLocalNoteException();
     } else {
-      final note = DatabaseNote.fromRow(notes.first);
+      final note = LocalDatabaseNote.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
       _notes.add(note);
       _notesStreamController.add(_notes);
@@ -135,23 +136,23 @@ class NotesService {
 
   // -------------------- getAllNotes() --------------------
 
-  Future<Iterable<DatabaseNote>> getAllNotes() async {
+  Future<Iterable<LocalDatabaseNote>> getAllLocalNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | getAllNotes() | notes: $notes');
-    return notes.map((noteRow) => DatabaseNote.fromRow(noteRow));
+    return notes.map((noteRow) => LocalDatabaseNote.fromRow(noteRow));
   }
 
   // -------------------- createNote() --------------------
 
-  Future<DatabaseNote> createNote({required DatabaseUser owner}) async {
+  Future<LocalDatabaseNote> createLocalNote({required DatabaseUser owner}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     // make sure owner exists in the database with the correct id
-    final dbUser = await getUser(email: owner.email);
+    final dbUser = await getLocalUser(email: owner.email);
     if (dbUser != owner) {
       throw CouldNotFindUserException();
     }
@@ -169,7 +170,7 @@ class NotesService {
     });
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | createNote() | noteId: $noteId');
-    final note = DatabaseNote(
+    final note = LocalDatabaseNote(
       id: noteId,
       userId: owner.id,
       title: title,
@@ -188,8 +189,8 @@ class NotesService {
 
   // -------------------- updateNote() --------------------
 
-  Future<DatabaseNote> updateNote({
-    required DatabaseNote note,
+  Future<LocalDatabaseNote> updateLocalNote({
+    required LocalDatabaseNote note,
     required String title,
     required String text,
     required String createdAt,
@@ -198,7 +199,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
 
     // make sure note exists
-    await getNote(id: note.id);
+    await getLocalNote(id: note.id);
 
     // update DB
     final updatesCount = await db.update(
@@ -214,9 +215,9 @@ class NotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateNoteException();
+      throw CouldNotUpdateLocalNoteException();
     } else {
-      final updatedNote = await getNote(id: note.id);
+      final updatedNote = await getLocalNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
@@ -228,7 +229,7 @@ class NotesService {
 
   // -------------------- deleteNote() --------------------
 
-  Future<void> deleteNote({required int id}) async {
+  Future<void> deleteLocalNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
@@ -239,7 +240,7 @@ class NotesService {
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
-      throw ColdNotDeleteNoteException();
+      throw ColdNotDeleteLocalNoteException();
     } else {
       final countBefore = _notes.length;
       _notes.removeWhere((note) => note.id == id);
@@ -251,10 +252,10 @@ class NotesService {
 
   // -------------------- deleteAllNotes() --------------------
 
-  Future<int> deleteAllNotes({required String email}) async {
+  Future<int> deleteAllLocalNotes({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    final user = await getUser(email: email);
+    final user = await getLocalUser(email: email);
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | deleteAllNotes() | user.id: ${user.id}');
     final numberOfDeletedNotes = await db.delete(
@@ -273,12 +274,12 @@ class NotesService {
 
   // -------------------- getOrCreateUser() --------------------
 
-  Future<DatabaseUser> getOrCreateUser({
+  Future<DatabaseUser> getOrCreateLocalUser({
     required String email,
     bool setAsCurrentUser = true, // set retrieved user as a current user to filter notes
   }) async {
     try {
-      final user = await getUser(email: email);
+      final user = await getLocalUser(email: email);
       if (setAsCurrentUser) {
         _user = user;
       }
@@ -286,7 +287,7 @@ class NotesService {
       devtools.log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
-      final createdUser = await createUser(email: email, password: _user!.password);
+      final createdUser = await createLocalUser(email: email, password: _user!.password);
       if (setAsCurrentUser) {
         _user = createdUser;
       }
@@ -300,7 +301,7 @@ class NotesService {
 
 // -------------------- checkUser() --------------------
 
-  Future<DatabaseUser> logInUser({required String email, required String password}) async {
+  Future<DatabaseUser> logInLocalUser({required String email, required String password}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
@@ -311,7 +312,7 @@ class NotesService {
       whereArgs: [email, password],
     );
     // ? --------------------------------
-    devtools.log(' ==> notes_services | checkUser() | results: $results');
+    devtools.log(' ==> notes_services | logInUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
     } else {
@@ -321,7 +322,7 @@ class NotesService {
 
 // -------------------- getUser() --------------------
 
-  Future<DatabaseUser> getUser({required String email}) async {
+  Future<DatabaseUser> getLocalUser({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
@@ -342,7 +343,7 @@ class NotesService {
 
 // -------------------- createUser() --------------------
 
-  Future<DatabaseUser> createUser({required String email, required String password}) async {
+  Future<DatabaseUser> createLocalUser({required String email, required String password}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
@@ -393,7 +394,53 @@ class NotesService {
 
   // -------------------- updateUser() --------------------
 
-  Future<DatabaseUser> updateIsEmailVerified({
+  Future<DatabaseUser> updateLocalUser({
+    String? password,
+    String? firstName,
+    String? lastName,
+    String? themeMode,
+    String? colorsScheme,
+    String? avatarUrl,
+    required String email,
+  }) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    // update DB
+    final updatesCount = await db.update(
+      userTable,
+      {
+        passwordColumn: password,
+        firstNameColumn: firstName,
+        lastNameColumn: lastName,
+        themeModeColumn: themeMode,
+        colorsSchemeColumn: colorsScheme,
+        avatarUrlColumn: avatarUrl,
+      },
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateLocalNoteException();
+    } else {
+      final results = await db.query(
+        userTable,
+        limit: 1,
+        where: 'email = ?',
+        whereArgs: [email.toLowerCase()],
+      );
+      // ? -----------------------------------------------------------
+      devtools.log(' ==> notes_services | updateUser() | results: $results');
+      if (results.isEmpty) {
+        throw CouldNotFindUserException();
+      } else {
+        return DatabaseUser.fromRow(results.first);
+      }
+    }
+  }
+
+  Future<DatabaseUser> updateLocalIsEmailVerified({
     required String email,
   }) async {
     await _ensureDbIsOpen();
@@ -410,7 +457,7 @@ class NotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateNoteException();
+      throw CouldNotUpdateLocalNoteException();
     } else {
       final results = await db.query(
         userTable,
@@ -430,7 +477,7 @@ class NotesService {
 
   // -------------------- deleteUser() --------------------
 
-  Future<void> deleteUser({required String email}) async {
+  Future<void> deleteLocalUser({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedAccounts = await db.delete(
@@ -441,14 +488,14 @@ class NotesService {
     // ? -----------------------------------------------------------
     devtools.log(' ==> notes_services | deleteUser() | deletedAccounts: $deletedAccounts');
     if (deletedAccounts != 1) {
-      throw ColdNotDeleteUserException();
+      throw CouldNotDeleteUserException();
     }
   }
 }
 
 // ======================== Note Database ========================
 
-class DatabaseNote {
+class LocalDatabaseNote {
   final int id;
   final int userId;
   final String? title;
@@ -456,7 +503,7 @@ class DatabaseNote {
   final String createdAt;
   final bool isSyncedWithCloud;
 
-  DatabaseNote({
+  LocalDatabaseNote({
     required this.id,
     required this.userId,
     required this.title,
@@ -465,7 +512,7 @@ class DatabaseNote {
     required this.isSyncedWithCloud,
   });
 
-  DatabaseNote.fromRow(Map<String, Object?> map)
+  LocalDatabaseNote.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
         userId = map[userIdColumn] as int,
         title = map[titleColumn] as String,
@@ -478,7 +525,7 @@ class DatabaseNote {
       'Note, ID = $id, userId = $userId, title = $title, text = $text, createdAt: $createdAt, isSyncedWithCloud = $isSyncedWithCloud,';
 
   @override
-  bool operator ==(covariant DatabaseNote other) => id == other.id;
+  bool operator ==(covariant LocalDatabaseNote other) => id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -534,54 +581,3 @@ class DatabaseUser {
   @override
   int get hashCode => id.hashCode;
 }
-
-// ========================= DATABASE VARIABLES =========================
-
-const dbName = 'notes.db';
-
-// -------------------- Note Database --------------------
-
-const noteTable = 'note';
-const userIdColumn = 'user_id';
-const titleColumn = 'title';
-const textColumn = 'text';
-const createdAtColumn = 'created_at';
-const isSyncedWithCloudColumn = 'is_synced_with_cloud';
-
-const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
-	"id"	INTEGER NOT NULL,
-	"user_id"	INTEGER NOT NULL,
-	"title"	TEXT,
-	"text"	TEXT,
-  "created_at"  TEXT NOT NULL,
-	"is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
-	FOREIGN KEY("user_id") REFERENCES "user"("id"),
-	PRIMARY KEY("id" AUTOINCREMENT)
-      );''';
-// -------------------- User Database --------------------
-
-const userTable = 'user';
-const idColumn = 'id';
-const emailColumn = 'email';
-const passwordColumn = 'password';
-const firstNameColumn = 'first_name';
-const lastNameColumn = 'last_name';
-const themeModeColumn = 'theme_mode';
-const colorsSchemeColumn = 'colors_scheme';
-const avatarUrlColumn = 'avatar_url';
-const createdAtUserColumn = 'created_at_user';
-const isEmailVerifiedColumn = 'is_email_verified';
-
-const createUserTable = '''CREATE TABLE IF NOT EXISTS  "user" (
-	"id"	INTEGER NOT NULL,
-	"email"	TEXT NOT NULL UNIQUE,
-  "password" TEXT NOT NULL,
-	"first_name"	TEXT,
-	"last_name"	TEXT,
-	"theme_mode"	TEXT,
-	"colors_scheme"	TEXT,
-	"avatar_url"	TEXT,
-  "created_at_user"  TEXT NOT NULL,
-  "is_email_verified"	INTEGER NOT NULL DEFAULT 0,
-	PRIMARY KEY("id" AUTOINCREMENT)
-      );''';

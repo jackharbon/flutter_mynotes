@@ -8,7 +8,7 @@ class AppNotifier extends ChangeNotifier {
   ThemeMode colorMode = ThemeMode.system;
   FlexScheme themeScheme = ThemeColorsSchemes().schemeBlue;
   bool isCloudStorage = true;
-  bool isOnline = true;
+  bool isOnline = false;
   String userEmail = "";
 
   void toggleLightDarkMode(ThemeMode colorMode) {

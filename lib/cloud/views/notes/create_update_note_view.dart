@@ -19,16 +19,16 @@ class CloudCreateUpdateNoteView extends StatefulWidget {
 }
 
 class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
-  DatabaseNote? _note;
+  LocalDatabaseNote? _note;
 
-  late final NotesService _notesService;
+  late final LocalNotesService _notesService;
   late final TextEditingController _noteTitleController;
   late final TextEditingController _noteTextController;
   late final Timestamp createdAt;
 
   @override
   void initState() {
-    _notesService = NotesService();
+    _notesService = LocalNotesService();
     _noteTitleController = TextEditingController();
     _noteTextController = TextEditingController();
     createdAt = Timestamp.now();
@@ -48,7 +48,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
-    await _notesService.updateNote(
+    await _notesService.updateLocalNote(
       note: note,
       title: title,
       text: text,
@@ -63,9 +63,9 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     _noteTextController.addListener(_textControllerListener);
   }
 
-  Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
+  Future<LocalDatabaseNote> createOrGetExistingNote(BuildContext context) async {
     // Extracting argument T(optional - note exists on tap) = DatabaseNote from the context
-    final widgetNote = context.getArgument<DatabaseNote>();
+    final widgetNote = context.getArgument<LocalDatabaseNote>();
 
     if (widgetNote != null) {
       _note = widgetNote;
@@ -84,11 +84,11 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
-    final owner = await _notesService.getUser(email: email);
+    final email = currentUser.email;
+    final owner = await _notesService.getLocalUser(email: email);
     // ? ---------------------------------------------------------------
     log(' ==> new_note_view | createNewNote() | currentUser email: $email owner: $owner');
-    final newNote = await _notesService.createNote(owner: owner);
+    final newNote = await _notesService.createLocalNote(owner: owner);
     _note = newNote;
     return newNote;
   }
@@ -99,7 +99,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
       if (_noteTextController.text.isEmpty && _noteTitleController.text.isEmpty) {
         // ? ---------------------------------------------------------------
         log(' ==> new_note_view | _deleteNoteIfTextIsEmpty() | deleted note: $note');
-        await _notesService.deleteNote(id: note.id);
+        await _notesService.deleteLocalNote(id: note.id);
       }
     }
   }
@@ -113,7 +113,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
-        await _notesService.updateNote(
+        await _notesService.updateLocalNote(
           note: note,
           text: text,
           title: title,
@@ -162,7 +162,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _note = snapshot.data as DatabaseNote?;
+              _note = snapshot.data as LocalDatabaseNote?;
               _setupTextControllerListener();
               // ? ---------------------------------------------------------------
               log(' ==> new_note_view | _note: $_note');
