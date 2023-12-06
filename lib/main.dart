@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -51,10 +51,33 @@ class _AppStateNotifierLayerState extends State<AppStateNotifierLayer> {
       stream: Connectivity().onConnectivityChanged,
       builder: (context, AsyncSnapshot<ConnectivityResult> snapshot) {
         // ? --------------------------------
-        devtools.log(' ==> main | StreamBuilder() | snapshot.data: ${snapshot.data}');
-        return snapshot.data == ConnectivityResult.mobile || snapshot.data == ConnectivityResult.wifi
-            ? const GetOnlineMaterialApp()
-            : const GetOfflineMaterialApp();
+        //  devtools.log(' ==> main | StreamBuilder() | snapshot.data: ${snapshot.data}');
+        return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
+          switch (snapshot.data) {
+            case null:
+              Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
+              Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(false);
+            // ? --------------------------------
+            //  devtools.log(' ==> main | GetOnlineMaterialApp() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+            //  devtools.log(' ==> main | GetOnlineMaterialApp() | isOnline: ${appStateNotifier.isOnline}');
+            // return const LoadingStandardProgressBar();
+            case ConnectivityResult.none:
+              Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
+              Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(false);
+              // ? --------------------------------
+              //  devtools.log(' ==> main | GetOnlineMaterialApp() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+              //  devtools.log(' ==> main | GetOnlineMaterialApp() | isOnline: ${appStateNotifier.isOnline}');
+              return const GetOnlineMaterialApp();
+            default:
+              Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(true);
+              Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(true);
+              // ? --------------------------------
+              //  devtools.log(' ==> main | GetOnlineMaterialApp() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+              //  devtools.log(' ==> main | GetOnlineMaterialApp() | isOnline: ${appStateNotifier.isOnline}');
+              return const GetOnlineMaterialApp();
+          }
+          return const GetOnlineMaterialApp();
+        });
       },
     );
   }
@@ -68,10 +91,6 @@ class GetOnlineMaterialApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
-      Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(true);
-      // ? --------------------------------
-      devtools.log(
-          ' ==> main | GetOnlineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
       return GetMaterialApp(
         theme: FlexThemeData.light(
           scheme: appStateNotifier.themeScheme,
@@ -144,114 +163,15 @@ class GetOnlineMaterialApp extends StatelessWidget {
         themeMode: appStateNotifier.colorMode,
         title: 'Main Page (cloud)',
         debugShowCheckedModeBanner: false,
-        home: (appStateNotifier.isCloudStorage) ? const CloudHomePage() : const LocalHomePage(),
+        home: (appStateNotifier.isOnline) ? const CloudHomePage() : const LocalHomePage(),
         routes: {
-          homePageRoute: (context) => (appStateNotifier.isCloudStorage) ? const CloudHomePage() : const LocalHomePage(),
+          homePageRoute: (context) => (appStateNotifier.isOnline) ? const CloudHomePage() : const LocalHomePage(),
           registerRoute: (context) => const CloudRegisterView(),
           verifyEmailRoute: (context) => const CloudVerifyEmailView(),
-          loginRoute: (context) => (appStateNotifier.isCloudStorage) ? const CloudLoginView() : const LocalLoginView(),
-          myNotesRoute: (context) =>
-              (appStateNotifier.isCloudStorage) ? const CloudMyNotesView() : const LocalMyNotesView(),
+          loginRoute: (context) => (appStateNotifier.isOnline) ? const CloudLoginView() : const LocalLoginView(),
+          myNotesRoute: (context) => (appStateNotifier.isOnline) ? const CloudMyNotesView() : const LocalMyNotesView(),
           createOrUpdateNoteRoute: (context) =>
-              (appStateNotifier.isCloudStorage) ? const CloudCreateUpdateNoteView() : const LocalCreateUpdateNoteView(),
-        },
-      );
-    });
-  }
-}
-
-class GetOfflineMaterialApp extends StatelessWidget {
-  const GetOfflineMaterialApp({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
-      Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
-      // ? --------------------------------
-      devtools.log(
-          ' ==> main | GetOfflineMaterialApp() | Consumer isCloudStorage: ${appStateNotifier.isCloudStorage}, isOnline: ${appStateNotifier.isOnline}');
-      return GetMaterialApp(
-        theme: FlexThemeData.light(
-          scheme: appStateNotifier.themeScheme,
-          surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-          blendLevel: 10,
-          appBarStyle: FlexAppBarStyle.primary,
-          appBarOpacity: 0.92,
-          appBarElevation: 2.5,
-          transparentStatusBar: true,
-          tabBarStyle: FlexTabBarStyle.universal,
-          tooltipsMatchBackground: true,
-          swapColors: false,
-          lightIsWhite: false,
-          visualDensity: FlexColorScheme.comfortablePlatformDensity,
-          fontFamily: 'TitilliumWeb',
-          subThemesData: const FlexSubThemesData(
-            blendOnLevel: 20,
-            blendOnColors: false,
-            useTextTheme: true,
-            useM2StyleDividerInM3: true,
-            alignedDropdown: true,
-            useInputDecoratorThemeInDialogs: true,
-            fabUseShape: true,
-            interactionEffects: true,
-            bottomNavigationBarElevation: 0,
-            bottomNavigationBarOpacity: 0.95,
-            navigationBarOpacity: 0.95,
-            navigationBarMutedUnselectedIcon: true,
-            inputDecoratorIsFilled: true,
-            inputDecoratorBorderType: FlexInputBorderType.outline,
-            inputDecoratorUnfocusedHasBorder: true,
-            blendTextTheme: true,
-            popupMenuOpacity: 0.95,
-          ),
-        ),
-        darkTheme: FlexThemeData.dark(
-          scheme: appStateNotifier.themeScheme,
-          surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-          blendLevel: 10,
-          appBarStyle: FlexAppBarStyle.primary,
-          appBarOpacity: 0.92,
-          appBarElevation: 2.5,
-          transparentStatusBar: true,
-          tabBarStyle: FlexTabBarStyle.forAppBar,
-          tooltipsMatchBackground: true,
-          swapColors: false,
-          darkIsTrueBlack: false,
-          visualDensity: FlexColorScheme.comfortablePlatformDensity,
-          fontFamily: 'TitilliumWeb',
-          subThemesData: const FlexSubThemesData(
-            blendOnLevel: 20,
-            blendOnColors: false,
-            useTextTheme: true,
-            useM2StyleDividerInM3: true,
-            alignedDropdown: true,
-            useInputDecoratorThemeInDialogs: true,
-            fabUseShape: true,
-            interactionEffects: true,
-            bottomNavigationBarElevation: 0,
-            bottomNavigationBarOpacity: 0.95,
-            navigationBarOpacity: 0.95,
-            navigationBarMutedUnselectedIcon: true,
-            inputDecoratorIsFilled: true,
-            inputDecoratorBorderType: FlexInputBorderType.outline,
-            inputDecoratorUnfocusedHasBorder: true,
-            blendTextTheme: true,
-            popupMenuOpacity: 0.95,
-          ),
-        ),
-        themeMode: appStateNotifier.colorMode,
-        title: 'Main Page (local)',
-        debugShowCheckedModeBanner: false,
-        home: const LocalHomePage(),
-        routes: {
-          homePageRoute: (context) => const LocalHomePage(),
-          registerRoute: (context) => const CloudRegisterView(),
-          verifyEmailRoute: (context) => const CloudVerifyEmailView(),
-          loginRoute: (context) => const LocalLoginView(),
-          myNotesRoute: (context) => const LocalMyNotesView(),
-          createOrUpdateNoteRoute: (context) => const LocalCreateUpdateNoteView(),
+              (appStateNotifier.isOnline) ? const CloudCreateUpdateNoteView() : const LocalCreateUpdateNoteView(),
         },
       );
     });

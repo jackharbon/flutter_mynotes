@@ -1,8 +1,7 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
 
 import '../../../firebase_options.dart';
 import 'auth_user.dart';
@@ -70,34 +69,29 @@ class FirebaseAuthProvider implements AuthProvider {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         await FirebaseAuth.instance.currentUser!.delete();
-        devtools.log(
-            '==> firebase_auth_provider | deleteAccount() | deletedAccount: $currentUser');
+        //  devtools.log('==> firebase_auth_provider | deleteAccount() | deletedAccount: $currentUser');
       } else {
-        devtools.log(
-            '==> firebase_auth_provider | deleteAccount() | currentUser is null!');
+        //  devtools.log('==> firebase_auth_provider | deleteAccount() | currentUser is null!');
         throw ColdNotDeleteUserException();
       }
     } on FirebaseAuthException catch (e) {
       // ? --------------------------------
-      devtools.log(' ==> firebase_auth_provider | deleteAccount() | error: $e');
+      //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | error: $e');
       switch (e.code) {
         case "requires-recent-login":
           FirebaseAuth.instance.currentUser!.providerData.first;
-          await FirebaseAuth.instance.currentUser!
-              .reauthenticateWithProvider(GoogleAuthProvider());
+          await FirebaseAuth.instance.currentUser!.reauthenticateWithProvider(GoogleAuthProvider());
           await FirebaseAuth.instance.currentUser!.delete();
         default:
           throw ColdNotDeleteUserException();
       }
     } catch (e) {
       // ? --------------------------------
-      devtools.log(
-          ' ==> firebase_auth_provider | deleteAccount() | UnknownAuthException: $e');
+      //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | UnknownAuthException: $e');
       throw UnknownAuthException();
     }
     // ? --------------------------------
-    devtools.log(
-        ' ==> firebase_auth_provider | deleteAccount() | GenericAuthException');
+    //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | GenericAuthException');
     throw GenericAuthException();
   }
 

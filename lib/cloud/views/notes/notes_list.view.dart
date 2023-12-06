@@ -1,82 +1,179 @@
+//  import 'dart:developer' as devtools show log;
+
 import 'package:flutter/material.dart';
-import '../../../shared/services/crud/notes_services.dart';
-import '../../../shared/utilities/dialogs/delete_dialog.dart';
+import 'package:provider/provider.dart';
 
-typedef NoteCallback = void Function(LocalDatabaseNote note);
+import '../../../shared/providers/app_notifier.dart';
+import '../../services/cloud/cloud_note.dart';
 
-class CloudNotesListView extends StatelessWidget {
-  final List<LocalDatabaseNote> notes;
+typedef NoteCallback = void Function(CloudNote note);
+
+class CloudNotesListView extends StatefulWidget {
+  final Iterable<CloudNote> notes;
   final NoteCallback onDeleteNote;
   final NoteCallback onTap;
 
   const CloudNotesListView({
-    Key? key,
+    super.key,
     required this.notes,
     required this.onDeleteNote,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
+  State<CloudNotesListView> createState() => _CloudNotesListViewState();
+}
+
+class _CloudNotesListViewState extends State<CloudNotesListView> {
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: notes.length,
-        itemBuilder: (context, index) {
-          final note = notes[index];
-          return Card(
-            child: ListTile(
-              onTap: () {
-                // ? Call back to the notes_view onTap function
-                onTap(note);
-              },
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      (note.title != '') ? note.title! : "...",
-                      maxLines: 1,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Theme.of(context).colorScheme.primary,
+    return Consumer<AppNotifier>(
+      builder: (context, appStateNotifier, child) {
+        return ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: widget.notes.length,
+          itemBuilder: (context, index) {
+            final note = widget.notes.elementAt(index);
+            final positionNumber = index + 1;
+            // -------------- deleting by swiping left --------------
+            return Dismissible(
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: AlignmentDirectional.centerEnd,
+                color: Theme.of(context).colorScheme.error,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 0.0, 28.0, 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Delete this note',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Theme.of(context).colorScheme.onError,
+                        ),
                       ),
-                    ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Icon(
+                        Icons.delete,
+                        color: Theme.of(context).colorScheme.onError,
+                      ),
+                    ],
                   ),
-                  Text(
-                    note.createdAt,
-                    maxLines: 1,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 13,
-                      fontStyle: FontStyle.italic,
-                      color: Theme.of(context).colorScheme.outline,
+                ),
+              ),
+              key: UniqueKey(),
+              onDismissed: (DismissDirection endToStart) {
+                setState(() {
+                  widget.onDeleteNote(note);
+                });
+              },
+              child: Column(
+                children: [
+                  Card(
+                    child: ListTile(
+                      onTap: () {
+                        widget.onTap(note);
+                      },
+                      // -------------- list tiles: TITLE --------------
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (note.title.isNotEmpty) ? note.title : '...',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              softWrap: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: appStateNotifier.isDateVisible,
+                            child: Text(
+                              note.createdAt.toDate().toString().substring(0, 16),
+                              maxLines: 1,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 13,
+                                fontStyle: FontStyle.italic,
+                                color: Theme.of(context).colorScheme.outline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // -------------- list tiles: SUBTITLE --------------
+                      subtitle: (appStateNotifier.isSubtitleVisible)
+                          ? Text(
+                              note.text,
+                              maxLines: 10,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          : null,
+                      leading: (appStateNotifier.isNumberVisible) ? Text('$positionNumber') : null,
+                      // -------------- list tiles: TRAILING ICONS --------------
+                      trailing: (appStateNotifier.isDeletingMode)
+                          ? IconButton(
+                              onPressed: () {
+                                final note = widget.notes.elementAt(index);
+                                setState(() {
+                                  switch (appStateNotifier.selectedItems.contains(note.documentId)) {
+                                    case true:
+                                      appStateNotifier.selectedItems.removeWhere((item) => item == note.documentId);
+                                      Provider.of<AppNotifier>(context, listen: false)
+                                          .selectedItemsForDelete(appStateNotifier.selectedItems);
+                                    // ? --------------------------------------------
+                                    //  devtools.log('notes_list_view (cloud) | ListTile | index: $index');
+                                    case false:
+                                      appStateNotifier.selectedItems.add(note.documentId);
+                                      Provider.of<AppNotifier>(context, listen: false)
+                                          .selectedItemsForDelete(appStateNotifier.selectedItems);
+                                    // ? --------------------------------------------
+                                    //  devtools.log('notes_list_view (cloud) | ListTile | index: $index');
+                                  }
+                                  (appStateNotifier.selectedItems.isEmpty)
+                                      ? Provider.of<AppNotifier>(context, listen: false)
+                                          .itemsCheckedToDeleteState(false)
+                                      : Provider.of<AppNotifier>(context, listen: false)
+                                          .itemsCheckedToDeleteState(true);
+                                  // ? --------------------------------------------
+                                  //  devtools.log(
+                                  //     'notes_list_view (cloud) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, note.documentId: ${note.documentId} \n selectedItems length: ${appStateNotifier.selectedItems.length}');
+                                  //  devtools.log(
+                                  //     'notes_list_view (cloud) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
+                                });
+                              },
+                              icon: (appStateNotifier.selectedItems.contains(note.documentId))
+                                  ? Icon(
+                                      Icons.check_box_outlined,
+                                      size: 20.0,
+                                      color: Theme.of(context).colorScheme.error,
+                                    )
+                                  : Icon(
+                                      Icons.check_box_outline_blank,
+                                      size: 20.0,
+                                      color: Theme.of(context).colorScheme.outline,
+                                    ),
+                            )
+                          : null,
                     ),
                   ),
                 ],
               ),
-              trailing: IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  onPressed: () async {
-                    final shouldDelete = await showDeleteDialog(context);
-                    if (shouldDelete) {
-                      onDeleteNote(note);
-                    }
-                  }),
-              subtitle: Text(
-                note.text,
-                maxLines: 5,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          );
-        });
+            );
+          },
+        );
+      },
+    );
   }
 }

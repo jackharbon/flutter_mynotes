@@ -1,4 +1,5 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
+
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,7 +32,7 @@ class LocalNotesService {
 
   late final StreamController<List<LocalDatabaseNote>> _notesStreamController;
 
-  Stream<List<LocalDatabaseNote>> get allNotes => _notesStreamController.stream.filter((note) {
+  Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream.filter((note) {
         final currentUser = _user;
         if (currentUser != null) {
           return note.userId == currentUser.id; // we return boolean in filter function
@@ -47,7 +48,7 @@ class LocalNotesService {
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | _cacheNotes() | _notes: $_notes');
+    //  devtools.log(' ==> notes_services  (shared) | _cacheNotes() | _notes: $_notes');
   }
 
 // ======================== INITIALIZE DATABASE ========================
@@ -58,7 +59,7 @@ class LocalNotesService {
       throw DatabaseIsNotOpenException();
     } else {
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | _getDatabaseOrThrow() | db: $db');
+      //  devtools.log(' ==> notes_services  (shared) | _getDatabaseOrThrow() | db: $db');
       return db;
     }
   }
@@ -71,7 +72,7 @@ class LocalNotesService {
       await db.close();
       _db = null;
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | close() | _db: $_db');
+      //  devtools.log(' ==> notes_services  (shared) | close() | _db: $_db');
     }
   }
 
@@ -91,7 +92,7 @@ class LocalNotesService {
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | open() | dbPath: $dbPath');
+      //  devtools.log(' ==> notes_services  (shared) | open() | dbPath: $dbPath');
       final db = await openDatabase(dbPath);
       _db = db;
       // create the user table
@@ -100,8 +101,8 @@ class LocalNotesService {
       await db.execute(createNoteTable);
       await _cacheLocalNotes();
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | open() | createUserTable: $createUserTable');
-      devtools.log(' ==> notes_services | open() | createNoteTable: $createNoteTable');
+      //  devtools.log(' ==> notes_services  (shared) | open() | createUserTable: $createUserTable');
+      //  devtools.log(' ==> notes_services  (shared) | open() | createNoteTable: $createNoteTable');
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
     }
@@ -111,6 +112,7 @@ class LocalNotesService {
 
   // -------------------- getNote() --------------------
 
+// TODO: is it used anywhere?
   Future<LocalDatabaseNote> getLocalNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -129,19 +131,19 @@ class LocalNotesService {
       _notes.add(note);
       _notesStreamController.add(_notes);
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | getNote() | note: $note');
+      //  devtools.log(' ==> notes_services  (shared) | getNote() | note: $note');
       return note;
     }
   }
 
   // -------------------- getAllNotes() --------------------
-
+  // TODO: is it used anywhere?
   Future<Iterable<LocalDatabaseNote>> getAllLocalNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | getAllNotes() | notes: $notes');
+    //  devtools.log(' ==> notes_services  (shared) | getAllNotes() | notes: $notes');
     return notes.map((noteRow) => LocalDatabaseNote.fromRow(noteRow));
   }
 
@@ -169,21 +171,21 @@ class LocalNotesService {
       isSyncedWithCloudColumn: 1,
     });
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | createNote() | noteId: $noteId');
+    //  devtools.log(' ==> notes_services  (shared) | createNote() | noteId: $noteId');
     final note = LocalDatabaseNote(
       id: noteId,
       userId: owner.id,
       title: title,
       text: text,
       createdAt: createdAt,
-      isSyncedWithCloud: true,
+      isSyncedWithCloud: false,
     );
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | createNote() | note: $note');
+    //  devtools.log(' ==> notes_services  (shared) | createNote() | note: $note');
     _notes.add(note);
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | createNote() | _notes: $_notes');
+    //  devtools.log(' ==> notes_services  (shared) | createNote() | _notes: $_notes');
     return note;
   }
 
@@ -222,7 +224,7 @@ class LocalNotesService {
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | updateNote() | updatedNote: $updatedNote');
+      //  devtools.log(' ==> notes_services  (shared) | updateNote() | updatedNote: $updatedNote');
       return updatedNote;
     }
   }
@@ -238,7 +240,7 @@ class LocalNotesService {
       whereArgs: [id],
     );
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | deleteNote() | deletedCount: $deletedCount');
+    //  devtools.log(' ==> notes_services  (shared) | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
       throw ColdNotDeleteLocalNoteException();
     } else {
@@ -257,7 +259,7 @@ class LocalNotesService {
     final db = _getDatabaseOrThrow();
     final user = await getLocalUser(email: email);
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | deleteAllNotes() | user.id: ${user.id}');
+    //  devtools.log(' ==> notes_services  (shared) | deleteAllNotes() | user.id: ${user.id}');
     final numberOfDeletedNotes = await db.delete(
       noteTable,
       where: 'user_id = ?',
@@ -266,7 +268,7 @@ class LocalNotesService {
     _notes = [];
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
+    //  devtools.log(' ==> notes_services  (shared) | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
     return numberOfDeletedNotes;
   }
 
@@ -284,7 +286,7 @@ class LocalNotesService {
         _user = user;
       }
       // ? ----------------------------------------------------------------------------------
-      devtools.log(' ==> notes_services | getOrCreateUser() | get _user: $_user');
+      //  devtools.log(' ==> notes_services  (shared) | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createLocalUser(email: email, password: _user!.password);
@@ -292,7 +294,7 @@ class LocalNotesService {
         _user = createdUser;
       }
       // ? ----------------------------------------------------------------------------------
-      devtools.log(' ==> notes_services | getOrCreateUser() | createdUser: $createdUser');
+      //  devtools.log(' ==> notes_services  (shared) | getOrCreateUser() | createdUser: $createdUser');
       return createdUser;
     } catch (e) {
       rethrow;
@@ -312,7 +314,7 @@ class LocalNotesService {
       whereArgs: [email, password],
     );
     // ? --------------------------------
-    devtools.log(' ==> notes_services | logInUser() | results: $results');
+    //  devtools.log(' ==> notes_services  (shared) | logInUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
     } else {
@@ -333,7 +335,7 @@ class LocalNotesService {
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | getUser() | results: $results');
+    //  devtools.log(' ==> notes_services  (shared) | getUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
     } else {
@@ -376,7 +378,7 @@ class LocalNotesService {
       isEmailVerifiedColumn: isEmailVerified,
     });
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | createUser() | userId: $userId');
+    //  devtools.log(' ==> notes_services  (shared) | createUser() | userId: $userId');
 
     return DatabaseUser(
       id: userId,
@@ -431,7 +433,7 @@ class LocalNotesService {
         whereArgs: [email.toLowerCase()],
       );
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | updateUser() | results: $results');
+      //  devtools.log(' ==> notes_services  (shared) | updateUser() | results: $results');
       if (results.isEmpty) {
         throw CouldNotFindUserException();
       } else {
@@ -466,7 +468,7 @@ class LocalNotesService {
         whereArgs: [email.toLowerCase()],
       );
       // ? -----------------------------------------------------------
-      devtools.log(' ==> notes_services | updateIsEmailVerified() | results: $results');
+      //  devtools.log(' ==> notes_services  (shared) | updateIsEmailVerified() | results: $results');
       if (results.isEmpty) {
         throw CouldNotFindUserException();
       } else {
@@ -486,7 +488,7 @@ class LocalNotesService {
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
-    devtools.log(' ==> notes_services | deleteUser() | deletedAccounts: $deletedAccounts');
+    //  devtools.log(' ==> notes_services  (shared) | deleteUser() | deletedAccounts: $deletedAccounts');
     if (deletedAccounts != 1) {
       throw CouldNotDeleteUserException();
     }

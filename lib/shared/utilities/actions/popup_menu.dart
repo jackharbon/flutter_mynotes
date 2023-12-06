@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -16,7 +16,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
   return PopupMenuButton<MenuAction>(
     onSelected: (value) async {
       // ? ----------------------------------------
-      devtools.log(' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
+      //  devtools.log(' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
@@ -53,7 +53,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           final shouldDeleteAccount = await showDeleteAccountDialog(context);
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
-            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
+            //  devtools.log(' ==> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
             final String email = AuthService.firebase().currentUser!.email;
             await LocalNotesService().deleteAllLocalNotes(email: email);
             await LocalNotesService().deleteLocalUser(email: email);
@@ -63,7 +63,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
             );
             await AuthService.firebase().deleteUserAccount(email: email);
             // ? ----------------------------------------
-            devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
+            //  devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
           }
       }
     },

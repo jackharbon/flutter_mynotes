@@ -28,9 +28,9 @@ class CloudNote {
         title = snapshot.data()[titleFieldName] as String,
         text = snapshot.data()[textFieldName] as String,
         createdAt = snapshot.data()[createdAtFieldName] as Timestamp,
-        isSyncedWithCloud = snapshot.data()[isSyncedWithCloudFieldName] as int == 1 ? true : false;
+        isSyncedWithCloud = snapshot.data()[isSyncedWithCloudFieldName] as bool;
 
   @override
   String toString() =>
-      'Note, ID = $documentId, ownerUserId = $ownerUserId, title = $title, text: $text, createdAt: $createdAt, isSyncedWithCloud: $isSyncedWithCloud';
+      'CloudNote, ID = $documentId, ownerUserId = $ownerUserId, title = $title, createdAt: ${createdAt.toDate().toString().substring(0, 16)}, isSyncedWithCloud: $isSyncedWithCloud';
 }

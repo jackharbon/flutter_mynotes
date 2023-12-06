@@ -1,4 +1,4 @@
-// import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,71 +10,63 @@ class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes'); // returns collection reference
 
   // Stream os notes
-  Stream<Iterable<CloudNote>> allCloudNotesStream({
-    required String ownerUserId,
-  }) =>
-      notes.snapshots().map((event) =>
-          event.docs.map((doc) => CloudNote.fromSnapshot(doc)).where((note) => note.ownerUserId == ownerUserId));
-
-  // Stream<Iterable<CloudNote>> getAllCloudNotes({
+  // Stream<Iterable<CloudNote>> allCloudNotesStream({
   //   required String ownerUserId,
-  //   String? sortFieldName,
-  //   required bool isSortDescending,
-  // }) {
-  //   final allNotes = notes
-  //       .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
-  //       .orderBy("$sortFieldName", descending: isSortDescending)
-  //       .snapshots()
-  //       .map(
-  //         (event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)),
-  //       );
-  //   // ? --------------------------------------------
-  //   devtools.log('firebase_cloud_storage | allNotes() | allNotes ${allNotes.toString()}');
-  //   return allNotes;
-  // }
+  // }) =>
+  //     notes.snapshots().map((event) =>
+  //         event.docs.map((doc) => CloudNote.fromSnapshot(doc)).where((note) => note.ownerUserId == ownerUserId));
 
-  // gets a snapshot of the notes at that moment in time
-  Future<Iterable<CloudNote>> getCloudNotes({
+  Stream<Iterable<CloudNote>> allCloudNotesStream({
     required String ownerUserId,
     String? sortFieldName,
     required bool isSortDescending,
-  }) async {
-    try {
-      return await notes
-          .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
-          .orderBy("$sortFieldName", descending: isSortDescending)
-          .get()
-          .then((value) {
-        return value.docs.map(
-          (doc) {
-            return CloudNote(
-              documentId: doc.id,
-              ownerUserId: doc.data()[ownerUserIdFieldName] as String,
-              title: doc.data()[titleFieldName] as String,
-              text: doc.data()[textFieldName] as String,
-              createdAt: doc.data()[createdAtFieldName] as Timestamp,
-              isSyncedWithCloud: doc.data()[isSyncedWithCloudFieldName] as bool,
-            );
-          },
+  }) {
+    final allNotes = notes
+        .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+        .orderBy("$sortFieldName", descending: isSortDescending)
+        .snapshots()
+        .map(
+          (event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)),
         );
-      });
-    } catch (e) {
-      throw CouldNotGetAllCloudNotesException();
-    }
+    // ? --------------------------------------------
+    //  devtools.log(' ==> firebase_cloud_storage | allNotes() | allNotes: $allNotes');
+    return allNotes;
   }
+
+  // gets a snapshot of the notes at that moment in time
+  // TODO: getCloudNotes() is it used??
+  // Future<Iterable<CloudNote>> getCloudNotes({
+  //   required String ownerUserId,
+  //   String? sortFieldName,
+  //   required bool isSortDescending,
+  // }) async {
+  //   try {
+  //     return await notes
+  //         .where('ownerUserIdFieldName', isEqualTo: ownerUserId)
+  //         .orderBy("$sortFieldName", descending: isSortDescending)
+  //         .get()
+  //         .then((value) {
+  //       return value.docs.map(
+  //         (doc) => CloudNote.fromSnapshot(doc),
+  //       );
+  //     });
+  //   } catch (e) {
+  //     throw CouldNotGetAllCloudNotesException();
+  //   }
+  // }
 
   Future<void> updateCloudNote({
     required String documentId,
     required String title,
     required String text,
-    required Timestamp createdAt,
+    // required Timestamp createdAt,
     required bool isSyncedWithCloud,
   }) async {
     try {
       await notes.doc(documentId).update({
         titleFieldName: title,
         textFieldName: text,
-        createdAt: FieldValue.serverTimestamp(),
+        createdAtFieldName: Timestamp.now(),
         isSyncedWithCloudFieldName: isSyncedWithCloud,
       });
     } catch (e) {
@@ -87,19 +79,19 @@ class FirebaseCloudStorage {
       ownerUserIdFieldName: ownerUserId,
       titleFieldName: '',
       textFieldName: '',
-      createdAtFieldName: (createdAtFieldName.isEmpty) ? DateTime.now() : FieldValue.serverTimestamp(),
+      createdAtFieldName: DateTime.now(),
       isSyncedWithCloudFieldName: true,
     });
-    final fetchedNote = await document.get();
+    final fetchedNote = await document.get(); // gets a snapshot od document with document's data
     // ? --------------------------------------------
-    // devtools.log('firebase_cloud_storage | createNewNote() | fetchedNote ${fetchedNote.toString()}');
+    //  devtools.log(' ==> firebase_cloud_storage | createNewNote() | fetchedNote ${fetchedNote.toString()}');
     return CloudNote(
       documentId: fetchedNote.id,
       ownerUserId: ownerUserId,
       title: '',
       text: '',
       createdAt: Timestamp.now(),
-      isSyncedWithCloud: true,
+      isSyncedWithCloud: false,
     );
   }
 

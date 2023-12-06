@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 class NetworkController extends GetxController {
   final Connectivity _connectivity = Connectivity();
+  // RxBool isConnected = false.obs;
 
   @override
   void onInit() {
@@ -15,9 +16,11 @@ class NetworkController extends GetxController {
 
   void _updateConnectionStatus(ConnectivityResult connectivityResult) {
     if (connectivityResult == ConnectivityResult.none) {
+      // isConnected.value = false;
       // ? --------------------------------
-      devtools.log(' ----------- currentRoute ----------- ');
-      devtools.log(Get.currentRoute);
+      //  devtools.log(' ----------- currentRoute ----------- ');
+      //  devtools.log(' ==> network_controller | _updateConnectionStatus() | False isConnected: ${isConnected.value}');
+      //  devtools.log(Get.currentRoute);
       Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(
@@ -39,9 +42,11 @@ class NetworkController extends GetxController {
         snackStyle: SnackStyle.GROUNDED,
       );
     } else {
+      // isConnected.value = true;
       // ? --------------------------------
-      devtools.log(' ----------- currentRoute ----------- ');
-      devtools.log(Get.currentRoute);
+      //  devtools.log(' ----------- currentRoute ----------- ');
+      //  devtools.log(' ==> network_controller | _updateConnectionStatus() | True  isConnected: ${isConnected.value}');
+      //  devtools.log(Get.currentRoute);
       Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(

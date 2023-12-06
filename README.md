@@ -165,7 +165,7 @@ flutter pub add get
 
 You can also edit 'pubspec.yaml' and paste those dependencies (don't forget to include a current version - check on: [pub.dev](https://pub.dev/packages)).
 
-3. Enable multidex support - modify `android/app/build.gradle`. See [StackOverflow](https://stackoverflow.com/questions/49886597/multidex-issue-with-flutter) for details.
+4. Enable multidex support - modify `android/app/build.gradle`. See [StackOverflow](https://stackoverflow.com/questions/49886597/multidex-issue-with-flutter) for details.
 
 ```
 android {
@@ -180,12 +180,25 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation(platform("com.google.firebase:firebase-bom:32.4.0"))
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation "androidx.activity:activity:1.6.0-alpha05"
 }
 ```
 
-4. Create the splash screen
+In `AndroidManifest.xml` (`android/app/src/main/AndroidManifest.xml`) add:
 
-'dart run flutter_native_splash:create'
+```
+  <application
+  ...
+  android:enableOnBackInvokedCallback="true"
+  ... >
+  ...
+  </application>
+
+```
+
+5. Create the splash screen
+
+`dart run flutter_native_splash:create`
 
 ## Firebase set-up
 
@@ -200,6 +213,7 @@ firebase projects:list
 dart pub global activate flutterfire_cli
 flutterfire configure -> create project -> chose Android
 firebase init -> choose Firebase and Cloud configuration
+
 ```
 
 You can check file `lib/firebase_options`.
@@ -225,15 +239,17 @@ In the [Google Console](https://console.firebase.google.com/) go to Get Started 
 - If you've chosen `Start in production mode` open the tab `Rules` -> `Edit rules` and change permission read/write to `allow read, write: if request.auth != null;` (to allow user to write, if is authenticated).
 
 ```
+
 rules_version = '2';
 
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
+match /databases/{database}/documents {
+match /{document=\*\*} {
+allow read, write: if request.auth != null;
 }
+}
+}
+
 ```
 
 - Click `Publish` to publish new security rules
@@ -260,7 +276,9 @@ Help:[Get started with Cloud Firestore](https://firebase.google.com/docs/firesto
 ## Run a test
 
 ```
+
 flutter test test/auth_test.dart
+
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -274,7 +292,6 @@ flutter test test/auth_test.dart
 - [x] Internet connection checking
 - [x] Delete user option
 - [x] Local (offline) notes storage
-- [ ] Store (local/cloud) user preferences
 - [ ] Cloud (online) notes storage
 - [ ] Offline/online synchronizing
 - [ ] Swipe note to delete
@@ -356,6 +373,10 @@ Project Link: [https://github.com/jackharbon/flutter_mynotes](https://github.com
 [nodejs-url]: https://nodejs.org/
 [visualstudiocode]: https://img.shields.io/badge/visualstudio-3CA4EA?style=for-the-badge&logo=visualstudio&logoColor=white
 [visualstudiocode-url]: https://code.visualstudio.com
+
+```
+
+```
 
 ```
 

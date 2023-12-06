@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +32,13 @@ class _LocalHomePageState extends State<LocalHomePage> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = _notesService.getLocalUser(email: appStateNotifier.userEmail);
+              _notesService.getLocalUser(email: appStateNotifier.userEmail);
+              // final user = _notesService.getLocalUser(email: appStateNotifier.userEmail);
               // ? ----------------------------------------
-              devtools.log(' ==> home_view (local) | FutureBuilder | email verified: $user');
+              //  devtools.log(' ==> home_view (local) | FutureBuilder | email verified: $user');
               // TODO: isEmailVerified
               return const LocalLoginView();
-                                    default:
+            default:
               return Scaffold(
                 appBar: AppBar(
                   title: const Text(

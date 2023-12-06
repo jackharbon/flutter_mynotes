@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +24,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
   late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
-  DatabaseUser? user;
+  DatabaseUser? localUser;
 
   @override
   void initState() {
@@ -60,7 +60,6 @@ class _LocalLoginViewState extends State<LocalLoginView> {
       ),
       body: FutureBuilder(
         future: _notesService.open(),
-        // future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
@@ -130,30 +129,19 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  // await AuthService.firebase().logIn(
-                                  //   email: email,
-                                  //   password: password,
-                                  // );
-
-                                  // final user =
-                                  //     AuthService.firebase().currentUser;
-                                  // _user = await _notesService.getUser(
-                                  //   email: email,
-                                  // );
-                                  user = await _notesService.logInLocalUser(email: email, password: password);
+                                  localUser = await _notesService.logInLocalUser(email: email, password: password);
                                   // ? --------------------------------
-                                  devtools.log(' ==> login_view (local) | login button | user: $user');
-                                  if (user != null) {
+                                  //  devtools.log(' ==> login_view (local) | login button | user: $user');
+                                  if (localUser != null) {
                                     Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
-                                    if (user!.isEmailVerified) {
+                                    if (localUser!.isEmailVerified) {
                                       await Navigator.of(context).pushNamedAndRemoveUntil(
                                         myNotesRoute,
                                         (route) => false,
                                       );
                                     } else {
                                       // ? --------------------------------
-                                      devtools.log(
-                                          ' ==> login_view (local) | login button | user!.isEmailVerified: ${user!.isEmailVerified}');
+                                      //  devtools.log(' ==> login_view (local) | login button | user!.isEmailVerified: ${user!.isEmailVerified}');
                                       await Navigator.of(context).pushNamed(verifyEmailRoute);
                                     }
                                   } else {

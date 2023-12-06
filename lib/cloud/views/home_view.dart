@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 
 import '../../shared/helpers/loading/loading_widget.dart';
@@ -21,14 +21,14 @@ class CloudHomePage extends StatelessWidget {
             if (user != null) {
               if (user.isEmailVerified) {
                 // ? ----------------------------------------
-                devtools.log(' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
+                //  devtools.log(' ==> main | FutureBuilder | email verified: ${user.email.toString()}');
                 return const CloudLoginView();
               } else {
-                devtools.log(' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
+                //  devtools.log(' ==> main | FutureBuilder | email not verified: ${user.email.toString()}');
                 return const CloudVerifyEmailView();
               }
             } else {
-              devtools.log(' ==> main | FutureBuilder | user is null: ${user.toString()}');
+              //  devtools.log(' ==> main | FutureBuilder | user is null: ${user.toString()}');
               return const CloudRegisterView();
             }
           default:

@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -146,8 +146,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                       password: password,
                                     );
                                     // ? --------------------------------
-                                    devtools.log(
-                                        ' ==> register_view | register button | email: $email, password: $password');
+                                    //  devtools.log(' ==> register_view | register button | email: $email');
+                                    //  devtools.log(' ==> register_view | register button | password: $password');
                                     await AuthService.firebase().sendEmailVerification();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text("I'm sending a verification email")));

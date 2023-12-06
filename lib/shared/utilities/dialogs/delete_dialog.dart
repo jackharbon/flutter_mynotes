@@ -1,11 +1,11 @@
-import 'dart:developer';
+//  import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
 import 'generic_dialog.dart';
 
 Future<bool> showDeleteDialog(BuildContext context) {
   // ? --------------------------------------------
-  log('delete_dialog | showDeleteDialog() | context: $context');
+  //  devtools.log('delete_dialog | showDeleteDialog() | context: $context');
   return showGenericDialog<bool>(
     context: context,
     title: 'Delete note',

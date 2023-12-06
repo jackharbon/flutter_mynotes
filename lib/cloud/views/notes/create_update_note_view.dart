@@ -1,40 +1,39 @@
-import 'dart:developer';
-import 'package:flutter/material.dart';
+//  import 'dart:developer' as devtools show log;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import '../../../shared/constants/routes.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../services/auth/auth_service.dart';
-import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
+import '../../services/cloud/cloud_note.dart';
+import '../../services/cloud/firebase_cloud_storage.dart';
 
 class CloudCreateUpdateNoteView extends StatefulWidget {
-  const CloudCreateUpdateNoteView({Key? key}) : super(key: key);
+  const CloudCreateUpdateNoteView({super.key});
 
   @override
   State<CloudCreateUpdateNoteView> createState() => _CloudCreateUpdateNoteViewState();
 }
 
 class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
-  LocalDatabaseNote? _note;
-
-  late final LocalNotesService _notesService;
+  CloudNote? _note;
+  late final FirebaseCloudStorage _notesService;
   late final TextEditingController _noteTitleController;
   late final TextEditingController _noteTextController;
-  late final Timestamp createdAt;
+  // late final Timestamp createdAtNow;
 
   @override
   void initState() {
-    _notesService = LocalNotesService();
+    _notesService = FirebaseCloudStorage();
     _noteTitleController = TextEditingController();
     _noteTextController = TextEditingController();
-    createdAt = Timestamp.now();
+    // createdAtNow = Timestamp.now();
 
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | initState()');
+    //  devtools.log(' ==> create_update_note (cloud) | initState()');
     super.initState();
   }
 
@@ -45,14 +44,16 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     }
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
-    final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
+    // final createdAt = createdAtNow;
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
-    await _notesService.updateLocalNote(
-      note: note,
+    //  devtools.log(' ==> create_update_note (cloud) | _textControllerListener() | note: $note');
+    //  devtools.log(' ==> create_update_note (cloud) | _textControllerListener() | title: $title, text: $text, createdAt: ${createdAt.toDate().toString().substring(0, 16)}');
+    await _notesService.updateCloudNote(
+      documentId: note.documentId,
       title: title,
       text: text,
-      createdAt: createdAt,
+      isSyncedWithCloud: false,
+      // createdAt: createdAt,
     );
   }
 
@@ -63,43 +64,56 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     _noteTextController.addListener(_textControllerListener);
   }
 
-  Future<LocalDatabaseNote> createOrGetExistingNote(BuildContext context) async {
+  Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     // Extracting argument T(optional - note exists on tap) = DatabaseNote from the context
-    final widgetNote = context.getArgument<LocalDatabaseNote>();
+    final widgetNote = context.getArgument<CloudNote>();
 
     if (widgetNote != null) {
       _note = widgetNote;
       // pass text from note to the CreateOrUpdateNote
-      (widgetNote.title != null) ? _noteTitleController.text = widgetNote.title! : null;
+      _noteTitleController.text = widgetNote.title;
       _noteTextController.text = widgetNote.text;
+      // ? -----------------------------------------
+      //  devtools.log(' ==> create_update_note | createOrGetExistingNote() | title: ${_noteTitleController.text}, text: ${_noteTextController.text}');
       return widgetNote;
     }
 
     final existingNote = _note;
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | createNewNote() | existingNote: $existingNote');
+    //  devtools.log(' ==> create_update_note (cloud) | createNewNote() | existingNote: $existingNote');
     if (existingNote != null) {
       // ? ---------------------------------------------------------------
-      log(' ==> new_note_view | createNewNote() | existingNote is not empty: $existingNote');
+      //  devtools.log(' ==> create_update_note (cloud) | createNewNote() | existingNote is not empty: $existingNote');
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    final owner = await _notesService.getLocalUser(email: email);
-    // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | createNewNote() | currentUser email: $email owner: $owner');
-    final newNote = await _notesService.createLocalNote(owner: owner);
+    final userId = currentUser.id;
+    final newNote = await _notesService.createNewCloudNote(ownerUserId: userId);
     _note = newNote;
+    // ? -----------------------------------------
+    //  devtools.log(' ==> create_update_note (cloud) | createOrGetExistingNote() | userId: $userId');
     return newNote;
   }
 
-  void _deleteNoteIfTextIsEmpty() async {
+  void _deleteOrSaveNewNoteIfEmpty() async {
     final note = _note;
+    final title = _noteTitleController.text;
+    final text = _noteTextController.text;
     if (note != null) {
-      if (_noteTextController.text.isEmpty && _noteTitleController.text.isEmpty) {
-        // ? ---------------------------------------------------------------
-        log(' ==> new_note_view | _deleteNoteIfTextIsEmpty() | deleted note: $note');
-        await _notesService.deleteLocalNote(id: note.id);
+      switch (title.isEmpty && text.isEmpty) {
+        case true:
+          // ? -----------------------------------------
+          //  devtools.log('create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note deleted');
+          await _notesService.deleteCloudNote(documentId: note.documentId);
+        default:
+          // ? -----------------------------------------
+          //  devtools.log('create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note saved');
+          await _notesService.updateCloudNote(
+            documentId: note.documentId,
+            title: title,
+            text: text,
+            isSyncedWithCloud: false,
+          );
       }
     }
   }
@@ -108,31 +122,30 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     final note = _note;
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
-    final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
+    //  devtools.log(' ==> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | initial note: $note');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
-        await _notesService.updateLocalNote(
-          note: note,
-          text: text,
+        await _notesService.updateCloudNote(
+          documentId: note.documentId,
           title: title,
-          createdAt: createdAt,
+          text: text,
+          isSyncedWithCloud: false,
         );
         // ? ---------------------------------------------------------------
-        log(' ==> new_note_view | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
+        //  devtools.log(' ==> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | saved note: $note');
       }
     }
   }
 
   @override
   void dispose() {
-    _deleteNoteIfTextIsEmpty();
+    _deleteOrSaveNewNoteIfEmpty();
     _safeNoteIfTextNotEmpty();
     _noteTitleController.dispose();
     _noteTextController.dispose();
     // ? ---------------------------------------------------------------
-    log(' ==> new_note_view | dispose()');
+    //  devtools.log(' ==> create_update_note (cloud) | dispose()');
     super.dispose();
   }
 
@@ -150,68 +163,94 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
         actions: [
           IconButton(
               onPressed: () {
+                // Navigator.of(context).pop();
                 Navigator.pop(context);
                 Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
+          // IconButton(
+          //   onPressed: () async {
+          //     final title = _noteTitleController.text;
+          //     final text = _noteTextController.text;
+          //     if (_note == null || (text.isEmpty && title.isEmpty)) {
+          //       await showCannotShareEmptyNoteDialog(context);
+          //     } else {
+          // TODO: FINISH IT LATER: share bug
+          //       await showErrorDialog(context, 'Sharing function is not implemented yet');
+          // Share.share(text);
+          //     }
+          //   },
+          //   icon: const Icon(Icons.share),
+          // ),
           popupMenuItems(context),
         ],
       ),
-      body: FutureBuilder(
-        future: createOrGetExistingNote(context),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              _note = snapshot.data as LocalDatabaseNote?;
-              _setupTextControllerListener();
-              // ? ---------------------------------------------------------------
-              log(' ==> new_note_view | _note: $_note');
-              log(' ==> new_note_view | snapshot: ${snapshot.data}');
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
+      body: Center(
+        child: FutureBuilder(
+          future: createOrGetExistingNote(context),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextField(
-                      autofocus: true,
-                      controller: _noteTitleController,
-                      keyboardType: TextInputType.text,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        labelText: 'Title',
-                        hintText: 'Start typing your title here',
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
+                    LoadingStandardProgressBar(),
+                  ],
+                );
+              case ConnectionState.done:
+                _setupTextControllerListener();
+                // ? ---------------------------------------------------------------
+                //  devtools.log(' ==> create_update_note (cloud) | _note: $_note');
+                //  devtools.log(' ==> create_update_note (cloud) | snapshot: ${snapshot.data}');
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        autofocus: true,
+                        controller: _noteTitleController,
+                        keyboardType: TextInputType.text,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          labelText: 'Title',
+                          hintText: 'Start typing your title here',
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                        child: SingleChildScrollView(
-                          child: TextField(
-                            controller: _noteTextController,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              labelText: 'Message',
-                              hintText: 'Start typing your note here',
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              filled: false,
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                          child: SingleChildScrollView(
+                            child: TextField(
+                              controller: _noteTextController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                labelText: 'Message',
+                                hintText: 'Start typing your note here',
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                filled: false,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            default:
-              return const LoadingStandardProgressBar();
-          }
-        },
+                    ],
+                  ),
+                );
+              default:
+                return const LoadingStandardProgressBar();
+            }
+          },
+        ),
       ),
     );
   }

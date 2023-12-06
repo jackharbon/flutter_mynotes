@@ -1,4 +1,4 @@
-import 'dart:developer' as devtools show log;
+//  import 'dart:developer' as devtools show log;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ import '../../../cloud/services/auth/auth_service.dart';
 import '../../utilities/actions/popup_menu.dart';
 
 class CloudVerifyEmailView extends StatefulWidget {
-  const CloudVerifyEmailView({Key? key}) : super(key: key);
+  const CloudVerifyEmailView({super.key});
 
   @override
   CloudVerifyEmailViewState createState() => CloudVerifyEmailViewState();
@@ -28,7 +28,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
     Future.delayed(const Duration(seconds: 20));
     setState(() => isTimeToSendAgain = true);
     // ? --------------------------------
-    devtools.log(' ==> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
+    //  devtools.log(' ==> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
     super.initState();
   }
 
@@ -38,14 +38,14 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
       setState(() => isTimeToSendAgain = false);
       // ? --------------------------------
-      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
       await Future.delayed(const Duration(seconds: 30));
       setState(() => isTimeToSendAgain = true);
       // ? --------------------------------
-      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     } catch (e) {
       // ? --------------------------------
-      devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     }
   }
 
@@ -156,8 +156,8 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                             : null;
                         // ? --------------------------------
                         await AuthService.firebase().logOut();
-                        devtools.log(
-                            ' ==> verify_email_view | login button | email: ${user.email}, user.isEmailVerified: ${user.isEmailVerified}');
+                        //  devtools.log(' ==> verify_email_view | login button | email: ${user.email}');
+                        //  devtools.log(' ==> verify_email_view | login button | isEmailVerified: ${user.isEmailVerified}');
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           loginRoute,
                           (route) => false,
