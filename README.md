@@ -127,23 +127,37 @@ Clone this Github repository and open it in your IDE (f.e. Visual Studio Code)
 3. Type those commands in the terminal:
 
 ```
+flutter pub add cloud_firestore
+
+flutter pub add connectivity_plus
+
 flutter pub add cupertino_icons
-
-flutter pub add firebase_core
-
-flutter pub add firebase_auth
 
 flutter pub add firebase_analytics
 
-flutter pub add cloud_firestore
+flutter pub add firebase_auth
 
-flutter pub add sqflite
+flutter pub add firebase_core
+
+flutter pub add flex_color_scheme
+
+flutter pub add flutter_native_splash
+
+flutter pub add get
 
 flutter pub add path
 
 flutter pub add path_provider
 
-flutter pub add equatable
+flutter pub add provider
+
+flutter pub add shared_preferences
+
+flutter pub add sqflite
+
+flutter pub add test --dev
+
+flutter pub add flutter_lints
 
 flutter pub add intl
 
@@ -153,11 +167,7 @@ flutter pub add flutter_bloc
 
 flutter pub add flutter_launcher_icons
 
-flutter pub add test --dev
-
 flutter pub add share_plus
-
-flutter pub add get
 
 ```
 
@@ -165,7 +175,47 @@ flutter pub add get
 
 You can also edit 'pubspec.yaml' and paste those dependencies (don't forget to include a current version - check on: [pub.dev](https://pub.dev/packages)).
 
-4. Enable multidex support - modify `android/app/build.gradle`. See [StackOverflow](https://stackoverflow.com/questions/49886597/multidex-issue-with-flutter) for details.
+4. Add assets to `pubspec.yaml` file:
+
+```
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: TitilliumWeb
+      fonts:
+        - asset: fonts/TitilliumWeb-Black.ttf
+          weight: 900
+        - asset: fonts/TitilliumWeb-Bold.ttf
+          weight: 700
+        - asset: fonts/TitilliumWeb-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: fonts/TitilliumWeb-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/TitilliumWeb-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: fonts/TitilliumWeb-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: fonts/TitilliumWeb-Light.ttf
+          weight: 200
+        - asset: fonts/TitilliumWeb-LightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: fonts/TitilliumWeb-Regular.ttf
+          weight: 400
+  assets:
+    - assets/icon/icon.png
+    - assets/splash/branding_dark.png
+    - assets/splash/branding.png
+    - assets/splash/splash-invert.png
+    - assets/splash/splash.png
+    - assets/screenshots.jpg
+
+```
+
+5. Enable multidex support - modify `android/app/build.gradle`. See [StackOverflow](https://stackoverflow.com/questions/49886597/multidex-issue-with-flutter) for details.
 
 ```
 android {
@@ -239,15 +289,14 @@ In the [Google Console](https://console.firebase.google.com/) go to Get Started 
 - If you've chosen `Start in production mode` open the tab `Rules` -> `Edit rules` and change permission read/write to `allow read, write: if request.auth != null;` (to allow user to write, if is authenticated).
 
 ```
-
 rules_version = '2';
 
 service cloud.firestore {
-match /databases/{database}/documents {
-match /{document=\*\*} {
-allow read, write: if request.auth != null;
-}
-}
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
 }
 
 ```
@@ -287,17 +336,22 @@ flutter test test/auth_test.dart
 
 # Roadmap
 
-- [x] Loading screen
-- [x] Themes, light/dark mode
-- [x] Internet connection checking
+- [x] Loading screen (Native SPlash)
+- [x] Themes settings (Flex Color Scheme)
+- [x] Light/dark mode
+- [x] Internet connection state checking (Connectivity Plus, GetX)
 - [x] Delete user option
-- [x] Local (offline) notes storage
-- [ ] Cloud (online) notes storage
-- [ ] Offline/online synchronizing
-- [ ] Swipe note to delete
-- [ ] Sorting notes
-- [ ] Filtering (search) notes
+- [x] Local (offline) notes storage (SQLite)
+- [x] Cloud (online) notes storage (Firestore)
+- [x] Online/Offline indicator icon (phone/cloud)
+- [x] Seamless offline notes storage, when lost connection
+- [x] Show On/Off order numbers, note's content, creation date
+- [x] Sort notes by creation date or title alphabetically (ascending/descending order)
+- [x] Swipe note to delete
+- [x] Edit option for deleting multiple notes
+- [ ] Offline/online notes synchronizing
 - [ ] App icon
+- [ ] Filtering (search) notes
 - [ ] Note's tagging (flags)
 - [ ] Registering with Google account
 - [ ] User settings (first/last name, avatar, themes)
