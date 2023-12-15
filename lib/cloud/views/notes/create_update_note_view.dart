@@ -21,14 +21,12 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _noteTitleController;
   late final TextEditingController _noteTextController;
-  // late final Timestamp createdAtNow;
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
     _noteTitleController = TextEditingController();
     _noteTextController = TextEditingController();
-    // createdAtNow = Timestamp.now();
 
     // ? ---------------------------------------------------------------
     debugPrint('|===> create_update_note (cloud) | initState()');
@@ -42,17 +40,13 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     }
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
-    // final createdAt = createdAtNow;
     // ? ---------------------------------------------------------------
     debugPrint('|===> create_update_note (cloud) | _textControllerListener() | note: $note');
-    // devtools.log(
-    // ' ==> create_update_note (cloud) | _textControllerListener() | title: $title, text: $text, createdAt: ${createdAt.toDate().toString().substring(0, 16)}');
     await _notesService.updateCloudNote(
       documentId: note.documentId,
       title: title,
       text: text,
       isSyncedWithCloud: false,
-      // createdAt: createdAt,
     );
   }
 
@@ -118,6 +112,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     }
   }
 
+  // TODO: is this function used?
   void _safeNoteIfTextNotEmpty() async {
     final note = _note;
     final title = _noteTitleController.text;
