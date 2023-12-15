@@ -246,7 +246,7 @@ In `AndroidManifest.xml` (`android/app/src/main/AndroidManifest.xml`) add:
 
 ```
 
-5. Create the splash screen
+6. Create the splash screen
 
 `dart run flutter_native_splash:create`
 
@@ -336,7 +336,7 @@ flutter test test/auth_test.dart
 
 # Roadmap
 
-- [x] Loading screen (Native SPlash)
+- [x] Loading screen (Native Splash)
 - [x] Themes settings (Flex Color Scheme)
 - [x] Light/dark mode
 - [x] Internet connection state checking (Connectivity Plus, GetX)
@@ -427,11 +427,3 @@ Project Link: [https://github.com/jackharbon/flutter_mynotes](https://github.com
 [nodejs-url]: https://nodejs.org/
 [visualstudiocode]: https://img.shields.io/badge/visualstudio-3CA4EA?style=for-the-badge&logo=visualstudio&logoColor=white
 [visualstudiocode-url]: https://code.visualstudio.com
-
-```
-
-```
-
-```
-
-```

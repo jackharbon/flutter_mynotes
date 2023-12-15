@@ -1,6 +1,6 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'dart:async';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
@@ -42,13 +42,12 @@ class LocalNotesService {
       });
 
   // -------------------- _cacheNotes() --------------------
-
   Future<void> _cacheLocalNotes() async {
     final allNotes = await getAllLocalNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | _cacheNotes() | _notes: $_notes');
+    debugPrint('|===> notes_services  (shared) | _cacheNotes() | _notes: $_notes');
   }
 
 // ======================== INITIALIZE DATABASE ========================
@@ -59,7 +58,7 @@ class LocalNotesService {
       throw DatabaseIsNotOpenException();
     } else {
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | _getDatabaseOrThrow() | db: $db');
+      debugPrint('|===> notes_services  (shared) | _getDatabaseOrThrow() | db: $db');
       return db;
     }
   }
@@ -72,7 +71,7 @@ class LocalNotesService {
       await db.close();
       _db = null;
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | close() | _db: $_db');
+      debugPrint('|===> notes_services  (shared) | close() | _db: $_db');
     }
   }
 
@@ -92,7 +91,7 @@ class LocalNotesService {
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | open() | dbPath: $dbPath');
+      debugPrint('|===> notes_services  (shared) | open() | dbPath: $dbPath');
       final db = await openDatabase(dbPath);
       _db = db;
       // create the user table
@@ -101,8 +100,8 @@ class LocalNotesService {
       await db.execute(createNoteTable);
       await _cacheLocalNotes();
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | open() | createUserTable: $createUserTable');
-      //  devtools.log(' ==> notes_services  (shared) | open() | createNoteTable: $createNoteTable');
+      debugPrint('|===> notes_services  (shared) | open() | createUserTable: $createUserTable');
+      debugPrint('|===> notes_services  (shared) | open() | createNoteTable: $createNoteTable');
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
     }
@@ -111,8 +110,7 @@ class LocalNotesService {
 // ======================== NOTES CRUD ========================
 
   // -------------------- getNote() --------------------
-
-// TODO: is it used anywhere?
+  // TODO: is it used anywhere?
   Future<LocalDatabaseNote> getLocalNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -131,7 +129,7 @@ class LocalNotesService {
       _notes.add(note);
       _notesStreamController.add(_notes);
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | getNote() | note: $note');
+      debugPrint('|===> notes_services  (shared) | getNote() | note: $note');
       return note;
     }
   }
@@ -143,12 +141,11 @@ class LocalNotesService {
     final db = _getDatabaseOrThrow();
     final notes = await db.query(noteTable);
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | getAllNotes() | notes: $notes');
+    debugPrint('|===> notes_services  (shared) | getAllNotes() | notes: $notes');
     return notes.map((noteRow) => LocalDatabaseNote.fromRow(noteRow));
   }
 
   // -------------------- createNote() --------------------
-
   Future<LocalDatabaseNote> createLocalNote({required DatabaseUser owner}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -171,7 +168,7 @@ class LocalNotesService {
       isSyncedWithCloudColumn: 1,
     });
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | createNote() | noteId: $noteId');
+    debugPrint('|===> notes_services  (shared) | createNote() | noteId: $noteId');
     final note = LocalDatabaseNote(
       id: noteId,
       userId: owner.id,
@@ -181,16 +178,15 @@ class LocalNotesService {
       isSyncedWithCloud: false,
     );
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | createNote() | note: $note');
+    debugPrint('|===> notes_services  (shared) | createNote() | note: $note');
     _notes.add(note);
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | createNote() | _notes: $_notes');
+    debugPrint('|===> notes_services  (shared) | createNote() | _notes: $_notes');
     return note;
   }
 
   // -------------------- updateNote() --------------------
-
   Future<LocalDatabaseNote> updateLocalNote({
     required LocalDatabaseNote note,
     required String title,
@@ -224,13 +220,12 @@ class LocalNotesService {
       _notes.add(updatedNote);
       _notesStreamController.add(_notes);
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | updateNote() | updatedNote: $updatedNote');
+      debugPrint('|===> notes_services  (shared) | updateNote() | updatedNote: $updatedNote');
       return updatedNote;
     }
   }
 
   // -------------------- deleteNote() --------------------
-
   Future<void> deleteLocalNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -240,7 +235,7 @@ class LocalNotesService {
       whereArgs: [id],
     );
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | deleteNote() | deletedCount: $deletedCount');
+    debugPrint('|===> notes_services  (shared) | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
       throw ColdNotDeleteLocalNoteException();
     } else {
@@ -253,13 +248,12 @@ class LocalNotesService {
   }
 
   // -------------------- deleteAllNotes() --------------------
-
   Future<int> deleteAllLocalNotes({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final user = await getLocalUser(email: email);
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | deleteAllNotes() | user.id: ${user.id}');
+    debugPrint('|===> notes_services  (shared) | deleteAllNotes() | user.id: ${user.id}');
     final numberOfDeletedNotes = await db.delete(
       noteTable,
       where: 'user_id = ?',
@@ -268,14 +262,13 @@ class LocalNotesService {
     _notes = [];
     _notesStreamController.add(_notes);
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
+    debugPrint('|===> notes_services  (shared) | deleteAllNotes() | numberOfDeletedNotes: $numberOfDeletedNotes');
     return numberOfDeletedNotes;
   }
 
   // ======================== USER CRUD ========================
 
   // -------------------- getOrCreateUser() --------------------
-
   Future<DatabaseUser> getOrCreateLocalUser({
     required String email,
     bool setAsCurrentUser = true, // set retrieved user as a current user to filter notes
@@ -286,7 +279,7 @@ class LocalNotesService {
         _user = user;
       }
       // ? ----------------------------------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | getOrCreateUser() | get _user: $_user');
+      debugPrint('|===> notes_services  (shared) | getOrCreateUser() | get _user: $_user');
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createLocalUser(email: email, password: _user!.password);
@@ -294,7 +287,7 @@ class LocalNotesService {
         _user = createdUser;
       }
       // ? ----------------------------------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | getOrCreateUser() | createdUser: $createdUser');
+      debugPrint('|===> notes_services  (shared) | getOrCreateUser() | createdUser: $createdUser');
       return createdUser;
     } catch (e) {
       rethrow;
@@ -302,7 +295,6 @@ class LocalNotesService {
   }
 
 // -------------------- checkUser() --------------------
-
   Future<DatabaseUser> logInLocalUser({required String email, required String password}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -314,7 +306,7 @@ class LocalNotesService {
       whereArgs: [email, password],
     );
     // ? --------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | logInUser() | results: $results');
+    debugPrint('|===> notes_services  (shared) | logInUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
     } else {
@@ -323,7 +315,6 @@ class LocalNotesService {
   }
 
 // -------------------- getUser() --------------------
-
   Future<DatabaseUser> getLocalUser({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -335,7 +326,7 @@ class LocalNotesService {
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | getUser() | results: $results');
+    debugPrint('|===> notes_services  (shared) | getUser() | results: $results');
     if (results.isEmpty) {
       throw CouldNotFindUserException();
     } else {
@@ -344,7 +335,6 @@ class LocalNotesService {
   }
 
 // -------------------- createUser() --------------------
-
   Future<DatabaseUser> createLocalUser({required String email, required String password}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -358,11 +348,11 @@ class LocalNotesService {
       throw UserAlreadyExistException();
     }
 
-    const firstName = '';
-    const lastName = '';
-    const themeMode = 'ThemeMode.system';
-    const colorsScheme = 'FlexScheme.blueM3';
-    const avatarUrl = '';
+    String firstName = '';
+    String lastName = '';
+    String themeMode = ThemeMode.system.toString();
+    String flexScheme = FlexScheme.blueM3.toString();
+    String avatarUrl = '';
     const isEmailVerified = 0;
     final createdAtUser = Timestamp.now().toDate().toString().substring(0, 16);
 
@@ -372,13 +362,13 @@ class LocalNotesService {
       firstNameColumn: firstName,
       lastNameColumn: lastName,
       themeModeColumn: themeMode,
-      colorsSchemeColumn: colorsScheme,
+      flexSchemeColumn: flexScheme,
       avatarUrlColumn: avatarUrl.toLowerCase(),
       createdAtUserColumn: createdAtUser,
       isEmailVerifiedColumn: isEmailVerified,
     });
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | createUser() | userId: $userId');
+    debugPrint('|===> notes_services  (shared) | createUser() | userId: $userId');
 
     return DatabaseUser(
       id: userId,
@@ -387,7 +377,7 @@ class LocalNotesService {
       firstName: firstName,
       lastName: lastName,
       themeMode: themeMode,
-      colorsScheme: colorsScheme,
+      flexScheme: flexScheme,
       avatarUrl: avatarUrl,
       createdAtUser: createdAtUser,
       isEmailVerified: false,
@@ -395,13 +385,12 @@ class LocalNotesService {
   }
 
   // -------------------- updateUser() --------------------
-
   Future<DatabaseUser> updateLocalUser({
     String? password,
     String? firstName,
     String? lastName,
     String? themeMode,
-    String? colorsScheme,
+    String? flexScheme,
     String? avatarUrl,
     required String email,
   }) async {
@@ -416,7 +405,7 @@ class LocalNotesService {
         firstNameColumn: firstName,
         lastNameColumn: lastName,
         themeModeColumn: themeMode,
-        colorsSchemeColumn: colorsScheme,
+        flexSchemeColumn: flexScheme,
         avatarUrlColumn: avatarUrl,
       },
       where: 'email = ?',
@@ -433,7 +422,7 @@ class LocalNotesService {
         whereArgs: [email.toLowerCase()],
       );
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | updateUser() | results: $results');
+      debugPrint('|===> notes_services  (shared) | updateLocalUser() | results: $results');
       if (results.isEmpty) {
         throw CouldNotFindUserException();
       } else {
@@ -442,7 +431,79 @@ class LocalNotesService {
     }
   }
 
-  Future<DatabaseUser> updateLocalIsEmailVerified({
+  Future<DatabaseUser> updateLocalUserFlexScheme({
+    required String flexScheme,
+    required String email,
+  }) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    // update DB
+    final updatesCount = await db.update(
+      userTable,
+      {
+        flexSchemeColumn: flexScheme,
+      },
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateLocalNoteException();
+    } else {
+      final results = await db.query(
+        userTable,
+        limit: 1,
+        where: 'email = ?',
+        whereArgs: [email.toLowerCase()],
+      );
+      // ? -----------------------------------------------------------
+      debugPrint('|===> notes_services  (shared) | updateLocalUserFlexScheme() | results: $results');
+      if (results.isEmpty) {
+        throw CouldNotFindUserException();
+      } else {
+        return DatabaseUser.fromRow(results.first);
+      }
+    }
+  }
+
+  Future<DatabaseUser> updateLocalUserThemeMode({
+    required String themeMode,
+    required String email,
+  }) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    // update DB
+    final updatesCount = await db.update(
+      userTable,
+      {
+        themeModeColumn: themeMode,
+      },
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateLocalNoteException();
+    } else {
+      final results = await db.query(
+        userTable,
+        limit: 1,
+        where: 'email = ?',
+        whereArgs: [email.toLowerCase()],
+      );
+      // ? -----------------------------------------------------------
+      debugPrint('|===> notes_services  (shared) | updateLocalUserThemeMode() | results: $results');
+      if (results.isEmpty) {
+        throw CouldNotFindUserException();
+      } else {
+        return DatabaseUser.fromRow(results.first);
+      }
+    }
+  }
+
+  Future<DatabaseUser> updateLocalUserIsEmailVerified({
     required String email,
   }) async {
     await _ensureDbIsOpen();
@@ -468,7 +529,7 @@ class LocalNotesService {
         whereArgs: [email.toLowerCase()],
       );
       // ? -----------------------------------------------------------
-      //  devtools.log(' ==> notes_services  (shared) | updateIsEmailVerified() | results: $results');
+      debugPrint('|===> notes_services  (shared) | updateIsEmailVerified() | results: $results');
       if (results.isEmpty) {
         throw CouldNotFindUserException();
       } else {
@@ -478,7 +539,6 @@ class LocalNotesService {
   }
 
   // -------------------- deleteUser() --------------------
-
   Future<void> deleteLocalUser({required String email}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -488,7 +548,7 @@ class LocalNotesService {
       whereArgs: [email.toLowerCase()],
     );
     // ? -----------------------------------------------------------
-    //  devtools.log(' ==> notes_services  (shared) | deleteUser() | deletedAccounts: $deletedAccounts');
+    debugPrint('|===> notes_services  (shared) | deleteUser() | deletedAccounts: $deletedAccounts');
     if (deletedAccounts != 1) {
       throw CouldNotDeleteUserException();
     }
@@ -543,7 +603,7 @@ class DatabaseUser {
   final String? firstName;
   final String? lastName;
   final String? themeMode;
-  final String? colorsScheme;
+  final String? flexScheme;
   final String? avatarUrl;
   final String createdAtUser;
   final bool isEmailVerified;
@@ -552,7 +612,7 @@ class DatabaseUser {
     this.firstName,
     this.lastName,
     this.themeMode,
-    this.colorsScheme,
+    this.flexScheme,
     this.avatarUrl,
     required this.createdAtUser,
     required this.id,
@@ -568,14 +628,27 @@ class DatabaseUser {
         firstName = map[firstNameColumn] as String,
         lastName = map[lastNameColumn] as String,
         themeMode = map[themeModeColumn] as String,
-        colorsScheme = map[colorsSchemeColumn] as String,
+        flexScheme = map[flexSchemeColumn] as String,
         avatarUrl = map[avatarUrlColumn] as String,
         createdAtUser = map[createdAtUserColumn] as String,
         isEmailVerified = (map[isEmailVerifiedColumn] as int) == 1 ? true : false;
 
+  // TODO: map for testing
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'themeMode': themeMode,
+      'flexScheme': flexScheme,
+      'avatarUrl': avatarUrl,
+    };
+  }
+
   @override
   String toString() =>
-      'Person, ID = $id, email = $email, password: $password,firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $colorsScheme, avatarUrl: $avatarUrl, createdAtUser: $createdAtUser, isEmailVerified: $isEmailVerified';
+      'Person, ID = $id, email = $email, password: $password,firstName: $firstName, lastName: $lastName, themeMode: $themeMode, colorsScheme: $flexScheme, avatarUrl: $avatarUrl, createdAtUser: $createdAtUser, isEmailVerified: $isEmailVerified';
 
   @override
   bool operator ==(covariant DatabaseUser other) => id == other.id;

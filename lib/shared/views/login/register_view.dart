@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +8,6 @@ import '../../constants/routes.dart';
 import '../../helpers/loading/loading_widget.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
-import '../../utilities/actions/popup_menu.dart';
 import '../../utilities/dialogs/error_dialog.dart';
 
 class CloudRegisterView extends StatefulWidget {
@@ -59,9 +56,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
               ),
             ],
           ),
-          actions: [
-            popupMenuItems(context),
-          ],
+          actions: const [],
         ),
         body: FutureBuilder(
           future: AuthService.firebase().initialize(),
@@ -146,8 +141,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                       password: password,
                                     );
                                     // ? --------------------------------
-                                    //  devtools.log(' ==> register_view | register button | email: $email');
-                                    //  devtools.log(' ==> register_view | register button | password: $password');
+                                    debugPrint('|===> register_view | register button | email: $email');
+                                    debugPrint('|===> register_view | register button | password: $password');
                                     await AuthService.firebase().sendEmailVerification();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text("I'm sending a verification email")));

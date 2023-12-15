@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,10 +5,8 @@ import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/crud_exceptions.dart';
-// import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
-import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 
 class LocalLoginView extends StatefulWidget {
@@ -24,7 +20,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
   late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
-  DatabaseUser? localUser;
+  DatabaseUser? localCurrentUser;
 
   @override
   void initState() {
@@ -54,9 +50,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
             ),
           ],
         ),
-        actions: [
-          popupMenuItems(context),
-        ],
+        actions: const [],
       ),
       body: FutureBuilder(
         future: _notesService.open(),
@@ -129,19 +123,23 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 final email = _email.text;
                                 final password = _password.text;
                                 try {
-                                  localUser = await _notesService.logInLocalUser(email: email, password: password);
+                                  localCurrentUser =
+                                      await _notesService.logInLocalUser(email: email, password: password);
                                   // ? --------------------------------
-                                  //  devtools.log(' ==> login_view (local) | login button | user: $user');
-                                  if (localUser != null) {
+                                  debugPrint('|===> login_view (local) | login button | localUser: $localCurrentUser');
+                                  if (localCurrentUser != null) {
                                     Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
-                                    if (localUser!.isEmailVerified) {
+                                    if (localCurrentUser!.isEmailVerified) {
+                                      debugPrint(
+                                          '|===> login_view (cloud) | myNotesRoute | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
                                       await Navigator.of(context).pushNamedAndRemoveUntil(
                                         myNotesRoute,
                                         (route) => false,
                                       );
                                     } else {
                                       // ? --------------------------------
-                                      //  devtools.log(' ==> login_view (local) | login button | user!.isEmailVerified: ${user!.isEmailVerified}');
+                                      debugPrint(
+                                          '|===> login_view (local) | verifyEmailRoute | user!.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
                                       await Navigator.of(context).pushNamed(verifyEmailRoute);
                                     }
                                   } else {

@@ -1,7 +1,6 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
+import 'package:flutter/material.dart';
 
 import '../../../firebase_options.dart';
 import 'auth_user.dart';
@@ -69,14 +68,14 @@ class FirebaseAuthProvider implements AuthProvider {
       final currentUser = FirebaseAuth.instance.currentUser;
       if (currentUser != null) {
         await FirebaseAuth.instance.currentUser!.delete();
-        //  devtools.log('==> firebase_auth_provider | deleteAccount() | deletedAccount: $currentUser');
+        debugPrint('|===> firebase_auth_provider | deleteAccount() | deletedAccount: $currentUser');
       } else {
-        //  devtools.log('==> firebase_auth_provider | deleteAccount() | currentUser is null!');
+        debugPrint('|===> firebase_auth_provider | deleteAccount() | currentUser is null!');
         throw ColdNotDeleteUserException();
       }
     } on FirebaseAuthException catch (e) {
       // ? --------------------------------
-      //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | error: $e');
+      debugPrint('|===> firebase_auth_provider | deleteAccount() | error: $e');
       switch (e.code) {
         case "requires-recent-login":
           FirebaseAuth.instance.currentUser!.providerData.first;
@@ -87,11 +86,11 @@ class FirebaseAuthProvider implements AuthProvider {
       }
     } catch (e) {
       // ? --------------------------------
-      //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | UnknownAuthException: $e');
+      debugPrint('|===> firebase_auth_provider | deleteAccount() | UnknownAuthException: $e');
       throw UnknownAuthException();
     }
     // ? --------------------------------
-    //  devtools.log(' ==> firebase_auth_provider | deleteAccount() | GenericAuthException');
+    debugPrint('|===> firebase_auth_provider | deleteAccount() | GenericAuthException');
     throw GenericAuthException();
   }
 

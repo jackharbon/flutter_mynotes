@@ -1,8 +1,6 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 
-//  Type Definition: List of text buttons with String to display and optional value T
+// Type Definition: List of text buttons with String to display and optional value T
 typedef DialogOptionBuilder<T> = Map<String, T?> Function();
 
 // Future of buttons with optional value T
@@ -40,11 +38,11 @@ Future<T?> showGenericDialog<T>({
               onPressed: () {
                 if (value != null) {
                   // ? --------------------------------------------
-                  //  devtools.log(' ==> generic_dialog | showDialog() | value not-null: $value');
+                  debugPrint('|===> generic_dialog | showDialog() | value not-null: $value');
                   Navigator.of(context).pop(value);
                 } else {
                   // ? --------------------------------------------
-                  //  devtools.log(' ==> generic_dialog | showDialog() | value null: $value');
+                  debugPrint('|===> generic_dialog | showDialog() | value null: $value');
                   Navigator.of(context).pop();
                 }
               },

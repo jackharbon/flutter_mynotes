@@ -1,4 +1,3 @@
-//  import 'dart:developer' as devtools show log;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,8 +40,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   void initState() {
     _notesService = FirebaseCloudStorage();
     // ? ---------------------------------------------------------------
-    //  devtools.log(' ==> notes_view (cloud) | initState() | _notesService: $_notesService');
-    //  devtools.log(' ==> notes_view (cloud) | initState() | userId: $userId');
+    debugPrint('|===> notes_view (cloud) | initState() | _notesService: $_notesService');
+    debugPrint('|===> notes_view (cloud) | initState() | userId: $userId');
     super.initState();
   }
 
@@ -67,9 +66,9 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
               builder: (context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   // ? --------------------------------------------
-                  //  devtools.log(' ==> notes_view (cloud) | notes count snapshot.data: ${snapshot.data}');
+                  debugPrint('|===> notes_view (cloud) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data ?? 0;
-                  return Text('$noteCount Notes');
+                  return Text('$noteCount Notes(cloud)');
                 } else {
                   return const Text('My Notes (cloud)');
                 }
@@ -108,8 +107,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                                 sortFieldName = 'title';
                                 isDescending = !isDescending;
                                 // ? --------------------------------------------
-                                //  devtools.log(' ==> notes_view (cloud) | button isDescending: $isDescending');
-                                //  devtools.log(' ==> notes_view (cloud) | button sortFieldName: $sortFieldName');
+                                debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
+                                debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
                               },
                             );
                           },
@@ -134,8 +133,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                               sortFieldName = 'created_at';
                               isDescending = !isDescending;
                               // ? --------------------------------------------
-                              //  devtools.log(' ==> notes_view (cloud) | button isDescending: $isDescending');
-                              //  devtools.log(' ==> notes_view (cloud) | button sortFieldName: $sortFieldName');
+                              debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
+                              debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
                             });
                           },
                           icon: (sortFieldName == 'created_at')
@@ -163,8 +162,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isNumberVisibleState(!appStateNotifier.isNumberVisible);
                             // ? --------------------------------------------
-                            //  devtools.log(
-                            //     ' ==> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
+                            debugPrint(
+                                '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
                           });
                         },
                         icon: (appStateNotifier.isNumberVisible)
@@ -186,8 +185,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isSubtitleVisibleState(!appStateNotifier.isSubtitleVisible);
                             // ? --------------------------------------------
-                            //  devtools.log(
-                            //     ' ==> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
+                            debugPrint(
+                                '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
                           });
                         },
                         icon: (appStateNotifier.isSubtitleVisible)
@@ -209,8 +208,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isDateVisibleState(!appStateNotifier.isDateVisible);
                             // ? --------------------------------------------
-                            //  devtools.log(
-                            //     ' ==> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
+                            debugPrint(
+                                '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
                           });
                         },
                         icon: (appStateNotifier.isDateVisible)
@@ -239,8 +238,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                       IconButton(
                         onPressed: () {
                           // ? --------------------------------------------
-                          //  devtools.log(
-                          //     ' ==> notes_view (cloud) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
+                          debugPrint(
+                              '|===> notes_view (cloud) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
                           setState(() async {
                             switch (appStateNotifier.isDeletingMode) {
                               case false:
@@ -253,23 +252,23 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                                     for (var noteId in appStateNotifier.selectedItems) {
                                       await _notesService.deleteCloudNote(documentId: noteId);
                                       // ? --------------------------------
-                                      //  devtools.log(
-                                      //     ' ==> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
+                                      debugPrint(
+                                          '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
                                     }
                                     appStateNotifier.selectedItems.clear();
                                     Provider.of<AppNotifier>(context, listen: false).itemsCheckedToDeleteState(false);
                                     Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                    //  devtools.log(
-                                    //     ' ==> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                    debugPrint(
+                                        '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                   }
                                 } else {
                                   Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                 }
-                              // ? --------------------------------
-                              //  devtools.log(
-                              //     ' ==> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                // ? --------------------------------
+                                debugPrint(
+                                    '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                             }
                           });
                         },
@@ -306,14 +305,14 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                   ),
                   builder: (context, snapshot) {
                     // ? ---------------------------------------------------------------
-                    //  devtools.log(' ==> notes_view (cloud) | User snapshot: ${snapshot.connectionState}');
-                    //  devtools.log(' ==> notes_view (cloud) | snapshot.data: ${snapshot.data}, userId: $userId');
+                    debugPrint('|===> notes_view (cloud) | User snapshot: ${snapshot.connectionState}');
+                    debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}, userId: $userId');
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                       case ConnectionState.active:
                         // ? ---------------------------------------------------------------
-                        //  devtools.log(' ==> notes_view (cloud) | allNotes snapshot: ${snapshot.connectionState}');
-                        //  devtools.log(' ==> notes_view (cloud) | snapshot.data: ${snapshot.data}');
+                        debugPrint('|===> notes_view (cloud) | allNotes snapshot: ${snapshot.connectionState}');
+                        debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}');
                         if (snapshot.hasData) {
                           if (snapshot.data!.isEmpty) {
                             return Row(
@@ -349,10 +348,10 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             );
                           } else {
                             // ======================= LIST OF NOTES =======================
-                            //  snapshot.data is NOT Empty
+                            // snapshot.data is NOT Empty
                             final allNotes = snapshot.data as Iterable<CloudNote>;
                             // ? ---------------------------------------------------------------
-                            //  devtools.log(' ==> notes_view (cloud) | allNotes is not empty: $allNotes');
+                            debugPrint('|===> notes_view (cloud) | allNotes is not empty: $allNotes');
                             return CloudNotesListView(
                               notes: allNotes,
                               onDeleteNote: (note) async {

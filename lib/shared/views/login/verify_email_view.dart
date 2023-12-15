@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +26,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
     Future.delayed(const Duration(seconds: 20));
     setState(() => isTimeToSendAgain = true);
     // ? --------------------------------
-    //  devtools.log(' ==> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
+    debugPrint('|===> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
     super.initState();
   }
 
@@ -38,14 +36,14 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
       setState(() => isTimeToSendAgain = false);
       // ? --------------------------------
-      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
       await Future.delayed(const Duration(seconds: 30));
       setState(() => isTimeToSendAgain = true);
       // ? --------------------------------
-      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     } catch (e) {
       // ? --------------------------------
-      //  devtools.log(' ==> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     }
   }
 
@@ -150,18 +148,26 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                     TextButton(
                       onPressed: () async {
                         final user = AuthService.firebase().currentUser;
-                        bool isUserEmailVerified = user!.isEmailVerified;
-                        (isUserEmailVerified)
-                            ? await _notesService.updateLocalIsEmailVerified(email: user.email)
-                            : null;
-                        // ? --------------------------------
-                        await AuthService.firebase().logOut();
-                        //  devtools.log(' ==> verify_email_view | login button | email: ${user.email}');
-                        //  devtools.log(' ==> verify_email_view | login button | isEmailVerified: ${user.isEmailVerified}');
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          loginRoute,
-                          (route) => false,
-                        );
+                        if (user != null) {
+                          bool isUserEmailVerified = user.isEmailVerified;
+                          (isUserEmailVerified)
+                              ? await _notesService.updateLocalUserIsEmailVerified(email: user.email)
+                              : null;
+                          // await AuthService.firebase().logOut();
+                          // ? --------------------------------
+                          debugPrint('|===> verify_email_view | login button | email: ${user.email}');
+                          debugPrint(
+                              '|===> verify_email_view | login button | isEmailVerified: ${user.isEmailVerified}');
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            loginRoute,
+                            (route) => false,
+                          );
+                        } else {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            registerRoute,
+                            (route) => false,
+                          );
+                        }
                       },
                       child: Text(
                         "Go to the login page.",

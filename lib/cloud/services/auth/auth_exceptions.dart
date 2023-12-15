@@ -1,7 +1,7 @@
 // User: user-not-found
 class UserNotFoundAuthException implements Exception {}
 
-//  User not logged in
+// User not logged in
 class UserNotLoggedInAuthException implements Exception {}
 
 // Missing data

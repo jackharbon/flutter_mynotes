@@ -1,5 +1,3 @@
-import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +28,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   void initState() {
     _notesService = LocalNotesService();
     // ? ---------------------------------------------------------------
-    // devtools.log(' ==> notes_view (local) | initState() | _notesService: $_notesService');
+    debugPrint('|===> notes_view (local) | initState() | _notesService: $_notesService');
     super.initState();
   }
 
@@ -49,7 +47,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   // ? --------------------------------------------
-                  // devtools.log(' ==> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
+                  debugPrint('|===> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data!.length;
                   return Text('$noteCount Notes');
                 } else {
@@ -74,8 +72,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
           future: _notesService.getOrCreateLocalUser(email: appStateNotifier.userEmail),
           builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
-            // devtools.log(
-            // ' ==> notes_view (local) | email: ${appStateNotifier.userEmail}, User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
+            debugPrint(
+                '|===> notes_view (local) | email: ${appStateNotifier.userEmail}, User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
               case ConnectionState.done:
@@ -99,8 +97,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                         sortFieldName = 'title';
                                         isDescending = !isDescending;
                                         // ? --------------------------------------------
-                                        devtools.log(' ==> notes_view (local) | button isDescending: $isDescending');
-                                        devtools.log(' ==> notes_view (local) | button sortFieldName: $sortFieldName');
+                                        debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
+                                        debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
                                       },
                                     );
                                   },
@@ -125,8 +123,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                       sortFieldName = 'created_at';
                                       isDescending = !isDescending;
                                       // ? --------------------------------------------
-                                      devtools.log(' ==> notes_view (local) | button isDescending: $isDescending');
-                                      devtools.log(' ==> notes_view (local) | button sortFieldName: $sortFieldName');
+                                      debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
+                                      debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
                                     });
                                   },
                                   icon: (sortFieldName == 'created_at')
@@ -154,8 +152,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isNumberVisibleState(!appStateNotifier.isNumberVisible);
                                     // ? --------------------------------------------
-                                    //  devtools.log(
-                                    //     ' ==> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
+                                    debugPrint(
+                                        '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
                                   });
                                 },
                                 icon: (appStateNotifier.isNumberVisible)
@@ -177,8 +175,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isSubtitleVisibleState(!appStateNotifier.isSubtitleVisible);
                                     // ? --------------------------------------------
-                                    //  devtools.log(
-                                    //     ' ==> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
+                                    debugPrint(
+                                        '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
                                   });
                                 },
                                 icon: (appStateNotifier.isSubtitleVisible)
@@ -200,8 +198,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isDateVisibleState(!appStateNotifier.isDateVisible);
                                     // ? --------------------------------------------
-                                    //  devtools.log(
-                                    //     ' ==> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
+                                    debugPrint(
+                                        '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
                                   });
                                 },
                                 icon: (appStateNotifier.isDateVisible)
@@ -230,8 +228,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                               IconButton(
                                 onPressed: () {
                                   // ? --------------------------------------------
-                                  //  devtools.log(
-                                  //     ' ==> notes_view (local) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
+                                  debugPrint(
+                                      '|===> notes_view (local) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
                                   setState(() async {
                                     switch (appStateNotifier.isDeletingMode) {
                                       case false:
@@ -246,8 +244,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                               final noteIdInt = int.parse(noteId);
                                               await _notesService.deleteLocalNote(id: noteIdInt);
                                               // ? --------------------------------
-                                              //  devtools.log(
-                                              // ' ==> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
+                                              debugPrint(
+                                                  '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
                                             }
                                             appStateNotifier.selectedItems.clear();
                                             Provider.of<AppNotifier>(context, listen: false)
@@ -255,15 +253,15 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                             Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                             Provider.of<AppNotifier>(context, listen: false)
                                                 .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                            //  devtools.log(
-                                            // ' ==> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                            debugPrint(
+                                                '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                           }
                                         } else {
                                           Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                         }
-                                      // ? --------------------------------
-                                      //  devtools.log(
-                                      //     ' ==> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                        // ? --------------------------------
+                                        debugPrint(
+                                            '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                     }
                                   });
                                 },
@@ -299,8 +297,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                               case ConnectionState.waiting:
                               case ConnectionState.active:
                                 // ======================= STREAM ALL NOTES =======================title
-                                devtools.log(
-                                    ' ==> notes_view (local) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
+                                debugPrint(
+                                    '|===> notes_view (local) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
                                 if (snapshot.hasData) {
                                   if (snapshot.data!.isEmpty) {
                                     // -------------- PRESS + to write
@@ -336,7 +334,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     );
                                   } else {
                                     // ======================= LIST OF NOTES =======================
-                                    //  snapshot.data is NOT Empty
+                                    // snapshot.data is NOT Empty
                                     final allNotes = snapshot.data as List<LocalDatabaseNote>;
                                     (sortFieldName == 'created_at')
                                         ? (isDescending)

@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -132,14 +130,14 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                                       appStateNotifier.selectedItems.removeWhere((item) => item == note.documentId);
                                       Provider.of<AppNotifier>(context, listen: false)
                                           .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                    // ? --------------------------------------------
-                                    //  devtools.log('notes_list_view (cloud) | ListTile | index: $index');
+                                      // ? --------------------------------------------
+                                      debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
                                     case false:
                                       appStateNotifier.selectedItems.add(note.documentId);
                                       Provider.of<AppNotifier>(context, listen: false)
                                           .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                    // ? --------------------------------------------
-                                    //  devtools.log('notes_list_view (cloud) | ListTile | index: $index');
+                                      // ? --------------------------------------------
+                                      debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
                                   }
                                   (appStateNotifier.selectedItems.isEmpty)
                                       ? Provider.of<AppNotifier>(context, listen: false)
@@ -147,10 +145,10 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                                       : Provider.of<AppNotifier>(context, listen: false)
                                           .itemsCheckedToDeleteState(true);
                                   // ? --------------------------------------------
-                                  //  devtools.log(
-                                  //     'notes_list_view (cloud) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, note.documentId: ${note.documentId} \n selectedItems length: ${appStateNotifier.selectedItems.length}');
-                                  //  devtools.log(
-                                  //     'notes_list_view (cloud) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
+                                  debugPrint(
+                                      '|===> notes_list_view (cloud) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, note.documentId: ${note.documentId} \n selectedItems length: ${appStateNotifier.selectedItems.length}');
+                                  debugPrint(
+                                      '|===> notes_list_view (cloud) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
                                 });
                               },
                               icon: (appStateNotifier.selectedItems.contains(note.documentId))

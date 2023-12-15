@@ -1,13 +1,11 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import '../models/theme_colors.dart';
 
 class AppNotifier extends ChangeNotifier {
-  ThemeMode colorMode = ThemeMode.system;
-  FlexScheme themeScheme = ThemeColorsSchemes().schemeBlue;
+  ThemeMode themeMode = ThemeMode.system;
+  FlexScheme flexScheme = ThemeColorsSchemes().schemeBlue;
   bool isCloudStorage = true;
   bool isOnline = true;
   String userEmail = "";
@@ -20,15 +18,15 @@ class AppNotifier extends ChangeNotifier {
 
   // --------------- Color Theme ---------------
 
-  void toggleLightDarkMode(ThemeMode colorMode) {
-    this.colorMode = colorMode;
+  void toggleLightDarkMode(ThemeMode themeMode) {
+    this.themeMode = themeMode;
     notifyListeners();
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | toggleLightDarkMode() colorMode: $colorMode');
+    debugPrint('|===> app_notifier | toggleLightDarkMode() themeMode: $themeMode');
   }
 
-  void changeColorScheme(FlexScheme themeScheme) {
-    this.themeScheme = themeScheme;
+  void changeColorScheme(FlexScheme flexScheme) {
+    this.flexScheme = flexScheme;
     notifyListeners();
   }
 
@@ -37,14 +35,14 @@ class AppNotifier extends ChangeNotifier {
   void isCloudStorageAppState(bool isCloudStorage) {
     this.isCloudStorage = isCloudStorage;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isCloudStorageAppState() | isCloudStorage: $isCloudStorage');
+    debugPrint('|===> app_notifier | isCloudStorageAppState() | isCloudStorage: $isCloudStorage');
     notifyListeners();
   }
 
   void isOnlineAppState(bool isOnline) {
     this.isOnline = isOnline;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isOnlineAppState() | isOnline: $isOnline');
+    debugPrint('|===> app_notifier | isOnlineAppState() | isOnline: $isOnline');
     notifyListeners();
   }
 
@@ -53,7 +51,7 @@ class AppNotifier extends ChangeNotifier {
   void storeUserEmail(String userEmail) {
     this.userEmail = userEmail;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | storeUserEmail() | userEmail: $userEmail');
+    debugPrint('|===> app_notifier | storeUserEmail() | userEmail: $userEmail');
     notifyListeners();
   }
 
@@ -62,42 +60,42 @@ class AppNotifier extends ChangeNotifier {
   void isSubtitleVisibleState(bool isSubtitleVisible) {
     this.isSubtitleVisible = isSubtitleVisible;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isSubtitleVisibleState() | isSubtitleVisible: $isSubtitleVisible');
+    debugPrint('|===> app_notifier | isSubtitleVisibleState() | isSubtitleVisible: $isSubtitleVisible');
     notifyListeners();
   }
 
   void isNumberVisibleState(bool isNumberVisible) {
     this.isNumberVisible = isNumberVisible;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isNumberVisibleState() | isNumberVisible: $isNumberVisible');
+    debugPrint('|===> app_notifier | isNumberVisibleState() | isNumberVisible: $isNumberVisible');
     notifyListeners();
   }
 
   void itemsCheckedToDeleteState(bool itemsCheckedToDelete) {
     this.itemsCheckedToDelete = itemsCheckedToDelete;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | itemsCheckedToDeleteState() | itemsCheckedToDelete: $itemsCheckedToDelete');
+    debugPrint('|===> app_notifier | itemsCheckedToDeleteState() | itemsCheckedToDelete: $itemsCheckedToDelete');
     notifyListeners();
   }
 
   void isDeletingModeState(bool isDeletingMode) {
     this.isDeletingMode = isDeletingMode;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isDeletingModeState() | isDeletingMode: $isDeletingMode');
+    debugPrint('|===> app_notifier | isDeletingModeState() | isDeletingMode: $isDeletingMode');
     notifyListeners();
   }
 
   void isDateVisibleState(bool isDateVisible) {
     this.isDateVisible = isDateVisible;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | isDateVisibleState() | isDateVisible: $isDateVisible');
+    debugPrint('|===> app_notifier | isDateVisibleState() | isDateVisible: $isDateVisible');
     notifyListeners();
   }
 
   void selectedItemsForDelete(List<String> selectedItems) {
     this.selectedItems = selectedItems;
     // ? -------------------------------------
-    //  devtools.log(' ==> app_notifier | selectedItemsForDelete() | selectedItems: $selectedItems');
+    debugPrint('|===> app_notifier | selectedItemsForDelete() | selectedItems: $selectedItems');
     notifyListeners();
   }
 }

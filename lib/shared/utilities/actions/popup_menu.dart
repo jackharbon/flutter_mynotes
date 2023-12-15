@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +13,9 @@ import '../dialogs/logout_dialog.dart';
 PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
   return PopupMenuButton<MenuAction>(
     onSelected: (value) async {
+      final String email = AuthService.firebase().currentUser!.email;
       // ? ----------------------------------------
-      //  devtools.log(' ==> popup_menu | popupMenuItems() | value: ${value.toString()}');
+      debugPrint('|===> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
@@ -29,32 +28,75 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           }
         case MenuAction.lightMode:
           Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.light);
+          await LocalNotesService().updateLocalUserThemeMode(
+            themeMode: ThemeMode.light.toString(),
+            email: email,
+          );
         case MenuAction.systemMode:
           Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.system);
+          await LocalNotesService().updateLocalUserThemeMode(
+            themeMode: ThemeMode.system.toString(),
+            email: email,
+          );
         case MenuAction.darkMode:
           Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.dark);
+          await LocalNotesService().updateLocalUserThemeMode(
+            themeMode: ThemeMode.dark.toString(),
+            email: email,
+          );
         case MenuAction.blueM3:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.blueM3);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.blueM3.toString(),
+            email: email,
+          );
         case MenuAction.hippieBlue:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.hippieBlue);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.hippieBlue.toString(),
+            email: email,
+          );
         case MenuAction.deepPurple:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.deepPurple);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.deepPurple.toString(),
+            email: email,
+          );
         case MenuAction.purpleBrown:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.purpleBrown);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.purpleBrown.toString(),
+            email: email,
+          );
         case MenuAction.pinkM3:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.pinkM3);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.pinkM3.toString(),
+            email: email,
+          );
         case MenuAction.gold:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.gold);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.gold.toString(),
+            email: email,
+          );
         case MenuAction.greenM3:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.greenM3);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.greenM3.toString(),
+            email: email,
+          );
         case MenuAction.bigStone:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.bigStone);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.bigStone.toString(),
+            email: email,
+          );
         case MenuAction.deleteAccount:
           final shouldDeleteAccount = await showDeleteAccountDialog(context);
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
-            //  devtools.log(' ==> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
-            final String email = AuthService.firebase().currentUser!.email;
+            debugPrint('|===> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
             await LocalNotesService().deleteAllLocalNotes(email: email);
             await LocalNotesService().deleteLocalUser(email: email);
             Navigator.of(context).pushNamedAndRemoveUntil(
@@ -63,7 +105,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
             );
             await AuthService.firebase().deleteUserAccount(email: email);
             // ? ----------------------------------------
-            //  devtools.log(' ==> popup_menu |  MenuAction.deleteAccount | email: $email');
+            debugPrint('|===> popup_menu |  MenuAction.deleteAccount | email: $email');
           }
       }
     },

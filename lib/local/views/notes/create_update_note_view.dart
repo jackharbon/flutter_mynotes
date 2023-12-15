@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -34,7 +32,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     createdAtNow = Timestamp.now();
 
     // ? ---------------------------------------------------------------
-    //  devtools.log(' ==> create_update_note_view | initState()');
+    debugPrint('|===> create_update_note_view | initState()');
     super.initState();
   }
 
@@ -47,8 +45,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final text = _noteTextController.text;
     final createdAt = createdAtNow.toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    //  devtools.log(
-    // ' ==> new_note_view (local) | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
+    debugPrint(
+        '|===> new_note_view (local) | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
     await _notesService.updateLocalNote(
       note: note,
       title: title,
@@ -78,17 +76,17 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
 
     final existingNote = _note;
     // ? ---------------------------------------------------------------
-    //  devtools.log(' ==> new_note_view (local) | createNewNote() | existingNote: $existingNote');
+    debugPrint('|===> new_note_view (local) | createNewNote() | existingNote: $existingNote');
     if (existingNote != null) {
       // ? ---------------------------------------------------------------
-      //  devtools.log(' ==> new_note_view (local) | createNewNote() | existingNote is not empty: $existingNote');
+      debugPrint('|===> new_note_view (local) | createNewNote() | existingNote is not empty: $existingNote');
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
     final email = currentUser.email;
     final owner = await _notesService.getLocalUser(email: email);
     // ? ---------------------------------------------------------------
-    //  devtools.log(' ==> new_note_view (local) | createNewNote() | currentUser email: $email owner: $owner');
+    debugPrint('|===> new_note_view (local) | createNewNote() | currentUser email: $email owner: $owner');
     final newNote = await _notesService.createLocalNote(owner: owner);
     _note = newNote;
     return newNote;
@@ -99,7 +97,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     if (note != null) {
       if (_noteTextController.text.isEmpty && _noteTitleController.text.isEmpty) {
         // ? ---------------------------------------------------------------
-        //  devtools.log(' ==> new_note_view (local) | _deleteNoteIfTextIsEmpty() | deleted note: $note');
+        debugPrint('|===> new_note_view (local) | _deleteNoteIfTextIsEmpty() | deleted note: $note');
         await _notesService.deleteLocalNote(id: note.id);
       }
     }
@@ -111,8 +109,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final text = _noteTextController.text;
     final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    //  devtools.log(
-    // ' ==> new_note_view (local) | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
+    debugPrint(
+        '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
         await _notesService.updateLocalNote(
@@ -122,8 +120,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
           createdAt: createdAt,
         );
         // ? ---------------------------------------------------------------
-        //  devtools.log(
-        // ' ==> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
+        debugPrint(
+            '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
       }
     }
   }
@@ -135,7 +133,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     _noteTitleController.dispose();
     _noteTextController.dispose();
     // ? ---------------------------------------------------------------
-    //  devtools.log(' ==> new_note_view (local) | dispose()');
+    debugPrint('|===> new_note_view (local) | dispose()');
     super.dispose();
   }
 
@@ -159,18 +157,18 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
             icon: const Icon(Icons.add),
           ),
           // IconButton(
-          //   onPressed: () async {
-          //     final title = _noteTitleController.text;
-          //     final text = _noteTextController.text;
-          //     if (_note == null || (text.isEmpty && title.isEmpty)) {
-          //       await showCannotShareEmptyNoteDialog(context);
-          //     } else {
+          //  onPressed: () async {
+          //    final title = _noteTitleController.text;
+          //    final text = _noteTextController.text;
+          //    if (_note == null || (text.isEmpty && title.isEmpty)) {
+          //      await showCannotShareEmptyNoteDialog(context);
+          //    } else {
           // TODO: FINISH IT LATER: share bug
-          //       await showErrorDialog(context, 'Sharing function is not implemented yet');
+          //      await showErrorDialog(context, 'Sharing function is not implemented yet');
           // Share.share(text);
-          //     }
-          //   },
-          //   icon: const Icon(Icons.share),
+          //    }
+          //  },
+          //  icon: const Icon(Icons.share),
           // ),
           popupMenuItems(context),
         ],
@@ -184,8 +182,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
                 _note = snapshot.data as LocalDatabaseNote?;
                 _setupTextControllerListener();
                 // ? ---------------------------------------------------------------
-                //  devtools.log(' ==> new_note_view (local) | _note: $_note');
-                //  devtools.log(' ==> new_note_view (local) | snapshot: ${snapshot.data}');
+                debugPrint('|===> new_note_view (local) | _note: $_note');
+                debugPrint('|===> new_note_view (local) | snapshot: ${snapshot.data}');
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(

@@ -30,7 +30,7 @@ const passwordColumn = 'password';
 const firstNameColumn = 'first_name';
 const lastNameColumn = 'last_name';
 const themeModeColumn = 'theme_mode';
-const colorsSchemeColumn = 'colors_scheme';
+const flexSchemeColumn = 'flex_scheme';
 const avatarUrlColumn = 'avatar_url';
 const createdAtUserColumn = 'created_at_user';
 const isEmailVerifiedColumn = 'is_email_verified';
@@ -42,7 +42,7 @@ const createUserTable = '''CREATE TABLE IF NOT EXISTS  "user" (
 	"first_name"	TEXT,
 	"last_name"	TEXT,
 	"theme_mode"	TEXT,
-	"colors_scheme"	TEXT,
+	"flex_scheme"	TEXT,
 	"avatar_url"	TEXT,
   "created_at_user"  TEXT NOT NULL,
   "is_email_verified"	INTEGER NOT NULL DEFAULT 0,

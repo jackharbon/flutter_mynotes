@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/providers/app_notifier.dart';
@@ -130,14 +128,14 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                                         appStateNotifier.selectedItems.removeWhere((item) => item == noteId);
                                         Provider.of<AppNotifier>(context, listen: false)
                                             .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                      // ? --------------------------------------------
-                                      //  devtools.log('notes_list_view (local) | ListTile | index: $index');
+                                        // ? --------------------------------------------
+                                        debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
                                       case false:
                                         appStateNotifier.selectedItems.add(noteId);
                                         Provider.of<AppNotifier>(context, listen: false)
                                             .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                      // ? --------------------------------------------
-                                      //  devtools.log('notes_list_view (local) | ListTile | index: $index');
+                                        // ? --------------------------------------------
+                                        debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
                                     }
                                     (appStateNotifier.selectedItems.isEmpty)
                                         ? Provider.of<AppNotifier>(context, listen: false)
@@ -145,10 +143,10 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                                         : Provider.of<AppNotifier>(context, listen: false)
                                             .itemsCheckedToDeleteState(true);
                                     // ? --------------------------------------------
-                                    //  devtools.log(
-                                    // 'notes_list_view (local) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, noteId: $noteId \n selectedItems length: ${appStateNotifier.selectedItems.length}');
-                                    //  devtools.log(
-                                    // 'notes_list_view (local) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
+                                    debugPrint(
+                                        '|===> notes_list_view (local) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, noteId: $noteId \n selectedItems length: ${appStateNotifier.selectedItems.length}');
+                                    debugPrint(
+                                        '|===> notes_list_view (local) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
                                   });
                                 },
                                 icon: (appStateNotifier.selectedItems.contains(note.id.toString()))

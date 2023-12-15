@@ -1,5 +1,3 @@
-//  import 'dart:developer' as devtools show log;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +8,6 @@ import '../../services/auth/auth_exceptions.dart';
 import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
-import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 
 class CloudLoginView extends StatefulWidget {
@@ -24,7 +21,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
   late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
-  DatabaseUser? localUser;
+  DatabaseUser? localCurrentUser;
 
   @override
   void initState() {
@@ -54,9 +51,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
             ),
           ],
         ),
-        actions: [
-          popupMenuItems(context),
-        ],
+        actions: const [],
       ),
       body: FutureBuilder(
           future: _notesService.open(),
@@ -132,22 +127,26 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                               email: email,
                                               password: password,
                                             );
-                                            final cloudUser = AuthService.firebase().currentUser;
-                                            localUser =
+                                            final cloudCurrentUser = AuthService.firebase().currentUser;
+                                            localCurrentUser =
                                                 await _notesService.logInLocalUser(email: email, password: password);
-                                            Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
                                             // ? --------------------------------
-                                            // devtools.log(' ==> login_view (cloud) | login button | cloudUser: $cloudUser');
-                                            // devtools.log(' ==> login_view (cloud) | login button | localUser: $localUser');
-                                            if (cloudUser != null) {
-                                              if (cloudUser.isEmailVerified) {
-                                                _notesService.updateLocalIsEmailVerified(email: email);
+                                            debugPrint(
+                                                '|===> login_view (cloud) | login button | cloudUser: $cloudCurrentUser');
+                                            debugPrint(
+                                                '|===> login_view (cloud) | login button | localUser: $localCurrentUser');
+                                            if (cloudCurrentUser != null) {
+                                              Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
+                                              if (cloudCurrentUser.isEmailVerified) {
+                                                _notesService.updateLocalUserIsEmailVerified(email: email);
+                                                debugPrint(
+                                                    '|===> login_view (cloud) | login button | cloudUser.isEmailVerified: ${cloudCurrentUser.isEmailVerified}');
+                                                debugPrint(
+                                                    '|===> login_view (cloud) | login button | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
                                                 await Navigator.of(context).pushNamedAndRemoveUntil(
                                                   myNotesRoute,
                                                   (route) => false,
                                                 );
-                                                // ? --------------------------------
-                                                // devtools.log(' ==> login_view (cloud) | login button | email verified: $email');
                                               } else {
                                                 await Navigator.of(context).pushNamed(verifyEmailRoute);
                                               }
