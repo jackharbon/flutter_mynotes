@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../shared/constants/routes.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
+import '../../../shared/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import '../../services/auth/auth_service.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
@@ -163,20 +165,18 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
                 Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
               icon: const Icon(Icons.add)),
-          // IconButton(
-          //  onPressed: () async {
-          //    final title = _noteTitleController.text;
-          //    final text = _noteTextController.text;
-          //    if (_note == null || (text.isEmpty && title.isEmpty)) {
-          //      await showCannotShareEmptyNoteDialog(context);
-          //    } else {
-          // TODO: FINISH IT LATER: share bug
-          //      await showErrorDialog(context, 'Sharing function is not implemented yet');
-          // Share.share(text);
-          //    }
-          //  },
-          //  icon: const Icon(Icons.share),
-          // ),
+          IconButton(
+            onPressed: () async {
+              final title = _noteTitleController.text;
+              final text = _noteTextController.text;
+              if (_note == null || (text.isEmpty && title.isEmpty)) {
+                await showCannotShareEmptyNoteDialog(context);
+              } else {
+                Share.share(text);
+              }
+            },
+            icon: const Icon(Icons.share),
+          ),
           popupMenuItems(context),
         ],
       ),
@@ -228,7 +228,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
                               keyboardType: TextInputType.multiline,
                               maxLines: null,
                               decoration: const InputDecoration(
-                                labelText: 'Message',
+                                labelText: 'Note',
                                 hintText: 'Start typing your note here',
                                 enabledBorder: InputBorder.none,
                                 focusedBorder: InputBorder.none,

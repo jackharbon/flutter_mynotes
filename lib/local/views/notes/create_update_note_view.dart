@@ -156,20 +156,6 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
             },
             icon: const Icon(Icons.add),
           ),
-          // IconButton(
-          //  onPressed: () async {
-          //    final title = _noteTitleController.text;
-          //    final text = _noteTextController.text;
-          //    if (_note == null || (text.isEmpty && title.isEmpty)) {
-          //      await showCannotShareEmptyNoteDialog(context);
-          //    } else {
-          // TODO: FINISH IT LATER: share bug
-          //      await showErrorDialog(context, 'Sharing function is not implemented yet');
-          // Share.share(text);
-          //    }
-          //  },
-          //  icon: const Icon(Icons.share),
-          // ),
           popupMenuItems(context),
         ],
       ),

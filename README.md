@@ -167,11 +167,20 @@ flutter pub add flutter_bloc
 
 flutter pub add flutter_launcher_icons
 
-flutter pub add share_plus
-
 ```
 
-(`share_plus` may be a cause of error duplicated Sdk)
+and
+
+```
+flutter pub add share_plus
+
+flutter clean
+
+flutter clean android
+
+flutter pub get
+
+```
 
 You can also edit 'pubspec.yaml' and paste those dependencies (don't forget to include a current version - check on: [pub.dev](https://pub.dev/packages)).
 
