@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:provider/provider.dart';
 
+import '../../../cloud/services/auth/bloc/auth_bloc.dart';
+import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../constants/routes.dart';
 import '../../../cloud/services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
@@ -21,10 +23,9 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           final shouldLogout = await showLogOutDialog(context);
           if (shouldLogout) {
             // await AuthService.firebase().logOut();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              loginRoute,
-              (_) => false,
-            );
+            context.read<AuthBloc>().add(
+                  const AuthEventLogOut(),
+                );
           }
         case MenuAction.lightMode:
           Provider.of<AppNotifier>(context, listen: false).toggleLightDarkMode(ThemeMode.light);

@@ -9,6 +9,8 @@ import '../../services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
+import '../../services/auth/bloc/auth_bloc.dart';
+import '../../services/auth/bloc/auth_event.dart';
 
 class CloudLoginView extends StatefulWidget {
   const CloudLoginView({super.key});
@@ -123,39 +125,12 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                           final email = _email.text;
                                           final password = _password.text;
                                           try {
-                                            await AuthService.firebase().logIn(
-                                              email: email,
-                                              password: password,
-                                            );
-                                            final cloudCurrentUser = AuthService.firebase().currentUser;
-                                            localCurrentUser =
-                                                await _notesService.logInLocalUser(email: email, password: password);
-                                            // ? --------------------------------
-                                            debugPrint(
-                                                '|===> login_view (cloud) | login button | cloudUser: $cloudCurrentUser');
-                                            debugPrint(
-                                                '|===> login_view (cloud) | login button | localUser: $localCurrentUser');
-                                            if (cloudCurrentUser != null) {
-                                              Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
-                                              if (cloudCurrentUser.isEmailVerified) {
-                                                _notesService.updateLocalUserIsEmailVerified(email: email);
-                                                debugPrint(
-                                                    '|===> login_view (cloud) | login button | cloudUser.isEmailVerified: ${cloudCurrentUser.isEmailVerified}');
-                                                debugPrint(
-                                                    '|===> login_view (cloud) | login button | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
-                                                await Navigator.of(context).pushNamedAndRemoveUntil(
-                                                  myNotesRoute,
-                                                  (route) => false,
+                                            context.read<AuthBloc>().add(
+                                                  AuthEventLogIn(
+                                                    email,
+                                                    password,
+                                                  ),
                                                 );
-                                              } else {
-                                                await Navigator.of(context).pushNamed(verifyEmailRoute);
-                                              }
-                                            } else {
-                                              await Navigator.of(context).pushNamedAndRemoveUntil(
-                                                registerRoute,
-                                                (route) => false,
-                                              );
-                                            }
                                           } on MissingDataAuthException {
                                             await showErrorDialog(
                                               context,
