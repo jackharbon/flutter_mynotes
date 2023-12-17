@@ -90,6 +90,7 @@ As a user, after registering with an email and a password or Google account you 
 - [x] Connectivity plus Internet connection check
 - [x] App state change notification
 - [x] Firestore Database cloud storage
+- [x] Bloc state management
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -161,11 +162,11 @@ flutter pub add flutter_lints
 
 flutter pub add intl
 
+flutter pub add flutter_launcher_icons
+
 flutter pub add bloc
 
 flutter pub add flutter_bloc
-
-flutter pub add flutter_launcher_icons
 
 ```
 
