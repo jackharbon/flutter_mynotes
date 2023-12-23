@@ -34,7 +34,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     // login user
     on<AuthEventLogIn>((event, emit) async {
-      emit(const AuthStateLoading(isLoading: true));
       final email = event.email;
       final password = event.password;
       try {
@@ -44,7 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
         emit(AuthStateLoggedIn(user: user, isLoading: false));
       } on Exception catch (e) {
-        emit(AuthStateLoginFailure(exception: e, isLoading: false));
+        emit(AuthStateLoggedOut(exception: e, isLoading: false));
       }
     });
     // on<AuthEventLogIn>((event, emit) async {

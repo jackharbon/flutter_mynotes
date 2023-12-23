@@ -27,15 +27,6 @@ class AuthStateLoggedIn extends AuthState {
   });
 }
 
-class AuthStateLoginFailure extends AuthState {
-  final Exception exception;
-
-  const AuthStateLoginFailure({
-    required this.exception,
-    required super.isLoading,
-  });
-}
-
 class AuthStateNeedsVerification extends AuthState {
   const AuthStateNeedsVerification({
     required super.isLoading,

@@ -22,7 +22,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
           if (shouldLogout) {
-            // await AuthService.firebase().logOut();
+            // await LocalNotesService().logOut;
             context.read<AuthBloc>().add(
                   const AuthEventLogOut(),
                 );

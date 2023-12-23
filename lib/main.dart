@@ -193,26 +193,28 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is AuthStateLoggedIn) {
-          return const CloudMyNotesView();
-        } else if (state is AuthStateNeedsVerification) {
-          return const CloudVerifyEmailView();
-        } else if (state is AuthStateLoggedOut) {
-          return const CloudLoginView();
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Please wait...',
+    return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
+      return BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          if (state is AuthStateLoggedIn) {
+            return (appStateNotifier.isOnline) ? const CloudMyNotesView() : const LocalMyNotesView();
+          } else if (state is AuthStateNeedsVerification) {
+            return const CloudVerifyEmailView();
+          } else if (state is AuthStateLoggedOut) {
+            return (appStateNotifier.isOnline) ? const CloudLoginView() : const LocalLoginView();
+          } else {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Please wait...',
+                ),
               ),
-            ),
-            body: const LoadingStandardProgressBar(),
-          );
-        }
-      },
-    );
+              body: const LoadingStandardProgressBar(),
+            );
+          }
+        },
+      );
+    });
   }
 }
 

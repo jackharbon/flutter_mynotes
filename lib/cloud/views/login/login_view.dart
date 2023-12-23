@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../services/auth/auth_exceptions.dart';
@@ -11,6 +10,7 @@ import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 import '../../services/auth/bloc/auth_bloc.dart';
 import '../../services/auth/bloc/auth_event.dart';
+import '../../services/auth/bloc/auth_state.dart';
 
 class CloudLoginView extends StatefulWidget {
   const CloudLoginView({super.key});
@@ -119,100 +119,107 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
-                                        onPressed: () async {
-                                          final email = _email.text;
-                                          final password = _password.text;
-                                          try {
-                                            context.read<AuthBloc>().add(
-                                                  AuthEventLogIn(
-                                                    email,
-                                                    password,
-                                                  ),
-                                                );
-                                          } on MissingDataAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'Missing credentials!\nPlease check the form fields.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.text_fields,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } on InvalidEmailAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'Invalid emai!\nPlease check your email address.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.email,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } on UserNotFoundAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'User not found!\nEnter correct email or register.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.person_off_rounded,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } on WrongPasswordAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'Wrong password!\nPlease type again.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.password,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } on UnknownAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'Authentication error!\nPlease try again later.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.person_off_rounded,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } on GenericAuthException {
-                                            await showErrorDialog(
-                                              context,
-                                              'Authentication error!\nPlease try again later.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.person_off_rounded,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
-                                          } catch (e) {
-                                            await showErrorDialog(
-                                              context,
-                                              'Authentication error!\nPlease try again later.',
-                                              'Login Failed!',
-                                              Icon(
-                                                Icons.person_off_rounded,
-                                                size: 60,
-                                                color: Theme.of(context).colorScheme.error,
-                                              ),
-                                            );
+                                      BlocListener<AuthBloc, AuthState>(
+                                        listener: (context, state) async {
+                                          if (state is AuthStateLoggedOut) {
+                                            if (state.exception is MissingDataAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Missing credentials!\nPlease check the form fields.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.text_fields,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            } else if (state.exception is InvalidEmailAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Invalid email!\nPlease check your email address.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.email,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            } else if (state.exception is UserNotFoundAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'User not found!\nEnter correct email or register.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.person_off_rounded,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            } else if (state.exception is WrongPasswordAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Wrong password!\nPlease type again.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.password,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            } else if (state.exception is UnknownAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Authentication error!\nPlease try again later.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.person_off_rounded,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            } else if (state.exception is GenericAuthException) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Authentication error!\nPlease try again later.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.person_off_rounded,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            }
                                           }
                                         },
-                                        child: const Text(
-                                          'Login',
-                                          style: TextStyle(),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                                          onPressed: () async {
+                                            final email = _email.text;
+                                            final password = _password.text;
+                                            try {
+                                              context.read<AuthBloc>().add(
+                                                    AuthEventLogIn(
+                                                      email,
+                                                      password,
+                                                    ),
+                                                  );
+                                            } catch (e) {
+                                              await showErrorDialog(
+                                                context,
+                                                'Authentication error!\nPlease try again later.',
+                                                'Login Failed!',
+                                                Icon(
+                                                  Icons.person_off_rounded,
+                                                  size: 60,
+                                                  color: Theme.of(context).colorScheme.error,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: const Text(
+                                            'Login',
+                                            style: TextStyle(),
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(
