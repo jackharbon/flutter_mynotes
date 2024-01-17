@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
-import '../../constants/routes.dart';
 import '../../../cloud/services/auth/auth_service.dart';
 import '../../services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
@@ -100,11 +99,10 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
             debugPrint('|===> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
             await LocalNotesService().deleteAllLocalNotes(email: email);
             await LocalNotesService().deleteLocalUser(email: email);
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              registerRoute,
-              (_) => false,
-            );
             await AuthService.firebase().deleteUserAccount(email: email);
+            context.read<AuthBloc>().add(
+                  const AuthEventShouldRegister(),
+                );
             // ? ----------------------------------------
             debugPrint('|===> popup_menu |  MenuAction.deleteAccount | email: $email');
           }

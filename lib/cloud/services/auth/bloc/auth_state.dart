@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:equatable/equatable.dart';
 
 import '../auth_user.dart';
 
@@ -12,11 +13,16 @@ abstract class AuthState {
   });
 }
 
-//  ------------------ Output states --------------------------------
+class AuthStateUninitialized extends AuthState {
+  const AuthStateUninitialized({required super.isLoading});
+}
 
-// bloc state of loading
-class AuthStateLoading extends AuthState {
-  const AuthStateLoading({required super.isLoading});
+class AuthStateRegistering extends AuthState {
+  final Exception? exception;
+  const AuthStateRegistering({
+    required this.exception,
+    required super.isLoading,
+  });
 }
 
 class AuthStateLoggedIn extends AuthState {
@@ -33,13 +39,7 @@ class AuthStateNeedsVerification extends AuthState {
   });
 }
 
-class AuthStateUninitialized extends AuthState {
-  const AuthStateUninitialized({
-    required super.isLoading,
-  });
-}
-
-class AuthStateLoggedOut extends AuthState {
+class AuthStateLoggedOut extends AuthState with EquatableMixin {
   final Exception? exception;
   const AuthStateLoggedOut({
     required this.exception,
@@ -49,25 +49,6 @@ class AuthStateLoggedOut extends AuthState {
 
   @override
   List<Object?> get props => [exception, isLoading];
-}
-
-class AuthStateLogoutFailure extends AuthState {
-  final Exception exception;
-
-  const AuthStateLogoutFailure({
-    required this.exception,
-    required super.isLoading,
-  });
-}
-
-//  ------------------ Input states --------------------------------
-
-class AuthStateRegistering extends AuthState {
-  final Exception? exception;
-  const AuthStateRegistering({
-    required this.exception,
-    required super.isLoading,
-  });
 }
 
 class AuthStateForgotPassword extends AuthState {

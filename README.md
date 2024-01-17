@@ -168,6 +168,8 @@ flutter pub add bloc
 
 flutter pub add flutter_bloc
 
+flutter pub add equatable
+
 ```
 
 and

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../cloud/services/auth/bloc/auth_bloc.dart';
+import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/dialogs/resend_verification.dart';
-import '../../constants/routes.dart';
 import '../../../cloud/services/auth/auth_service.dart';
 import '../../utilities/actions/popup_menu.dart';
 
@@ -32,7 +33,9 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
 
   Future sendVerificationEmailAgain() async {
     try {
-      await AuthService.firebase().sendEmailVerification();
+      context.read<AuthBloc>().add(
+            const AuthEventSendEmailVerification(),
+          );
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
       setState(() => isTimeToSendAgain = false);
       // ? --------------------------------
@@ -153,20 +156,13 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                           (isUserEmailVerified)
                               ? await _notesService.updateLocalUserIsEmailVerified(email: user.email)
                               : null;
-                          // await AuthService.firebase().logOut();
-                          // ? --------------------------------
-                          debugPrint('|===> verify_email_view | login button | email: ${user.email}');
-                          debugPrint(
-                              '|===> verify_email_view | login button | isEmailVerified: ${user.isEmailVerified}');
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            loginRoute,
-                            (route) => false,
-                          );
+                          context.read<AuthBloc>().add(
+                                const AuthEventLogOut(),
+                              );
                         } else {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                            registerRoute,
-                            (route) => false,
-                          );
+                          context.read<AuthBloc>().add(
+                                const AuthEventShouldRegister(),
+                              );
                         }
                       },
                       child: Text(

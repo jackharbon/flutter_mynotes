@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../cloud/services/auth/bloc/auth_bloc.dart';
+import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/crud_exceptions.dart';
-import '../../../shared/constants/routes.dart';
 import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 
@@ -132,21 +133,21 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                     if (localCurrentUser!.isEmailVerified) {
                                       debugPrint(
                                           '|===> login_view (cloud) | myNotesRoute | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
-                                      await Navigator.of(context).pushNamedAndRemoveUntil(
-                                        myNotesRoute,
-                                        (route) => false,
-                                      );
+                                      context.read<AuthBloc>().add(
+                                            const AuthEventLogOut(),
+                                          );
                                     } else {
                                       // ? --------------------------------
                                       debugPrint(
                                           '|===> login_view (local) | verifyEmailRoute | user!.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
-                                      await Navigator.of(context).pushNamed(verifyEmailRoute);
+                                      context.read<AuthBloc>().add(
+                                            const AuthEventSendEmailVerification(),
+                                          );
                                     }
                                   } else {
-                                    await Navigator.of(context).pushNamedAndRemoveUntil(
-                                      registerRoute,
-                                      (route) => false,
-                                    );
+                                    context.read<AuthBloc>().add(
+                                          const AuthEventShouldRegister(),
+                                        );
                                   }
                                 } on MissingDataAuthException {
                                   await showErrorDialog(
@@ -238,10 +239,9 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 ),
                                 TextButton(
                                   onPressed: () async {
-                                    Navigator.of(context).pushNamedAndRemoveUntil(
-                                      registerRoute,
-                                      (route) => false,
-                                    );
+                                    context.read<AuthBloc>().add(
+                                          const AuthEventShouldRegister(),
+                                        );
                                   },
                                   child: Text(
                                     "Register here.",
