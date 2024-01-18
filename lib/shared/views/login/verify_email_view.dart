@@ -166,7 +166,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                         }
                       },
                       child: Text(
-                        "Go to the login page.",
+                        "Login here.",
                         style: TextStyle(
                           shadows: [Shadow(color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))],
                           fontSize: 16,

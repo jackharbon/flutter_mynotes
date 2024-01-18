@@ -131,15 +131,15 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   if (localCurrentUser != null) {
                                     Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
                                     if (localCurrentUser!.isEmailVerified) {
-                                      debugPrint(
-                                          '|===> login_view (cloud) | myNotesRoute | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
+                                      // debugPrint(
+                                      // '|===> login_view (cloud) | myNotesRoute | localUser.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
                                       context.read<AuthBloc>().add(
                                             const AuthEventLogOut(),
                                           );
                                     } else {
                                       // ? --------------------------------
-                                      debugPrint(
-                                          '|===> login_view (local) | verifyEmailRoute | user!.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
+                                      // debugPrint(
+                                      // '|===> login_view (local) | verifyEmailRoute | user!.isEmailVerified: ${localCurrentUser!.isEmailVerified}');
                                       context.read<AuthBloc>().add(
                                             const AuthEventSendEmailVerification(),
                                           );

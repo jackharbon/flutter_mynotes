@@ -13,6 +13,7 @@ import 'cloud/services/auth/firebase_auth_provider.dart';
 import 'cloud/views/login/login_view.dart';
 import 'shared/extensions/dependency_injection.dart';
 import 'shared/helpers/loading/loading_screen.dart';
+import 'shared/views/login/forgot_password_view.dart';
 import 'shared/views/login/register_view.dart';
 import 'shared/views/login/verify_email_view.dart';
 import 'cloud/views/notes/create_update_note_view.dart';
@@ -207,6 +208,8 @@ class HomePage extends StatelessWidget {
             return const CloudVerifyEmailView();
           } else if (state is AuthStateLoggedOut) {
             return (appStateNotifier.isOnline) ? const CloudLoginView() : const LocalLoginView();
+          } else if (state is AuthStateForgotPassword) {
+            return const ForgotPasswordView();
           } else if (state is AuthStateRegistering) {
             return const CloudRegisterView();
           } else {

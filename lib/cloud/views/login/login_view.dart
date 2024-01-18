@@ -260,6 +260,43 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                             ),
                                           ],
                                         ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Forgot password?",
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.outline,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16,
+                                                fontStyle: FontStyle.italic,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                context.read<AuthBloc>().add(
+                                                      const AuthEventForgotPassword(),
+                                                    );
+                                              },
+                                              child: Text(
+                                                "Reset password here.",
+                                                style: TextStyle(
+                                                  shadows: [
+                                                    Shadow(
+                                                        color: Theme.of(context).colorScheme.primary,
+                                                        offset: const Offset(0, -2))
+                                                  ],
+                                                  fontSize: 16,
+                                                  color: Colors.transparent,
+                                                  decoration: TextDecoration.underline,
+                                                  decorationColor: Theme.of(context).colorScheme.primary,
+                                                  decorationThickness: 2,
+                                                  decorationStyle: TextDecorationStyle.dashed,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),

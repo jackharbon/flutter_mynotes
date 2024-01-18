@@ -44,7 +44,7 @@ class LoadingScreen {
     final overlay = OverlayEntry(
       builder: (context) {
         return Material(
-          color: Colors.black.withAlpha(200),
+          color: Theme.of(context).colorScheme.inverseSurface.withAlpha(200),
           child: Center(
             child: Container(
                 constraints: BoxConstraints(
@@ -110,6 +110,11 @@ class LoadingProgressBar extends StatelessWidget {
               return Text(
                 snapshot.data as String,
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               );
             } else {
               return Container();
