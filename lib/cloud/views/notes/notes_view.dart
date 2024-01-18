@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/constants/routes.dart';
+import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../services/auth/auth_service.dart';
 import '../../services/cloud/cloud_note.dart';
@@ -40,8 +40,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   void initState() {
     _notesService = FirebaseCloudStorage();
     // ? ---------------------------------------------------------------
-    debugPrint('|===> notes_view (cloud) | initState() | _notesService: $_notesService');
-    debugPrint('|===> notes_view (cloud) | initState() | userId: $userId');
+    // debugPrint('|===> notes_view (cloud) | initState() | _notesService: $_notesService');
+    // debugPrint('|===> notes_view (cloud) | initState() | userId: $userId');
     super.initState();
   }
 
@@ -66,7 +66,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
               builder: (context, AsyncSnapshot<int> snapshot) {
                 if (snapshot.hasData) {
                   // ? --------------------------------------------
-                  debugPrint('|===> notes_view (cloud) | notes count snapshot.data: ${snapshot.data}');
+                  // debugPrint('|===> notes_view (cloud) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data ?? 0;
                   return Text('$noteCount Notes(cloud)');
                 } else {
@@ -107,8 +107,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                                 sortFieldName = 'title';
                                 isDescending = !isDescending;
                                 // ? --------------------------------------------
-                                debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
-                                debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
+                                // debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
+                                // debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
                               },
                             );
                           },
@@ -133,8 +133,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                               sortFieldName = 'created_at';
                               isDescending = !isDescending;
                               // ? --------------------------------------------
-                              debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
-                              debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
+                              // debugPrint('|===> notes_view (cloud) | button isDescending: $isDescending');
+                              // debugPrint('|===> notes_view (cloud) | button sortFieldName: $sortFieldName');
                             });
                           },
                           icon: (sortFieldName == 'created_at')
@@ -305,14 +305,14 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                   ),
                   builder: (context, snapshot) {
                     // ? ---------------------------------------------------------------
-                    debugPrint('|===> notes_view (cloud) | User snapshot: ${snapshot.connectionState}');
-                    debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}, userId: $userId');
+                    // debugPrint('|===> notes_view (cloud) | User snapshot: ${snapshot.connectionState}');
+                    // debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}, userId: $userId');
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                       case ConnectionState.active:
                         // ? ---------------------------------------------------------------
-                        debugPrint('|===> notes_view (cloud) | allNotes snapshot: ${snapshot.connectionState}');
-                        debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}');
+                        // debugPrint('|===> notes_view (cloud) | allNotes snapshot: ${snapshot.connectionState}');
+                        // debugPrint('|===> notes_view (cloud) | snapshot.data: ${snapshot.data}');
                         if (snapshot.hasData) {
                           if (snapshot.data!.isEmpty) {
                             return Row(
@@ -351,7 +351,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             // snapshot.data is NOT Empty
                             final allNotes = snapshot.data as Iterable<CloudNote>;
                             // ? ---------------------------------------------------------------
-                            debugPrint('|===> notes_view (cloud) | allNotes is not empty: $allNotes');
+                            // debugPrint('|===> notes_view (cloud) | allNotes is not empty: $allNotes');
                             return CloudNotesListView(
                               notes: allNotes,
                               onDeleteNote: (note) async {

@@ -8,7 +8,7 @@ import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/bloc/auth_state.dart';
 // import '../../services/crud/notes_services.dart';
-import '../../helpers/loading/loading_widget.dart';
+import '../../helpers/loading/loading_screen.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/dialogs/error_dialog.dart';

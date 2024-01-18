@@ -12,7 +12,7 @@ import 'cloud/services/auth/bloc/auth_state.dart';
 import 'cloud/services/auth/firebase_auth_provider.dart';
 import 'cloud/views/login/login_view.dart';
 import 'shared/extensions/dependency_injection.dart';
-import 'shared/helpers/loading/loading_widget.dart';
+import 'shared/helpers/loading/loading_screen.dart';
 import 'shared/views/login/register_view.dart';
 import 'shared/views/login/verify_email_view.dart';
 import 'cloud/views/notes/create_update_note_view.dart';
@@ -53,28 +53,28 @@ class _AppStateNotifierLayerState extends State<AppStateNotifierLayer> {
       stream: Connectivity().onConnectivityChanged,
       builder: (context, AsyncSnapshot<ConnectivityResult> snapshot) {
         // ? --------------------------------
-        debugPrint('|===> main | AppStateNotifierLayer() | StreamBuilder | snapshot.data: ${snapshot.data}');
+        // debugPrint('|===> main | AppStateNotifierLayer() | StreamBuilder | snapshot.data: ${snapshot.data}');
         return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
           switch (snapshot.data) {
             case null:
               Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
               Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(false);
-              // ? --------------------------------
-              debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
-              debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
+            // ? --------------------------------
+            // debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+            // debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
             case ConnectivityResult.none:
               Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(false);
               Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(false);
               // ? --------------------------------
-              debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
-              debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
+              // debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+              // debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
               return const MyNotesApp();
             default:
               Provider.of<AppNotifier>(context, listen: false).isOnlineAppState(true);
               Provider.of<AppNotifier>(context, listen: false).isCloudStorageAppState(true);
               // ? --------------------------------
-              debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
-              debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
+              // debugPrint('|===> main | AppStateNotifierLayer() | isCloudStorage: ${appStateNotifier.isCloudStorage}');
+              // debugPrint('|===> main | AppStateNotifierLayer() | isOnline: ${appStateNotifier.isOnline}');
               return const MyNotesApp();
           }
           return const MyNotesApp();
@@ -189,7 +189,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
-      return BlocBuilder<AuthBloc, AuthState>(
+      return BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.isLoading) {
+            LoadingScreen().show(
+              context: context,
+              text: state.loadingText ?? 'Please wait a moment',
+            );
+          } else {
+            LoadingScreen().hide();
+          }
+        },
         builder: (context, state) {
           if (state is AuthStateLoggedIn) {
             return (appStateNotifier.isOnline) ? const CloudMyNotesView() : const LocalMyNotesView();

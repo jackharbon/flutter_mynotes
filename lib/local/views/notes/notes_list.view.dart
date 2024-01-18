@@ -128,14 +128,14 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                                         appStateNotifier.selectedItems.removeWhere((item) => item == noteId);
                                         Provider.of<AppNotifier>(context, listen: false)
                                             .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                        // ? --------------------------------------------
-                                        debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
+                                      // ? --------------------------------------------
+                                      // debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
                                       case false:
                                         appStateNotifier.selectedItems.add(noteId);
                                         Provider.of<AppNotifier>(context, listen: false)
                                             .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                        // ? --------------------------------------------
-                                        debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
+                                      // ? --------------------------------------------
+                                      // debugPrint('|===> notes_list_view (local) | ListTile | index: $index');
                                     }
                                     (appStateNotifier.selectedItems.isEmpty)
                                         ? Provider.of<AppNotifier>(context, listen: false)

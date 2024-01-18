@@ -45,6 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           const AuthStateLoggedOut(
             exception: null,
             isLoading: false,
+            loadingText: "I'm loading...",
           ),
         );
       } else if (!user.isEmailVerified) {
@@ -62,9 +63,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         const AuthStateLoggedOut(
           exception: null,
           isLoading: true,
+          loadingText: 'Please wait while I log you',
         ),
       );
-      // await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 3000000));
       final email = event.email;
       final password = event.password;
       try {
@@ -78,6 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             const AuthStateLoggedOut(
               exception: null,
               isLoading: false,
+              loadingText: "I'm loading...",
             ),
           );
           emit(const AuthStateNeedsVerification(isLoading: false));
@@ -86,6 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             const AuthStateLoggedOut(
               exception: null,
               isLoading: false,
+              loadingText: "I'm loading...",
             ),
           );
           emit(AuthStateLoggedIn(
@@ -98,6 +102,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           AuthStateLoggedOut(
             exception: e,
             isLoading: false,
+            loadingText: "I'm loading...",
           ),
         );
       }
@@ -105,12 +110,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // logout user
     on<AuthEventLogOut>((event, emit) async {
       try {
-        emit(const AuthStateLoggedOut(isLoading: true, exception: null));
+        emit(const AuthStateLoggedOut(
+          isLoading: true,
+          exception: null,
+          loadingText: "I'm loading...",
+        ));
         await provider.logOut();
         emit(
           const AuthStateLoggedOut(
             exception: null,
             isLoading: false,
+            loadingText: "I'm loading...",
           ),
         );
       } on Exception catch (e) {
@@ -118,6 +128,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           AuthStateLoggedOut(
             exception: e,
             isLoading: false,
+            loadingText: "I'm loading...",
           ),
         );
       }

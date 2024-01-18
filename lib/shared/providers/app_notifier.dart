@@ -22,7 +22,7 @@ class AppNotifier extends ChangeNotifier {
     this.themeMode = themeMode;
     notifyListeners();
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | toggleLightDarkMode() themeMode: $themeMode');
+    // debugPrint('|===> app_notifier | toggleLightDarkMode() themeMode: $themeMode');
   }
 
   void changeColorScheme(FlexScheme flexScheme) {
@@ -35,14 +35,14 @@ class AppNotifier extends ChangeNotifier {
   void isCloudStorageAppState(bool isCloudStorage) {
     this.isCloudStorage = isCloudStorage;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isCloudStorageAppState() | isCloudStorage: $isCloudStorage');
+    // debugPrint('|===> app_notifier | isCloudStorageAppState() | isCloudStorage: $isCloudStorage');
     notifyListeners();
   }
 
   void isOnlineAppState(bool isOnline) {
     this.isOnline = isOnline;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isOnlineAppState() | isOnline: $isOnline');
+    // debugPrint('|===> app_notifier | isOnlineAppState() | isOnline: $isOnline');
     notifyListeners();
   }
 
@@ -51,7 +51,7 @@ class AppNotifier extends ChangeNotifier {
   void storeUserEmail(String userEmail) {
     this.userEmail = userEmail;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | storeUserEmail() | userEmail: $userEmail');
+    // debugPrint('|===> app_notifier | storeUserEmail() | userEmail: $userEmail');
     notifyListeners();
   }
 
@@ -60,42 +60,42 @@ class AppNotifier extends ChangeNotifier {
   void isSubtitleVisibleState(bool isSubtitleVisible) {
     this.isSubtitleVisible = isSubtitleVisible;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isSubtitleVisibleState() | isSubtitleVisible: $isSubtitleVisible');
+    // debugPrint('|===> app_notifier | isSubtitleVisibleState() | isSubtitleVisible: $isSubtitleVisible');
     notifyListeners();
   }
 
   void isNumberVisibleState(bool isNumberVisible) {
     this.isNumberVisible = isNumberVisible;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isNumberVisibleState() | isNumberVisible: $isNumberVisible');
+    // debugPrint('|===> app_notifier | isNumberVisibleState() | isNumberVisible: $isNumberVisible');
     notifyListeners();
   }
 
   void itemsCheckedToDeleteState(bool itemsCheckedToDelete) {
     this.itemsCheckedToDelete = itemsCheckedToDelete;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | itemsCheckedToDeleteState() | itemsCheckedToDelete: $itemsCheckedToDelete');
+    // debugPrint('|===> app_notifier | itemsCheckedToDeleteState() | itemsCheckedToDelete: $itemsCheckedToDelete');
     notifyListeners();
   }
 
   void isDeletingModeState(bool isDeletingMode) {
     this.isDeletingMode = isDeletingMode;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isDeletingModeState() | isDeletingMode: $isDeletingMode');
+    // debugPrint('|===> app_notifier | isDeletingModeState() | isDeletingMode: $isDeletingMode');
     notifyListeners();
   }
 
   void isDateVisibleState(bool isDateVisible) {
     this.isDateVisible = isDateVisible;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | isDateVisibleState() | isDateVisible: $isDateVisible');
+    // debugPrint('|===> app_notifier | isDateVisibleState() | isDateVisible: $isDateVisible');
     notifyListeners();
   }
 
   void selectedItemsForDelete(List<String> selectedItems) {
     this.selectedItems = selectedItems;
     // ? -------------------------------------
-    debugPrint('|===> app_notifier | selectedItemsForDelete() | selectedItems: $selectedItems');
+    // debugPrint('|===> app_notifier | selectedItemsForDelete() | selectedItems: $selectedItems');
     notifyListeners();
   }
 }

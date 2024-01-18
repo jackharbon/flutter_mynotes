@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 import 'cloud_note.dart';
 import 'cloud_storage_constants.dart';
@@ -28,7 +27,7 @@ class FirebaseCloudStorage {
           (event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)),
         );
     // ? --------------------------------------------
-    debugPrint('|===> firebase_cloud_storage | allNotes() | allNotes: $allNotes');
+    // debugPrint('|===> firebase_cloud_storage | allNotes() | allNotes: $allNotes');
     return allNotes;
   }
 
@@ -83,7 +82,7 @@ class FirebaseCloudStorage {
     });
     final fetchedNote = await document.get(); // gets a snapshot od document with document's data
     // ? --------------------------------------------
-    debugPrint('|===> firebase_cloud_storage | createNewNote() | fetchedNote ${fetchedNote.toString()}');
+    // debugPrint('|===> firebase_cloud_storage | createNewNote() | fetchedNote ${fetchedNote.toString()}');
     return CloudNote(
       documentId: fetchedNote.id,
       ownerUserId: ownerUserId,

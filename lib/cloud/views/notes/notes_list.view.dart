@@ -130,14 +130,14 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                                       appStateNotifier.selectedItems.removeWhere((item) => item == note.documentId);
                                       Provider.of<AppNotifier>(context, listen: false)
                                           .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                      // ? --------------------------------------------
-                                      debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
+                                    // ? --------------------------------------------
+                                    // debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
                                     case false:
                                       appStateNotifier.selectedItems.add(note.documentId);
                                       Provider.of<AppNotifier>(context, listen: false)
                                           .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                      // ? --------------------------------------------
-                                      debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
+                                    // ? --------------------------------------------
+                                    // debugPrint('|===> notes_list_view (cloud) | ListTile | index: $index');
                                   }
                                   (appStateNotifier.selectedItems.isEmpty)
                                       ? Provider.of<AppNotifier>(context, listen: false)

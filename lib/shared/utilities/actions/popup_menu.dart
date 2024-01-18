@@ -16,7 +16,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
     onSelected: (value) async {
       final String email = AuthService.firebase().currentUser!.email;
       // ? ----------------------------------------
-      debugPrint('|===> popup_menu | popupMenuItems() | value: ${value.toString()}');
+      // debugPrint('|===> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
@@ -96,7 +96,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           final shouldDeleteAccount = await showDeleteAccountDialog(context);
           if (shouldDeleteAccount) {
             // ? ----------------------------------------
-            debugPrint('|===> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
+            // debugPrint('|===> popup_menu |  MenuAction.deleteAccount |  shouldDeleteAccount: $shouldDeleteAccount');
             await LocalNotesService().deleteAllLocalNotes(email: email);
             await LocalNotesService().deleteLocalUser(email: email);
             await AuthService.firebase().deleteUserAccount(email: email);
@@ -104,7 +104,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   const AuthEventShouldRegister(),
                 );
             // ? ----------------------------------------
-            debugPrint('|===> popup_menu |  MenuAction.deleteAccount | email: $email');
+            // debugPrint('|===> popup_menu |  MenuAction.deleteAccount | email: $email');
           }
       }
     },

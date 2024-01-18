@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
+import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/crud_exceptions.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 
 class LocalLoginView extends StatefulWidget {
@@ -127,7 +127,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   localCurrentUser =
                                       await _notesService.logInLocalUser(email: email, password: password);
                                   // ? --------------------------------
-                                  debugPrint('|===> login_view (local) | login button | localUser: $localCurrentUser');
+                                  // debugPrint('|===> login_view (local) | login button | localUser: $localCurrentUser');
                                   if (localCurrentUser != null) {
                                     Provider.of<AppNotifier>(context, listen: false).storeUserEmail(email);
                                     if (localCurrentUser!.isEmailVerified) {

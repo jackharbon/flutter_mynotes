@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../shared/constants/routes.dart';
+import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import '../../services/auth/auth_service.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../services/cloud/cloud_note.dart';
@@ -31,7 +31,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     _noteTextController = TextEditingController();
 
     // ? ---------------------------------------------------------------
-    debugPrint('|===> create_update_note (cloud) | initState()');
+    // debugPrint('|===> create_update_note (cloud) | initState()');
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
     // ? ---------------------------------------------------------------
-    debugPrint('|===> create_update_note (cloud) | _textControllerListener() | note: $note');
+    // debugPrint('|===> create_update_note (cloud) | _textControllerListener() | note: $note');
     await _notesService.updateCloudNote(
       documentId: note.documentId,
       title: title,
@@ -76,10 +76,10 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
 
     final existingNote = _note;
     // ? ---------------------------------------------------------------
-    debugPrint('|===> create_update_note (cloud) | createNewNote() | existingNote: $existingNote');
+    // debugPrint('|===> create_update_note (cloud) | createNewNote() | existingNote: $existingNote');
     if (existingNote != null) {
       // ? ---------------------------------------------------------------
-      debugPrint('|===> create_update_note (cloud) | createNewNote() | existingNote is not empty: $existingNote');
+      // debugPrint('|===> create_update_note (cloud) | createNewNote() | existingNote is not empty: $existingNote');
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
@@ -87,7 +87,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     final newNote = await _notesService.createNewCloudNote(ownerUserId: userId);
     _note = newNote;
     // ? -----------------------------------------
-    debugPrint('|===> create_update_note (cloud) | createOrGetExistingNote() | userId: $userId');
+    // debugPrint('|===> create_update_note (cloud) | createOrGetExistingNote() | userId: $userId');
     return newNote;
   }
 
@@ -99,11 +99,11 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
       switch (title.isEmpty && text.isEmpty) {
         case true:
           // ? -----------------------------------------
-          debugPrint('|===>create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note deleted');
+          // debugPrint('|===>create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note deleted');
           await _notesService.deleteCloudNote(documentId: note.documentId);
         default:
           // ? -----------------------------------------
-          debugPrint('|===>create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note saved');
+          // debugPrint('|===>create_update_note  (cloud) | _deleteOrSaveNewNoteIfEmpty() | Note saved');
           await _notesService.updateCloudNote(
             documentId: note.documentId,
             title: title,
@@ -120,7 +120,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     final title = _noteTitleController.text;
     final text = _noteTextController.text;
     // ? ---------------------------------------------------------------
-    debugPrint('|===> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | initial note: $note');
+    // debugPrint('|===> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | initial note: $note');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
         await _notesService.updateCloudNote(
@@ -130,7 +130,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
           isSyncedWithCloud: false,
         );
         // ? ---------------------------------------------------------------
-        debugPrint('|===> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | saved note: $note');
+        // debugPrint('|===> create_update_note (cloud) | _safeNoteIfTextNotEmpty() | saved note: $note');
       }
     }
   }
@@ -142,7 +142,7 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
     _noteTitleController.dispose();
     _noteTextController.dispose();
     // ? ---------------------------------------------------------------
-    debugPrint('|===> create_update_note (cloud) | dispose()');
+    // debugPrint('|===> create_update_note (cloud) | dispose()');
     super.dispose();
   }
 
@@ -196,8 +196,8 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
               case ConnectionState.done:
                 _setupTextControllerListener();
                 // ? ---------------------------------------------------------------
-                debugPrint('|===> create_update_note (cloud) | _note: $_note');
-                debugPrint('|===> create_update_note (cloud) | snapshot: ${snapshot.data}');
+                // debugPrint('|===> create_update_note (cloud) | _note: $_note');
+                // debugPrint('|===> create_update_note (cloud) | snapshot: ${snapshot.data}');
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(

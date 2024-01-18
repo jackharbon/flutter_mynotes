@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../../local/views/notes/notes_list.view.dart';
 import '../../../shared/constants/routes.dart';
+import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/services/crud/notes_services.dart';
 
@@ -28,7 +28,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   void initState() {
     _notesService = LocalNotesService();
     // ? ---------------------------------------------------------------
-    debugPrint('|===> notes_view (local) | initState() | _notesService: $_notesService');
+    // debugPrint('|===> notes_view (local) | initState() | _notesService: $_notesService');
     super.initState();
   }
 
@@ -47,7 +47,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   // ? --------------------------------------------
-                  debugPrint('|===> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
+                  // debugPrint('|===> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data!.length;
                   return Text('$noteCount Notes');
                 } else {
@@ -97,8 +97,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                         sortFieldName = 'title';
                                         isDescending = !isDescending;
                                         // ? --------------------------------------------
-                                        debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
-                                        debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
+                                        // debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
+                                        // debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
                                       },
                                     );
                                   },
@@ -123,8 +123,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                       sortFieldName = 'created_at';
                                       isDescending = !isDescending;
                                       // ? --------------------------------------------
-                                      debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
-                                      debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
+                                      // debugPrint('|===> notes_view (local) | button isDescending: $isDescending');
+                                      // debugPrint('|===> notes_view (local) | button sortFieldName: $sortFieldName');
                                     });
                                   },
                                   icon: (sortFieldName == 'created_at')

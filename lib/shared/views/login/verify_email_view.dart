@@ -27,7 +27,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
     Future.delayed(const Duration(seconds: 20));
     setState(() => isTimeToSendAgain = true);
     // ? --------------------------------
-    debugPrint('|===> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
+    // debugPrint('|===> verify_email_view | initState() | isTimeToSendAgain: $isTimeToSendAgain ');
     super.initState();
   }
 
@@ -39,14 +39,14 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
       setState(() => isTimeToSendAgain = false);
       // ? --------------------------------
-      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      // debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
       await Future.delayed(const Duration(seconds: 30));
       setState(() => isTimeToSendAgain = true);
       // ? --------------------------------
-      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      // debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     } catch (e) {
       // ? --------------------------------
-      debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
+      // debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
     }
   }
 

@@ -16,7 +16,7 @@ class NetworkController extends GetxController {
     if (connectivityResult == ConnectivityResult.none) {
       // isConnected.value = false;
       // ? --------------------------------
-      // debugPrint('|===> network_controller | _updateConnectionStatus() | False isConnected: ${isConnected.value}');
+      // // debugPrint('|===> network_controller | _updateConnectionStatus() | False isConnected: ${isConnected.value}');
       Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(
@@ -40,7 +40,7 @@ class NetworkController extends GetxController {
     } else {
       // isConnected.value = true;
       // ? --------------------------------
-      // debugPrint('|===> network_controller | _updateConnectionStatus() | True  isConnected: ${isConnected.value}');
+      // // debugPrint('|===> network_controller | _updateConnectionStatus() | True  isConnected: ${isConnected.value}');
       Get.to(() => Get.offAllNamed(Get.currentRoute));
       Get.rawSnackbar(
         messageText: const Text(

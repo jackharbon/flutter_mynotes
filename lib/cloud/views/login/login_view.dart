@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
-import '../../../shared/utilities/dialogs/loading_dialog.dart';
 import '../../services/auth/auth_exceptions.dart';
 import '../../services/auth/auth_service.dart';
-import '../../../shared/helpers/loading/loading_widget.dart';
 import '../../../shared/utilities/dialogs/error_dialog.dart';
 import '../../services/auth/bloc/auth_bloc.dart';
 import '../../services/auth/bloc/auth_event.dart';
@@ -24,7 +23,6 @@ class _CloudLoginViewState extends State<CloudLoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   DatabaseUser? localCurrentUser;
-  CloseDialog? _closeDialogHandle;
 
   @override
   void initState() {
@@ -46,17 +44,6 @@ class _CloudLoginViewState extends State<CloudLoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
-          final closeDialog = _closeDialogHandle;
-          if (!state.isLoading && closeDialog != null) {
-            closeDialog();
-            _closeDialogHandle = null;
-          } else if (state.isLoading && closeDialog == null) {
-            _closeDialogHandle = showLoadingDialog(
-              context: context,
-              text: 'Loading....',
-            );
-          }
-
           if (state.exception is MissingDataAuthException) {
             await showErrorDialog(
               context,
