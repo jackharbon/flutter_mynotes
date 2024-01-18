@@ -45,8 +45,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final text = _noteTextController.text;
     final createdAt = createdAtNow.toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    debugPrint(
-        '|===> new_note_view (local) | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
+    // debugPrint(
+    // '|===> new_note_view (local) | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
     await _notesService.updateLocalNote(
       note: note,
       title: title,
@@ -109,8 +109,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final text = _noteTextController.text;
     final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
-    debugPrint(
-        '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
+    // debugPrint(
+    // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
         await _notesService.updateLocalNote(
@@ -120,8 +120,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
           createdAt: createdAt,
         );
         // ? ---------------------------------------------------------------
-        debugPrint(
-            '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
+        // debugPrint(
+        // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
       }
     }
   }

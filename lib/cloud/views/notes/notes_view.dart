@@ -162,8 +162,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isNumberVisibleState(!appStateNotifier.isNumberVisible);
                             // ? --------------------------------------------
-                            debugPrint(
-                                '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
+                            // debugPrint(
+                            // '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
                           });
                         },
                         icon: (appStateNotifier.isNumberVisible)
@@ -185,8 +185,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isSubtitleVisibleState(!appStateNotifier.isSubtitleVisible);
                             // ? --------------------------------------------
-                            debugPrint(
-                                '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
+                            // debugPrint(
+                            // '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
                           });
                         },
                         icon: (appStateNotifier.isSubtitleVisible)
@@ -208,8 +208,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                             Provider.of<AppNotifier>(context, listen: false)
                                 .isDateVisibleState(!appStateNotifier.isDateVisible);
                             // ? --------------------------------------------
-                            debugPrint(
-                                '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
+                            // debugPrint(
+                            // '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
                           });
                         },
                         icon: (appStateNotifier.isDateVisible)
@@ -238,8 +238,8 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                       IconButton(
                         onPressed: () {
                           // ? --------------------------------------------
-                          debugPrint(
-                              '|===> notes_view (cloud) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
+                          // debugPrint(
+                          // '|===> notes_view (cloud) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
                           setState(() async {
                             switch (appStateNotifier.isDeletingMode) {
                               case false:
@@ -252,23 +252,23 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
                                     for (var noteId in appStateNotifier.selectedItems) {
                                       await _notesService.deleteCloudNote(documentId: noteId);
                                       // ? --------------------------------
-                                      debugPrint(
-                                          '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
+                                      // debugPrint(
+                                      // '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
                                     }
                                     appStateNotifier.selectedItems.clear();
                                     Provider.of<AppNotifier>(context, listen: false).itemsCheckedToDeleteState(false);
                                     Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                    debugPrint(
-                                        '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                    // debugPrint(
+                                    // '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                   }
                                 } else {
                                   Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                 }
-                                // ? --------------------------------
-                                debugPrint(
-                                    '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                              // ? --------------------------------
+                              // debugPrint(
+                              // '|===> notes_view (cloud) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                             }
                           });
                         },

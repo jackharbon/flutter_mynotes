@@ -143,10 +143,10 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                                         : Provider.of<AppNotifier>(context, listen: false)
                                             .itemsCheckedToDeleteState(true);
                                     // ? --------------------------------------------
-                                    debugPrint(
-                                        '|===> notes_list_view (local) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, noteId: $noteId \n selectedItems length: ${appStateNotifier.selectedItems.length}');
-                                    debugPrint(
-                                        '|===> notes_list_view (local) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
+                                    // debugPrint(
+                                    // '|===> notes_list_view (local) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, noteId: $noteId \n selectedItems length: ${appStateNotifier.selectedItems.length}');
+                                    // debugPrint(
+                                    // '|===> notes_list_view (local) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
                                   });
                                 },
                                 icon: (appStateNotifier.selectedItems.contains(note.id.toString()))

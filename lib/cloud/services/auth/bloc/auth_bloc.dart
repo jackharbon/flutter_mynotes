@@ -105,6 +105,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           loadingText: 'Wait for login...',
         ),
       );
+      // await Future.delayed(const Duration(seconds: 30));
       final email = event.email;
       final password = event.password;
       try {

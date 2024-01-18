@@ -69,8 +69,8 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
       _noteTitleController.text = widgetNote.title;
       _noteTextController.text = widgetNote.text;
       // ? -----------------------------------------
-      debugPrint(
-          '|===> create_update_note | createOrGetExistingNote() | title: ${_noteTitleController.text}, text: ${_noteTextController.text}');
+      // debugPrint(
+      // '|===> create_update_note | createOrGetExistingNote() | title: ${_noteTitleController.text}, text: ${_noteTextController.text}');
       return widgetNote;
     }
 

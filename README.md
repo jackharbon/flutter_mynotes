@@ -162,13 +162,15 @@ flutter pub add flutter_lints
 
 flutter pub add intl
 
-flutter pub add flutter_launcher_icons
-
 flutter pub add bloc
 
 flutter pub add flutter_bloc
 
 flutter pub add equatable
+
+flutter pub add flutter_launcher_icons
+
+flutter pub run flutter_launcher_icons
 
 ```
 
@@ -356,13 +358,13 @@ flutter test test/auth_test.dart
 - [x] Local (offline) notes storage (SQLite)
 - [x] Cloud (online) notes storage (Firestore)
 - [x] Online/Offline indicator icon (phone/cloud)
-- [x] Seamless offline notes storage, when lost connection
 - [x] Show On/Off order numbers, note's content, creation date
 - [x] Sort notes by creation date or title alphabetically (ascending/descending order)
 - [x] Swipe note to delete
 - [x] Edit option for deleting multiple notes
+- [x] App icon
+- [ ] Seamless offline notes storage, when lost connection
 - [ ] Offline/online notes synchronizing
-- [ ] App icon
 - [ ] Filtering (search) notes
 - [ ] Note's tagging (flags)
 - [ ] Registering with Google account

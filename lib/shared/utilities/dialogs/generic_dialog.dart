@@ -13,7 +13,7 @@ Future<T?> showGenericDialog<T>({
 }) {
   final options = optionsBuilder();
   return showDialog<T>(
-    barrierColor: const Color.fromARGB(180, 0, 0, 0),
+    barrierColor: Theme.of(context).colorScheme.shadow.withAlpha(200),
     context: context,
     builder: (context) {
       return AlertDialog(

@@ -145,10 +145,10 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                                       : Provider.of<AppNotifier>(context, listen: false)
                                           .itemsCheckedToDeleteState(true);
                                   // ? --------------------------------------------
-                                  debugPrint(
-                                      '|===> notes_list_view (cloud) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, note.documentId: ${note.documentId} \n selectedItems length: ${appStateNotifier.selectedItems.length}');
-                                  debugPrint(
-                                      '|===> notes_list_view (cloud) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
+                                  // debugPrint(
+                                  // '|===> notes_list_view (cloud) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, note.documentId: ${note.documentId} \n selectedItems length: ${appStateNotifier.selectedItems.length}');
+                                  // debugPrint(
+                                  // '|===> notes_list_view (cloud) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
                                 });
                               },
                               icon: (appStateNotifier.selectedItems.contains(note.documentId))

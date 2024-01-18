@@ -72,8 +72,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
           future: _notesService.getOrCreateLocalUser(email: appStateNotifier.userEmail),
           builder: (context, snapshot) {
             // ? ---------------------------------------------------------------
-            debugPrint(
-                '|===> notes_view (local) | email: ${appStateNotifier.userEmail}, User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
+            // debugPrint(
+            // '|===> notes_view (local) | email: ${appStateNotifier.userEmail}, User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
               case ConnectionState.done:
@@ -152,8 +152,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isNumberVisibleState(!appStateNotifier.isNumberVisible);
                                     // ? --------------------------------------------
-                                    debugPrint(
-                                        '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
+                                    // debugPrint(
+                                    // '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
                                   });
                                 },
                                 icon: (appStateNotifier.isNumberVisible)
@@ -175,8 +175,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isSubtitleVisibleState(!appStateNotifier.isSubtitleVisible);
                                     // ? --------------------------------------------
-                                    debugPrint(
-                                        '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
+                                    // debugPrint(
+                                    // '|===> notes_view (local) | button isSubtitleVisible: ${appStateNotifier.isSubtitleVisible}');
                                   });
                                 },
                                 icon: (appStateNotifier.isSubtitleVisible)
@@ -198,8 +198,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     Provider.of<AppNotifier>(context, listen: false)
                                         .isDateVisibleState(!appStateNotifier.isDateVisible);
                                     // ? --------------------------------------------
-                                    debugPrint(
-                                        '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
+                                    // debugPrint(
+                                    // '|===> notes_view (local) | button isDateVisible: ${appStateNotifier.isDateVisible}');
                                   });
                                 },
                                 icon: (appStateNotifier.isDateVisible)
@@ -228,8 +228,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                               IconButton(
                                 onPressed: () {
                                   // ? --------------------------------------------
-                                  debugPrint(
-                                      '|===> notes_view (local) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
+                                  // debugPrint(
+                                  // '|===> notes_view (local) | Delete Button | selectedItems: ${appStateNotifier.selectedItems}');
                                   setState(() async {
                                     switch (appStateNotifier.isDeletingMode) {
                                       case false:
@@ -244,8 +244,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                               final noteIdInt = int.parse(noteId);
                                               await _notesService.deleteLocalNote(id: noteIdInt);
                                               // ? --------------------------------
-                                              debugPrint(
-                                                  '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
+                                              // debugPrint(
+                                              // '|===> notes_view | Delete button | selectedItems: $appStateNotifier.selectedItems');
                                             }
                                             appStateNotifier.selectedItems.clear();
                                             Provider.of<AppNotifier>(context, listen: false)
@@ -253,15 +253,15 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                             Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                             Provider.of<AppNotifier>(context, listen: false)
                                                 .selectedItemsForDelete(appStateNotifier.selectedItems);
-                                            debugPrint(
-                                                '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                            // debugPrint(
+                                            // '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                           }
                                         } else {
                                           Provider.of<AppNotifier>(context, listen: false).isDeletingModeState(false);
                                         }
-                                        // ? --------------------------------
-                                        debugPrint(
-                                            '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
+                                      // ? --------------------------------
+                                      // debugPrint(
+                                      // '|===> notes_view (local) | Delete Button | isDeletingMode: ${appStateNotifier.isDeletingMode}, itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}');
                                     }
                                   });
                                 },
@@ -297,8 +297,8 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                               case ConnectionState.waiting:
                               case ConnectionState.active:
                                 // ======================= STREAM ALL NOTES =======================title
-                                debugPrint(
-                                    '|===> notes_view (local) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
+                                // debugPrint(
+                                // '|===> notes_view (local) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
                                 if (snapshot.hasData) {
                                   if (snapshot.data!.isEmpty) {
                                     // -------------- PRESS + to write

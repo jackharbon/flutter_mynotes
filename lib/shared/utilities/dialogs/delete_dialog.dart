@@ -8,9 +8,10 @@ Future<bool> showDeleteDialog(BuildContext context) {
     context: context,
     title: 'Delete note',
     content: 'Are you sure you want to delete this note?',
-    icon: const Icon(
+    icon: Icon(
       Icons.delete,
       size: 60,
+      color: Theme.of(context).colorScheme.error,
     ),
     optionsBuilder: () => {
       'Cancel': false,

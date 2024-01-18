@@ -6,9 +6,10 @@ Future<bool> showLogOutDialog(BuildContext context) {
     context: context,
     title: 'Log Out',
     content: 'Are you sure you want to leave?',
-    icon: const Icon(
+    icon: Icon(
       Icons.logout,
       size: 60,
+      color: Theme.of(context).colorScheme.primary,
     ),
     optionsBuilder: () => {
       'Cancel': false,
