@@ -159,7 +159,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                             height: 30,
                           ),
                           const Text(
-                            'Please register create your notes!',
+                            'Please register to create your notes!',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           (!appStateNotifier.isOnline)

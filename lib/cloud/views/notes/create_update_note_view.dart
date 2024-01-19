@@ -172,7 +172,8 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
               if (_note == null || (text.isEmpty && title.isEmpty)) {
                 await showCannotShareEmptyNoteDialog(context);
               } else {
-                Share.share(text);
+                final sharedNote = '$title\n$text';
+                Share.share(sharedNote);
               }
             },
             icon: const Icon(Icons.share),
