@@ -308,7 +308,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, update, delete: if request.auth != null && request.auth == resource.data.user_id;
+      allow create: if request.auth != null;
     }
   }
 }

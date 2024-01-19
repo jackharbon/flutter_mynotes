@@ -7,13 +7,6 @@ import 'cloud_storage_exceptions.dart';
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes'); // returns collection reference
 
-  // Stream os notes
-  // Stream<Iterable<CloudNote>> allCloudNotesStream({
-  //  required String ownerUserId,
-  // }) =>
-  //    notes.snapshots().map((event) =>
-  //        event.docs.map((doc) => CloudNote.fromSnapshot(doc)).where((note) => note.ownerUserId == ownerUserId));
-
   Stream<Iterable<CloudNote>> allCloudNotesStream({
     required String ownerUserId,
     String? sortFieldName,
@@ -30,28 +23,6 @@ class FirebaseCloudStorage {
     // debugPrint('|===> firebase_cloud_storage | allNotes() | allNotes: $allNotes');
     return allNotes;
   }
-
-  // gets a snapshot of the notes at that moment in time
-  // TODO: getCloudNotes() is it used??
-  // Future<Iterable<CloudNote>> getCloudNotes({
-  //  required String ownerUserId,
-  //  String? sortFieldName,
-  //  required bool isSortDescending,
-  // }) async {
-  //  try {
-  //    return await notes
-  //        .where('ownerUserIdFieldName', isEqualTo: ownerUserId)
-  //        .orderBy("$sortFieldName", descending: isSortDescending)
-  //        .get()
-  //        .then((value) {
-  //      return value.docs.map(
-  //        (doc) => CloudNote.fromSnapshot(doc),
-  //      );
-  //    });
-  //  } catch (e) {
-  //    throw CouldNotGetAllCloudNotesException();
-  //  }
-  // }
 
   Future<void> updateCloudNote({
     required String documentId,
