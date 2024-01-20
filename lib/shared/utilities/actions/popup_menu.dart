@@ -62,16 +62,40 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
             flexScheme: FlexScheme.deepPurple.toString(),
             email: email,
           );
+        case MenuAction.barossa:
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.barossa);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.barossa.toString(),
+            email: email,
+          );
         case MenuAction.purpleBrown:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.purpleBrown);
           await LocalNotesService().updateLocalUserFlexScheme(
             flexScheme: FlexScheme.purpleBrown.toString(),
             email: email,
           );
+        case MenuAction.espresso:
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.espresso);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.espresso.toString(),
+            email: email,
+          );
+        case MenuAction.redM3:
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.redM3);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.redM3.toString(),
+            email: email,
+          );
         case MenuAction.pinkM3:
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.pinkM3);
           await LocalNotesService().updateLocalUserFlexScheme(
             flexScheme: FlexScheme.pinkM3.toString(),
+            email: email,
+          );
+        case MenuAction.damask:
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.damask);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.damask.toString(),
             email: email,
           );
         case MenuAction.gold:
@@ -84,6 +108,12 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.greenM3);
           await LocalNotesService().updateLocalUserFlexScheme(
             flexScheme: FlexScheme.greenM3.toString(),
+            email: email,
+          );
+        case MenuAction.jungle:
+          Provider.of<AppNotifier>(context, listen: false).changeColorScheme(FlexScheme.jungle);
+          await LocalNotesService().updateLocalUserFlexScheme(
+            flexScheme: FlexScheme.jungle.toString(),
             email: email,
           );
         case MenuAction.bigStone:
@@ -241,6 +271,24 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           ),
         ),
         const PopupMenuItem<MenuAction>(
+          value: MenuAction.barossa,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xff571538),
+                ),
+                SizedBox(width: 18),
+                Text('Barossa'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
           value: MenuAction.purpleBrown,
           child: SizedBox(
             width: 180,
@@ -259,6 +307,42 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
           ),
         ),
         const PopupMenuItem<MenuAction>(
+          value: MenuAction.espresso,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xff503D38),
+                ),
+                SizedBox(width: 18),
+                Text('Espresso'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
+          value: MenuAction.redM3,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xffBC2722),
+                ),
+                SizedBox(width: 18),
+                Text('Red'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
           value: MenuAction.pinkM3,
           child: SizedBox(
             width: 180,
@@ -272,6 +356,24 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                 ),
                 SizedBox(width: 18),
                 Text('Pink'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
+          value: MenuAction.damask,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xffF6820B),
+                ),
+                SizedBox(width: 18),
+                Text('Damask'),
               ],
             ),
           ),
@@ -307,7 +409,25 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Color(0xff77CE74),
                 ),
                 SizedBox(width: 18),
-                Text('Forest Green'),
+                Text('Green'),
+              ],
+            ),
+          ),
+        ),
+        const PopupMenuItem<MenuAction>(
+          value: MenuAction.jungle,
+          child: SizedBox(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.circle,
+                  size: 26.0,
+                  color: Color(0xff155922),
+                ),
+                SizedBox(width: 18),
+                Text('Jungle'),
               ],
             ),
           ),

@@ -151,11 +151,14 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                     ), //Text
                                   ), //Circle
                                   const SizedBox(
-                                    height: 50,
+                                    height: 30,
                                   ),
                                   const Text(
                                     'Login to your account to see your notes.',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   const SizedBox(
                                     height: 50,
@@ -188,36 +191,35 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                     child: Column(
                                       children: [
                                         const SizedBox(
-                                          height: 20,
+                                          height: 30,
                                         ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                                        ElevatedButton.icon(
+                                          icon: Icon(
+                                            Icons.person,
+                                            color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                            size: 28.0,
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                                            textStyle: const TextStyle(
+                                              fontSize: 22,
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                                          ),
                                           onPressed: () async {
                                             final email = _email.text;
                                             final password = _password.text;
-                                            try {
-                                              context.read<AuthBloc>().add(
-                                                    AuthEventLogIn(
-                                                      email,
-                                                      password,
-                                                    ),
-                                                  );
-                                            } catch (e) {
-                                              await showErrorDialog(
-                                                context,
-                                                'Authentication error!\nPlease try again later.',
-                                                'Login Failed!',
-                                                Icon(
-                                                  Icons.person_off_rounded,
-                                                  size: 60,
-                                                  color: Theme.of(context).colorScheme.error,
-                                                ),
-                                              );
-                                            }
+                                            context.read<AuthBloc>().add(
+                                                  AuthEventLogIn(
+                                                    email,
+                                                    password,
+                                                  ),
+                                                );
                                           },
-                                          child: const Text(
+                                          label: const Text(
                                             'Login',
-                                            style: TextStyle(),
                                           ),
                                         ),
                                         const SizedBox(

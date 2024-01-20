@@ -44,7 +44,7 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                         Text(
                           'Delete this note',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             color: Theme.of(context).colorScheme.onError,
                           ),
                         ),
@@ -93,7 +93,7 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                             Visibility(
                               visible: appStateNotifier.isDateVisible,
                               child: Text(
-                                note.createdAt,
+                                note.createdAt.substring(2, 16),
                                 maxLines: 1,
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,

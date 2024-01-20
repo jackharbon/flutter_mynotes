@@ -92,18 +92,33 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                             fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
                       )
                     : const SizedBox(
-                        height: 25,
+                        height: 20,
                       ),
-                const SizedBox(
-                  height: 25,
-                ),
                 const Text(
-                    "We've sent you an email verification.\nPlease open it and follow the link to verify your account.\n\nIf you haven't received the email yet, press the button below!"),
-                const SizedBox(
-                  height: 25,
+                  "We've sent you an email verification.\nPlease open it and follow the link to verify your account.\n\nIf you haven't received the email yet, press the button below!",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                const SizedBox(
+                  height: 50,
+                ),
+                ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.outgoing_mail,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    size: 28.0,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    textStyle: const TextStyle(
+                      fontSize: 22,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                  ),
                   onPressed: () async {
                     if (appStateNotifier.isOnline) {
                       (isTimeToSendAgain)
@@ -131,7 +146,9 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                       );
                     }
                   },
-                  child: const Text("Send again", style: TextStyle()),
+                  label: const Text(
+                    "Send again",
+                  ),
                 ),
                 const SizedBox(
                   height: 10,

@@ -117,11 +117,14 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                   ), //Text
                 ), //Circle
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
                 const Text(
                   'Enter your email, and we will send you a password reset link',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(
                   height: 50,
@@ -137,17 +140,33 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.outgoing_mail,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    size: 28.0,
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                    textStyle: const TextStyle(
+                      fontSize: 22,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                  ),
                   onPressed: () {
                     final email = _controller.text;
                     context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
                   },
-                  child: const Text(
+                  label: const Text(
                     'Send link',
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 TextButton(
                   onPressed: () {
@@ -155,8 +174,17 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                           const AuthEventLogOut(),
                         );
                   },
-                  child: const Text(
+                  child: Text(
                     'Back to the login page',
+                    style: TextStyle(
+                      shadows: [Shadow(color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))],
+                      fontSize: 16,
+                      color: Colors.transparent,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Theme.of(context).colorScheme.primary,
+                      decorationThickness: 2,
+                      decorationStyle: TextDecorationStyle.dashed,
+                    ),
                   ),
                 ),
               ],

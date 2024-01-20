@@ -73,7 +73,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                         ), //Text
                       ), //Circle
                       const SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
                       const Text(
                         'Login to your account to see your notes.',
@@ -113,13 +113,23 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                         child: Column(
                           children: [
                             const SizedBox(
-                              height: 20,
+                              height: 30,
                             ),
-                            ElevatedButton(
+                            ElevatedButton.icon(
+                              icon: Icon(
+                                Icons.person,
+                                color: Theme.of(context).colorScheme.onSecondaryContainer,
+                                size: 28.0,
+                              ),
                               style: ElevatedButton.styleFrom(
-                                  textStyle: const TextStyle(
-                                fontSize: 20,
-                              )),
+                                foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                              ),
                               onPressed: () async {
                                 final email = _email.text;
                                 final password = _password.text;
@@ -217,9 +227,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   );
                                 }
                               },
-                              child: const Text(
+                              label: const Text(
                                 'Login',
-                                style: TextStyle(),
                               ),
                             ),
                             const SizedBox(

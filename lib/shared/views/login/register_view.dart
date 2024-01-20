@@ -206,10 +206,23 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                             child: Column(
                               children: [
                                 const SizedBox(
-                                  height: 20,
+                                  height: 30,
                                 ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20)),
+                                ElevatedButton.icon(
+                                  icon: Icon(
+                                    Icons.person_add,
+                                    color: Theme.of(context).colorScheme.onErrorContainer,
+                                    size: 28.0,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                                    textStyle: const TextStyle(
+                                      fontSize: 22,
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                                  ),
                                   onPressed: () async {
                                     final email = _email.text;
                                     final password = _password.text;
@@ -220,7 +233,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                           ),
                                         );
                                   },
-                                  child: const Text(
+                                  label: const Text(
                                     'Register',
                                   ),
                                 ),

@@ -154,7 +154,14 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             OnlineStatusIcon(),
-            Text('New Note(cloud)'),
+            Flexible(
+              fit: FlexFit.loose,
+              child: Text(
+                'New Note(cloud)',
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
+            ),
           ],
         ),
         actions: [
@@ -181,72 +188,75 @@ class _CloudCreateUpdateNoteViewState extends State<CloudCreateUpdateNoteView> {
           popupMenuItems(context),
         ],
       ),
-      body: Center(
-        child: FutureBuilder(
-          future: createOrGetExistingNote(context),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: FutureBuilder(
+        future: createOrGetExistingNote(context),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return const LoadingStandardProgressBar();
+            case ConnectionState.done:
+              _setupTextControllerListener();
+              // ? ---------------------------------------------------------------
+              // debugPrint('|===> create_update_note (cloud) | _note: $_note');
+              // debugPrint('|===> create_update_note (cloud) | snapshot: ${snapshot.data}');
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    LoadingStandardProgressBar(),
-                  ],
-                );
-              case ConnectionState.done:
-                _setupTextControllerListener();
-                // ? ---------------------------------------------------------------
-                // debugPrint('|===> create_update_note (cloud) | _note: $_note');
-                // debugPrint('|===> create_update_note (cloud) | snapshot: ${snapshot.data}');
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        autofocus: true,
-                        controller: _noteTitleController,
-                        keyboardType: TextInputType.text,
-                        maxLines: null,
-                        decoration: const InputDecoration(
-                          labelText: 'Title',
-                          hintText: 'Start typing your title here',
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
+                    TextField(
+                      autofocus: true,
+                      controller: _noteTitleController,
+                      keyboardType: TextInputType.text,
+                      maxLines: null,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      decoration: InputDecoration(
+                        filled: false,
+                        labelText: 'Title',
+                        hintText: 'Start typing your title here',
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.surfaceTint,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                          child: SingleChildScrollView(
-                            child: TextField(
-                              controller: _noteTextController,
-                              keyboardType: TextInputType.multiline,
-                              maxLines: null,
-                              decoration: const InputDecoration(
-                                labelText: 'Note',
-                                hintText: 'Start typing your note here',
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                filled: false,
-                              ),
-                            ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                );
-              default:
-                return const LoadingStandardProgressBar();
-            }
-          },
-        ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: TextField(
+                          controller: _noteTextController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: const InputDecoration(
+                            labelText: 'Note',
+                            hintText: 'Start typing your note here',
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            filled: false,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            default:
+              return const LoadingStandardProgressBar();
+          }
+        },
       ),
     );
   }

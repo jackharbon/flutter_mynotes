@@ -47,7 +47,7 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                       Text(
                         'Delete this note',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
                           color: Theme.of(context).colorScheme.onError,
                         ),
                       ),
@@ -95,7 +95,7 @@ class _CloudNotesListViewState extends State<CloudNotesListView> {
                           Visibility(
                             visible: appStateNotifier.isDateVisible,
                             child: Text(
-                              note.createdAt.toDate().toString().substring(0, 16),
+                              note.createdAt.toDate().toString().substring(2, 16),
                               maxLines: 1,
                               softWrap: true,
                               overflow: TextOverflow.ellipsis,
