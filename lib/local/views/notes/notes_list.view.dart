@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/services/crud/notes_services.dart';
 
@@ -42,7 +43,7 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Delete this note',
+                          context.loc.notes_list_view_delete_note,
                           style: TextStyle(
                             fontSize: 20,
                             color: Theme.of(context).colorScheme.onError,

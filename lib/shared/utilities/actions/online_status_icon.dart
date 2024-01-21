@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../extensions/buildcontext/loc.dart';
 import '../../providers/app_notifier.dart';
 
 class OnlineStatusIcon extends StatelessWidget {
@@ -21,7 +22,7 @@ class OnlineStatusIcon extends StatelessWidget {
           (appStateNotifier.isOnline)
               ? Get.rawSnackbar(
                   messageText: Text(
-                    'You are in the online mode.',
+                    context.loc.online_status_icon_online_mode,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onInverseSurface,
                       fontSize: 18,
@@ -40,7 +41,7 @@ class OnlineStatusIcon extends StatelessWidget {
                 )
               : Get.rawSnackbar(
                   messageText: Text(
-                    'You are in the offline mode.',
+                    context.loc.online_status_icon_offline_mode,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onErrorContainer,
                       fontSize: 18,
