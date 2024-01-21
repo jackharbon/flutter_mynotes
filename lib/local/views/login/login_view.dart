@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
+import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/providers/app_notifier.dart';
@@ -75,9 +76,9 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                       const SizedBox(
                         height: 30,
                       ),
-                      const Text(
-                        'Login to your account to see your notes.',
-                        style: TextStyle(
+                      Text(
+                        context.loc.login_view_prompt,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -91,9 +92,9 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                         autocorrect: false,
                         autofocus: false,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          hintText: 'Enter your email',
+                        decoration: InputDecoration(
+                          labelText: context.loc.textField_email_labelText,
+                          hintText: context.loc.textField_email_hintText,
                         ),
                       ),
                       const SizedBox(
@@ -104,9 +105,9 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                         obscureText: true,
                         enableSuggestions: false,
                         autocorrect: false,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
+                        decoration: InputDecoration(
+                          labelText: context.loc.textField_password_labelText,
+                          hintText: context.loc.textField_password_hintText,
                         ),
                       ),
                       Center(
@@ -162,8 +163,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } on MissingDataAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Missing credentials!\nPlease check the form fields.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_missing_credentials,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.text_fields,
                                       size: 60,
@@ -173,8 +174,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } on InvalidEmailAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Invalid emai!\nPlease check your email address.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_invalid_email,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.email,
                                       size: 60,
@@ -184,8 +185,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } on CouldNotFindUserException {
                                   await showErrorDialog(
                                     context,
-                                    'User not found!\nEnter correct email or register.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_user_not_found,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
@@ -195,8 +196,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } on WrongPasswordAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Wrong password!\nPlease type again.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_wrong_password,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.password,
                                       size: 60,
@@ -206,8 +207,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } on UnknownAuthException {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_login_generic,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
@@ -217,8 +218,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                 } catch (e) {
                                   await showErrorDialog(
                                     context,
-                                    'Authentication error!\nPlease try again later.',
-                                    'Login Failed!',
+                                    context.loc.dialog_error_login_generic,
+                                    context.loc.dialog_error_title_login_failed,
                                     Icon(
                                       Icons.person_off_rounded,
                                       size: 60,
@@ -227,8 +228,8 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                   );
                                 }
                               },
-                              label: const Text(
-                                'Login',
+                              label: Text(
+                                context.loc.login_view_login_button,
                               ),
                             ),
                             const SizedBox(
@@ -238,7 +239,7 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Not registered?",
+                                  context.loc.login_view_not_registered_yet,
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.outline,
                                     fontWeight: FontWeight.normal,
@@ -253,7 +254,43 @@ class _LocalLoginViewState extends State<LocalLoginView> {
                                         );
                                   },
                                   child: Text(
-                                    "Register here.",
+                                    context.loc.login_view_register_here,
+                                    style: TextStyle(
+                                      shadows: [
+                                        Shadow(
+                                            color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))
+                                      ],
+                                      fontSize: 16,
+                                      color: Colors.transparent,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Theme.of(context).colorScheme.primary,
+                                      decorationThickness: 2,
+                                      decorationStyle: TextDecorationStyle.dashed,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  context.loc.login_view_forgot_password,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.outline,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<AuthBloc>().add(
+                                          const AuthEventForgotPassword(),
+                                        );
+                                  },
+                                  child: Text(
+                                    context.loc.login_view_reset_here,
                                     style: TextStyle(
                                       shadows: [
                                         Shadow(

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../local/views/notes/notes_list.view.dart';
 import '../../../shared/constants/routes.dart';
+import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
@@ -49,9 +50,10 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                   // ? --------------------------------------------
                   // debugPrint('|===> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data!.length;
-                  return Text('$noteCount Notes');
+                  final countTitle = context.loc.notes_title(noteCount);
+                  return Text(countTitle);
                 } else {
-                  return const Text('My Notes (local)');
+                  return Text(context.loc.notes_view_title);
                 }
               },
             ),
@@ -305,9 +307,9 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     return Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'Press',
-                                          style: TextStyle(
+                                        Text(
+                                          context.loc.notes_view_press,
+                                          style: const TextStyle(
                                             fontSize: 18,
                                             fontStyle: FontStyle.italic,
                                             fontWeight: FontWeight.w200,
@@ -322,9 +324,9 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                               size: 40,
                                               color: Theme.of(context).colorScheme.primary,
                                             )),
-                                        const Text(
-                                          'to write your first note.',
-                                          style: TextStyle(
+                                        Text(
+                                          context.loc.notes_view_to_write,
+                                          style: const TextStyle(
                                             fontSize: 18,
                                             fontStyle: FontStyle.italic,
                                             fontWeight: FontWeight.w200,

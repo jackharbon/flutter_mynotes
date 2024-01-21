@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../extensions/buildcontext/loc.dart';
 import 'generic_dialog.dart';
 
 Future<void> showSentEmailConfirmationDialog(
@@ -13,7 +14,7 @@ Future<void> showSentEmailConfirmationDialog(
     content: content,
     icon: icon,
     optionsBuilder: () => {
-      'OK': null,
+      context.loc.ok: null,
     },
   );
 }

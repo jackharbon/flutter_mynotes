@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/services/crud/notes_services.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
@@ -47,8 +48,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           if (state.exception is MissingDataAuthException) {
             await showErrorDialog(
               context,
-              'Missing credentials!\nPlease check the form fields.',
-              'Login Failed!',
+              context.loc.dialog_error_missing_credentials,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.text_fields,
                 size: 60,
@@ -58,8 +59,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(
               context,
-              'Invalid email!\nPlease check your email address.',
-              'Login Failed!',
+              context.loc.dialog_error_invalid_email,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.email,
                 size: 60,
@@ -69,8 +70,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           } else if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(
               context,
-              'User not found!\nEnter correct email or register.',
-              'Login Failed!',
+              context.loc.dialog_error_user_not_found,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.person_off_rounded,
                 size: 60,
@@ -80,8 +81,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialog(
               context,
-              'Wrong password!\nPlease type again.',
-              'Login Failed!',
+              context.loc.dialog_error_wrong_password,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.password,
                 size: 60,
@@ -91,8 +92,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           } else if (state.exception is UnknownAuthException) {
             await showErrorDialog(
               context,
-              'Authentication error!\nPlease try again later.',
-              'Login Failed!',
+              context.loc.dialog_error_login_generic,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.person_off_rounded,
                 size: 60,
@@ -102,8 +103,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(
               context,
-              'Authentication error!\nPlease try again later.',
-              'Login Failed!',
+              context.loc.dialog_error_login_generic,
+              context.loc.dialog_error_title_login_failed,
               Icon(
                 Icons.person_off_rounded,
                 size: 60,
@@ -115,12 +116,12 @@ class _CloudLoginViewState extends State<CloudLoginView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              OnlineStatusIcon(),
+              const OnlineStatusIcon(),
               Text(
-                'Login(cloud)',
+                context.loc.login_view_appbar_title,
               ),
             ],
           ),
@@ -153,9 +154,9 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                   const SizedBox(
                                     height: 30,
                                   ),
-                                  const Text(
-                                    'Login to your account to see your notes.',
-                                    style: TextStyle(
+                                  Text(
+                                    context.loc.login_view_prompt,
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -169,9 +170,9 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                     autocorrect: false,
                                     autofocus: false,
                                     keyboardType: TextInputType.emailAddress,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Email',
-                                      hintText: 'Enter your email',
+                                    decoration: InputDecoration(
+                                      labelText: context.loc.textField_email_labelText,
+                                      hintText: context.loc.textField_email_hintText,
                                     ),
                                   ),
                                   const SizedBox(
@@ -182,9 +183,9 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                     obscureText: true,
                                     enableSuggestions: false,
                                     autocorrect: false,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Password',
-                                      hintText: 'Enter your password',
+                                    decoration: InputDecoration(
+                                      labelText: context.loc.textField_password_labelText,
+                                      hintText: context.loc.textField_password_hintText,
                                     ),
                                   ),
                                   Center(
@@ -218,8 +219,8 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                                   ),
                                                 );
                                           },
-                                          label: const Text(
-                                            'Login',
+                                          label: Text(
+                                            context.loc.login_view_login_button,
                                           ),
                                         ),
                                         const SizedBox(
@@ -229,7 +230,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Not registered?",
+                                              context.loc.login_view_not_registered_yet,
                                               style: TextStyle(
                                                 color: Theme.of(context).colorScheme.outline,
                                                 fontWeight: FontWeight.normal,
@@ -244,7 +245,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                                     );
                                               },
                                               child: Text(
-                                                "Register here.",
+                                                context.loc.login_view_register_here,
                                                 style: TextStyle(
                                                   shadows: [
                                                     Shadow(
@@ -266,7 +267,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Forgot password?",
+                                              context.loc.login_view_forgot_password,
                                               style: TextStyle(
                                                 color: Theme.of(context).colorScheme.outline,
                                                 fontWeight: FontWeight.normal,
@@ -281,7 +282,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                                     );
                                               },
                                               child: Text(
-                                                "Reset password here.",
+                                                context.loc.login_view_reset_here,
                                                 style: TextStyle(
                                                   shadows: [
                                                     Shadow(

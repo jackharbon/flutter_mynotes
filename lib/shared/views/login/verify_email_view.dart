@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
+import '../../extensions/buildcontext/loc.dart';
 import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
@@ -36,7 +37,10 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
       context.read<AuthBloc>().add(
             const AuthEventSendEmailVerification(),
           );
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("I'm sending a verification email")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        context.loc.verify_email_view_notification,
+      )));
       setState(() => isTimeToSendAgain = false);
       // ? --------------------------------
       // debugPrint('|===> verify_email_view | sendVerificationEmailAgain() | isTimeToSendAgain: $isTimeToSendAgain ');
@@ -55,12 +59,12 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       return Scaffold(
         appBar: AppBar(
-          title: const Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              OnlineStatusIcon(),
+              const OnlineStatusIcon(),
               Text(
-                'Verify Email',
+                context.loc.verify_email_view_title,
               ),
             ],
           ),
@@ -87,16 +91,16 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                 ),
                 (!appStateNotifier.isOnline)
                     ? Text(
-                        'Connect to the Internet to verify an email!',
+                        context.loc.verify_email_view_internet_prompt,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
                       )
                     : const SizedBox(
                         height: 20,
                       ),
-                const Text(
-                  "We've sent you an email verification.\nPlease open it and follow the link to verify your account.\n\nIf you haven't received the email yet, press the button below!",
-                  style: TextStyle(
+                Text(
+                  context.loc.verify_email_view_prompt,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -125,8 +129,8 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                           ? sendVerificationEmailAgain()
                           : await showSentEmailConfirmationDialog(
                               context,
-                              "Email has been already send.\nPlease wait a few minutes before next request.",
-                              'Verification Email',
+                              context.loc.dialog_email_verification_prompt,
+                              context.loc.dialog_email_verification_title,
                               Icon(
                                 Icons.hourglass_top,
                                 size: 60,
@@ -136,8 +140,8 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                     } else {
                       await showSentEmailConfirmationDialog(
                         context,
-                        "Please switch on your internet connection to send the email.",
-                        'No Internet Connection',
+                        context.loc.dialog_no_internet_prompt,
+                        context.loc.dialog_no_internet_title,
                         Icon(
                           Icons.cloud_off_outlined,
                           size: 60,
@@ -146,8 +150,8 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                       );
                     }
                   },
-                  label: const Text(
-                    "Send again",
+                  label: Text(
+                    context.loc.verify_email_send_email_again,
                   ),
                 ),
                 const SizedBox(
@@ -157,7 +161,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already clicked?",
+                      context.loc.verify_email_already_clicked,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.outline,
                         fontWeight: FontWeight.normal,
@@ -183,7 +187,7 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                         }
                       },
                       child: Text(
-                        "Login here.",
+                        context.loc.verify_email_login_here,
                         style: TextStyle(
                           shadows: [Shadow(color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))],
                           fontSize: 16,

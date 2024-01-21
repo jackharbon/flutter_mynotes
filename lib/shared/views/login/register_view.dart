@@ -8,6 +8,7 @@ import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/bloc/auth_state.dart';
 // import '../../services/crud/notes_services.dart';
+import '../../extensions/buildcontext/loc.dart';
 import '../../helpers/loading/loading_screen.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
@@ -49,8 +50,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             if (state.exception is MissingDataAuthException) {
               await showErrorDialog(
                 context,
-                'Missing credentials!\nPlease check the form fields.',
-                'Register Failed!',
+                context.loc.dialog_error_missing_credentials,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.text_fields,
                   size: 60,
@@ -60,8 +61,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             } else if (state.exception is InvalidEmailAuthException) {
               await showErrorDialog(
                 context,
-                'Invalid email!\nPlease check your input.',
-                'Register Failed!',
+                context.loc.dialog_error_invalid_email,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.email,
                   size: 60,
@@ -71,8 +72,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             } else if (state.exception is EmailAlreadyInUseAuthException) {
               await showErrorDialog(
                 context,
-                'Email is already registered!\nPlease login.',
-                'Register Failed!',
+                context.loc.dialog_error_register_email_in_use,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.email,
                   size: 60,
@@ -82,8 +83,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             } else if (state.exception is WeakPasswordAuthException) {
               await showErrorDialog(
                 context,
-                'Weak password!\nPlease enter a stronger password.',
-                'Register Failed!',
+                context.loc.dialog_error_weak_password,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.password,
                   size: 60,
@@ -93,8 +94,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             } else if (state.exception is UnknownAuthException) {
               await showErrorDialog(
                 context,
-                'Failed to register!\nPlease try again later.',
-                'Register Failed!',
+                context.loc.dialog_error_register_generic,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.person_add_disabled,
                   size: 60,
@@ -104,8 +105,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             } else if (state.exception is GenericAuthException) {
               await showErrorDialog(
                 context,
-                'Failed to register!\n Please try again later.',
-                'Register Failed!',
+                context.loc.dialog_error_register_generic,
+                context.loc.dialog_error_title_register_failed,
                 Icon(
                   Icons.person_add_disabled,
                   size: 60,
@@ -125,12 +126,12 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
             backgroundColor: (appStateNotifier.isOnline)
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.error,
-            title: const Row(
+            title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                OnlineStatusIcon(),
+                const OnlineStatusIcon(),
                 Text(
-                  'Register',
+                  context.loc.register_view_appbar_title,
                 ),
               ],
             ),
@@ -158,13 +159,16 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                           const SizedBox(
                             height: 30,
                           ),
-                          const Text(
-                            'Please register to create your notes!',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          Text(
+                            context.loc.register_view_prompt,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           (!appStateNotifier.isOnline)
                               ? Text(
-                                  'Connect to the Internet to register!',
+                                  context.loc.register_view_internet_prompt,
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -183,9 +187,9 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                             autocorrect: false,
                             autofocus: true,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'Enter your email',
+                            decoration: InputDecoration(
+                              labelText: context.loc.textField_email_labelText,
+                              hintText: context.loc.textField_email_hintText,
                             ),
                           ),
                           const SizedBox(
@@ -197,9 +201,9 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                             obscureText: true,
                             enableSuggestions: false,
                             autocorrect: false,
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
+                            decoration: InputDecoration(
+                              labelText: context.loc.textField_password_labelText,
+                              hintText: context.loc.textField_password_hintText,
                             ),
                           ),
                           Center(
@@ -233,8 +237,8 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                           ),
                                         );
                                   },
-                                  label: const Text(
-                                    'Register',
+                                  label: Text(
+                                    context.loc.register_view_register_button,
                                   ),
                                 ),
                                 const SizedBox(
@@ -244,7 +248,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "Already registered?",
+                                      context.loc.register_view_already_registered,
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.outline,
                                         fontWeight: FontWeight.normal,
@@ -259,7 +263,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                             );
                                       },
                                       child: Text(
-                                        "Login here.",
+                                        context.loc.register_view_login_here,
                                         style: TextStyle(
                                           shadows: [
                                             Shadow(

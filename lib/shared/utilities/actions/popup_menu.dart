@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/auth_service.dart';
+import '../../extensions/buildcontext/loc.dart';
 import '../../services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
 import '../../providers/app_notifier.dart';
@@ -153,8 +154,8 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 18),
-                const Text(
-                  'Log Out',
+                Text(
+                  context.loc.popup_menu_logout,
                 ),
               ],
             ),
@@ -174,7 +175,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Theme.of(context).colorScheme.onSecondaryContainer,
                 ),
                 const SizedBox(width: 18),
-                const Text('Light Mode'),
+                Text(context.loc.popup_menu_light_mode),
               ],
             ),
           ),
@@ -192,7 +193,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 18),
-                const Text('System Mode'),
+                Text(context.loc.popup_menu_system_mode),
               ],
             ),
           ),
@@ -210,242 +211,242 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                 ),
                 const SizedBox(width: 18),
-                const Text('Dark Mode'),
+                Text(context.loc.popup_menu_dark_mode),
               ],
             ),
           ),
         ),
         const PopupMenuDivider(height: 20),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.blueM3,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff156DAA),
                 ),
-                SizedBox(width: 18),
-                Text('Sea Blue'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_sea_blue),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.hippieBlue,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff57A1BE),
                 ),
-                SizedBox(width: 18),
-                Text('Hippie Blue'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_hippie_blue),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.deepPurple,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff5035A5),
                 ),
-                SizedBox(width: 18),
-                Text('Deep Purple'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_deep_purple),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.barossa,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff571538),
                 ),
-                SizedBox(width: 18),
-                Text('Barossa'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_barossa),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.purpleBrown,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff4D171E),
                 ),
-                SizedBox(width: 18),
-                Text('Purple Brown'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_purple_brown),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.espresso,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff503D38),
                 ),
-                SizedBox(width: 18),
-                Text('Espresso'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_espresso),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.redM3,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xffBC2722),
                 ),
-                SizedBox(width: 18),
-                Text('Red'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_red),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.pinkM3,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xffC00055),
                 ),
-                SizedBox(width: 18),
-                Text('Pink'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_pink),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.damask,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xffF6820B),
                 ),
-                SizedBox(width: 18),
-                Text('Damask'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_damask),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.gold,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xffBC7222),
                 ),
-                SizedBox(width: 18),
-                Text('Gold'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_gold),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.greenM3,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff77CE74),
                 ),
-                SizedBox(width: 18),
-                Text('Green'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_green),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.jungle,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff155922),
                 ),
-                SizedBox(width: 18),
-                Text('Jungle'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_jungle),
               ],
             ),
           ),
         ),
-        const PopupMenuItem<MenuAction>(
+        PopupMenuItem<MenuAction>(
           value: MenuAction.bigStone,
           child: SizedBox(
             width: 180,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.circle,
                   size: 26.0,
                   color: Color(0xff26384C),
                 ),
-                SizedBox(width: 18),
-                Text('Big Stone'),
+                const SizedBox(width: 18),
+                Text(context.loc.popup_menu_big_stone),
               ],
             ),
           ),
@@ -467,7 +468,7 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
                 ),
                 const SizedBox(width: 18),
                 Text(
-                  'Delete Account',
+                  context.loc.popup_menu_delete_account,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.error,

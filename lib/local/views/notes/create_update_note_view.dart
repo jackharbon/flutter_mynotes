@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../cloud/services/auth/auth_service.dart';
 import '../../../shared/constants/routes.dart';
+import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/notes_services.dart';
@@ -148,7 +149,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
             Flexible(
               fit: FlexFit.loose,
               child: Text(
-                'New Note(local)',
+                'Edit Note(local)',
                 softWrap: false,
                 overflow: TextOverflow.fade,
               ),
@@ -196,8 +197,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
                       ),
                       decoration: InputDecoration(
                         filled: false,
-                        labelText: 'Title',
-                        hintText: 'Start typing your title here',
+                        labelText: context.loc.create_note_view_title_textField_labelText,
+                        hintText: context.loc.create_note_view_title_textField_hintText,
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Theme.of(context).colorScheme.surfaceTint,
@@ -219,9 +220,9 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
                           controller: _noteTextController,
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
-                          decoration: const InputDecoration(
-                            labelText: 'Note',
-                            hintText: 'Start typing your note here',
+                          decoration: InputDecoration(
+                            labelText: context.loc.create_note_view_note_textField_labelText,
+                            hintText: context.loc.create_note_view_note_textField_hintText,
                             enabledBorder: InputBorder.none,
                             focusedBorder: InputBorder.none,
                             filled: false,

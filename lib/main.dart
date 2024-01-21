@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'cloud/services/auth/bloc/auth_bloc.dart';
 import 'cloud/services/auth/bloc/auth_event.dart';
 import 'cloud/services/auth/bloc/auth_state.dart';
 import 'cloud/services/auth/firebase_auth_provider.dart';
 import 'cloud/views/login/login_view.dart';
+import 'shared/extensions/buildcontext/loc.dart';
 import 'shared/extensions/dependency_injection.dart';
 import 'shared/helpers/loading/loading_screen.dart';
 import 'shared/views/login/forgot_password_view.dart';
@@ -99,6 +101,8 @@ class _MyNotesAppState extends State<MyNotesApp> {
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       return GetMaterialApp(
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         theme: FlexThemeData.light(
           scheme: appStateNotifier.flexScheme,
           surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
@@ -195,7 +199,7 @@ class HomePage extends StatelessWidget {
           if (state.isLoading) {
             LoadingScreen().show(
               context: context,
-              text: state.loadingText ?? 'Please wait a moment',
+              text: state.loadingText ?? context.loc.wait,
             );
           } else {
             LoadingScreen().hide();
@@ -215,8 +219,8 @@ class HomePage extends StatelessWidget {
           } else {
             return Scaffold(
               appBar: AppBar(
-                title: const Text(
-                  'Please wait...',
+                title: Text(
+                  context.loc.wait,
                 ),
               ),
               body: const LoadingStandardProgressBar(),

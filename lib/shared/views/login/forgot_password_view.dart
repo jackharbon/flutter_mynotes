@@ -5,6 +5,7 @@ import '../../../cloud/services/auth/auth_exceptions.dart';
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/bloc/auth_state.dart';
+import '../../extensions/buildcontext/loc.dart';
 import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/dialogs/error_dialog.dart';
 import '../../utilities/dialogs/password_reset_email_sent_dialog.dart';
@@ -44,8 +45,8 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
             if (state.exception is MissingDataAuthException) {
               await showErrorDialog(
                 context,
-                'Missing credentials!\nPlease check the form fields.',
-                'Password Reset',
+                context.loc.dialog_error_missing_credentials,
+                context.loc.dialog_error_title_password_reset,
                 Icon(
                   Icons.text_fields,
                   size: 60,
@@ -55,8 +56,8 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
             } else if (state.exception is InvalidEmailAuthException) {
               await showErrorDialog(
                 context,
-                'Invalid email!\nPlease check your email address.',
-                'Password Reset',
+                context.loc.dialog_error_invalid_email,
+                context.loc.dialog_error_title_password_reset,
                 Icon(
                   Icons.email,
                   size: 60,
@@ -66,8 +67,8 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
             } else if (state.exception is UserNotFoundAuthException) {
               await showErrorDialog(
                 context,
-                'User not found!\nEnter correct email or register.',
-                'Password Reset',
+                context.loc.dialog_error_user_not_found,
+                context.loc.dialog_error_title_password_reset,
                 Icon(
                   Icons.person_off_rounded,
                   size: 60,
@@ -77,8 +78,8 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
             } else {
               await showErrorDialog(
                 context,
-                'An error has occurred.\nPlease try again.',
-                'Password Reset',
+                context.loc.dialog_error_occured,
+                context.loc.dialog_error_title_password_reset,
                 Icon(
                   Icons.error_outline,
                   size: 60,
@@ -91,12 +92,12 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              OnlineStatusIcon(),
+              const OnlineStatusIcon(),
               Text(
-                'Password Reset(cloud)',
+                context.loc.forgot_password_view_title,
               ),
             ],
           ),
@@ -119,9 +120,9 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
-                  'Enter your email, and we will send you a password reset link',
-                  style: TextStyle(
+                Text(
+                  context.loc.forgot_password_view_prompt,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -134,9 +135,9 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                   autocorrect: false,
                   autofocus: true,
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
+                  decoration: InputDecoration(
+                    labelText: context.loc.textField_email_labelText,
+                    hintText: context.loc.textField_email_hintText,
                   ),
                 ),
                 const SizedBox(
@@ -161,8 +162,8 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                     final email = _controller.text;
                     context.read<AuthBloc>().add(AuthEventForgotPassword(email: email));
                   },
-                  label: const Text(
-                    'Send link',
+                  label: Text(
+                    context.loc.forgot_password_view_send_link,
                   ),
                 ),
                 const SizedBox(
@@ -175,7 +176,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                         );
                   },
                   child: Text(
-                    'Back to the login page',
+                    context.loc.forgot_password_view_back_to_login,
                     style: TextStyle(
                       shadows: [Shadow(color: Theme.of(context).colorScheme.primary, offset: const Offset(0, -2))],
                       fontSize: 16,

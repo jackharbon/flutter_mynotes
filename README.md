@@ -91,6 +91,7 @@ As a user, after registering with an email and a password or Google account you 
 - [x] App state change notification
 - [x] Firestore Database cloud storage
 - [x] Bloc state management
+- [x] Localization
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -160,8 +161,6 @@ flutter pub add test --dev
 
 flutter pub add flutter_lints
 
-flutter pub add intl
-
 flutter pub add bloc
 
 flutter pub add flutter_bloc
@@ -170,7 +169,11 @@ flutter pub add equatable
 
 flutter pub add flutter_launcher_icons
 
-flutter pub run flutter_launcher_icons
+flutter pub add flutter_localizations --sdk=flutter
+
+flutter pub add intl:any
+
+flutter gen-l10n
 
 ```
 
@@ -364,6 +367,7 @@ flutter test test/auth_test.dart
 - [x] Swipe note to delete
 - [x] Edit option for deleting multiple notes
 - [x] App icon
+- [x] Localization
 - [ ] Seamless offline notes storage, when lost connection
 - [ ] Offline/online notes synchronizing
 - [ ] Filtering (search) notes
