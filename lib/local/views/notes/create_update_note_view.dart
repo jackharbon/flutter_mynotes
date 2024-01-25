@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
-import '../../../cloud/services/auth/auth_service.dart';
-import '../../../shared/constants/routes.dart';
 import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/notes_services.dart';
-import '../../../shared/utilities/generics/get_arguments.dart';
+// import '../../../shared/utilities/generics/get_arguments.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
 
 class LocalCreateUpdateNoteView extends StatefulWidget {
@@ -18,12 +17,14 @@ class LocalCreateUpdateNoteView extends StatefulWidget {
 }
 
 class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
-  LocalDatabaseNote? _note;
-
   late final LocalNotesService _notesService;
   late final TextEditingController _noteTitleController;
   late final TextEditingController _noteTextController;
   late final Timestamp createdAtNow;
+  final getXArguments = Get.arguments;
+  late String? userEmail;
+  late LocalDatabaseNote? editNote;
+  LocalDatabaseNote? _note;
 
   @override
   void initState() {
@@ -31,9 +32,10 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     _noteTitleController = TextEditingController();
     _noteTextController = TextEditingController();
     createdAtNow = Timestamp.now();
-
+    userEmail = getXArguments[0]['email'];
+    editNote = getXArguments[0]['note'];
     // ? ---------------------------------------------------------------
-    // debugPrint('|===> create_update_note_view | initState()');
+    debugPrint('|===> create_update_note_view | initState() $userEmail, $editNote');
     super.initState();
   }
 
@@ -47,7 +49,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final createdAt = createdAtNow.toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
     // debugPrint(
-    // '|===> new_note_view (local) | _textControllerListener() | note: $note, title: $title, text: $text, createdAt: $createdAt');
+    // '|===> new_note_view (local) | _textControllerListener() | title: $title, text: $text');
     await _notesService.updateLocalNote(
       note: note,
       title: title,
@@ -64,8 +66,8 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
   }
 
   Future<LocalDatabaseNote> createOrGetExistingNote(BuildContext context) async {
-    // Extracting argument T(optional - note exists on tap) = DatabaseNote from the context
-    final widgetNote = context.getArgument<LocalDatabaseNote>();
+    // note passed by getXArguments
+    final widgetNote = editNote;
 
     if (widgetNote != null) {
       _note = widgetNote;
@@ -77,17 +79,15 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
 
     final existingNote = _note;
     // ? ---------------------------------------------------------------
-    // debugPrint('|===> new_note_view (local) | createNewNote() | existingNote: $existingNote');
+    debugPrint('|===> new_note_view (local) | createNewNote() | existingNote: $existingNote');
     if (existingNote != null) {
       // ? ---------------------------------------------------------------
-      // debugPrint('|===> new_note_view (local) | createNewNote() | existingNote is not empty: $existingNote');
+      debugPrint('|===> new_note_view (local) | createNewNote() | existingNote is not empty: $existingNote');
       return existingNote;
     }
-    final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email;
-    final owner = await _notesService.getLocalUser(email: email);
+    final owner = await _notesService.getLocalUser(email: userEmail!);
     // ? ---------------------------------------------------------------
-    // debugPrint('|===> new_note_view (local) | createNewNote() | currentUser email: $email owner: $owner');
+    debugPrint('|===> new_note_view (local) | createNewNote() | currentUser email: $userEmail owner: $owner');
     final newNote = await _notesService.createLocalNote(owner: owner);
     _note = newNote;
     return newNote;
@@ -111,7 +111,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
     final createdAt = Timestamp.now().toDate().toString().substring(0, 16);
     // ? ---------------------------------------------------------------
     // debugPrint(
-    // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | initial note: $note, title: $title, text: $text, createdAt: $createdAt');
+    // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | title: $title, text: $text);
     if (note != null) {
       if (title.isNotEmpty || text.isNotEmpty) {
         await _notesService.updateLocalNote(
@@ -122,7 +122,7 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
         );
         // ? ---------------------------------------------------------------
         // debugPrint(
-        // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved note: $note, title: $title, text: $text, createdAt: $createdAt');
+        // '|===> new_note_view (local) | _safeNoteIfTextNotEmpty() | saved title: $title, text: $text');
       }
     }
   }
@@ -160,7 +160,9 @@ class _LocalCreateUpdateNoteViewState extends State<LocalCreateUpdateNoteView> {
           IconButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+              Get.toNamed('/create', arguments: [
+                {"email": userEmail}
+              ]);
             },
             icon: const Icon(Icons.add),
           ),

@@ -1,35 +1,35 @@
-// ====== Exceptions ======
+// ====== Database Exceptions ======
 
-class DatabaseAlreadyOpenException implements Exception {}
+class LocalDatabaseAlreadyOpenException implements Exception {}
 
-class UnableToGetDocumentsDirectoryException implements Exception {}
+class LocalUnableToGetDocumentsDirectoryException implements Exception {}
 
-class DatabaseIsNotOpenException implements Exception {}
+class LocalDatabaseIsNotOpenException implements Exception {}
 
-class UnknownAuthException implements Exception {}
+class LocalUnknownAuthException implements Exception {}
 
 // ------ User Exceptions ------
 
-class MissingDataAuthException implements Exception {}
+class LocalMissingDataAuthException implements Exception {}
 
-class InvalidEmailAuthException implements Exception {}
+class LocalInvalidEmailAuthException implements Exception {}
 
-class CouldNotDeleteUserException implements Exception {}
+class LocalCouldNotDeleteUserException implements Exception {}
 
-class UserAlreadyExistException implements Exception {}
+class LocalUserAlreadyExistException implements Exception {}
 
-class CouldNotFindUserException implements Exception {}
+class LocalCouldNotFindUserException implements Exception {}
 
-class WrongPasswordAuthException implements Exception {}
+class LocalWrongPasswordAuthException implements Exception {}
 
 // ------ Note Exceptions ------
 
-class ColdNotDeleteLocalNoteException implements Exception {}
+class LocalColdNotDeleteLocalNoteException implements Exception {}
 
 class LocalNoteAlreadyExistException implements Exception {}
 
-class CouldNotFindLocalNoteException implements Exception {}
+class LocalCouldNotFindLocalNoteException implements Exception {}
 
-class CouldNotUpdateLocalNoteException implements Exception {}
+class LocalCouldNotUpdateLocalNoteException implements Exception {}
 
-class UserShouldBeSetBeforeReadingAllNotes implements Exception {}
+class LocalUserShouldBeSetBeforeReadingAllNotes implements Exception {}

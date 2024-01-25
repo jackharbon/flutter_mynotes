@@ -10,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'cloud/services/auth/bloc/auth_bloc.dart';
 import 'cloud/services/auth/bloc/auth_event.dart';
 import 'cloud/services/auth/bloc/auth_state.dart';
-import 'cloud/services/auth/firebase_auth_provider.dart';
+import 'cloud/services/auth/firebase/firebase_auth_provider.dart';
 import 'cloud/views/login/login_view.dart';
 import 'shared/extensions/buildcontext/loc.dart';
 import 'shared/extensions/dependency_injection.dart';
@@ -20,7 +20,6 @@ import 'shared/views/login/register_view.dart';
 import 'shared/views/login/verify_email_view.dart';
 import 'cloud/views/notes/create_update_note_view.dart';
 import 'cloud/views/notes/notes_view.dart';
-import 'local/views/login/login_view.dart';
 import 'local/views/notes/create_update_note_view.dart';
 import 'local/views/notes/notes_view.dart';
 import 'shared/constants/routes.dart';
@@ -103,6 +102,14 @@ class _MyNotesAppState extends State<MyNotesApp> {
       return GetMaterialApp(
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
+        getPages: [
+          GetPage(name: '/register', page: () => const CloudRegisterView()),
+          GetPage(name: '/login', page: () => const CloudLoginView()),
+          GetPage(name: '/notes', page: () => const LocalMyNotesView()),
+          GetPage(name: '/verify', page: () => const CloudVerifyEmailView()),
+          GetPage(name: '/reset', page: () => const ForgotPasswordView()),
+          GetPage(name: '/create', page: () => const LocalCreateUpdateNoteView()),
+        ],
         theme: FlexThemeData.light(
           scheme: appStateNotifier.flexScheme,
           surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
@@ -211,7 +218,8 @@ class HomePage extends StatelessWidget {
           } else if (state is AuthStateNeedsVerification) {
             return const CloudVerifyEmailView();
           } else if (state is AuthStateLoggedOut) {
-            return (appStateNotifier.isOnline) ? const CloudLoginView() : const LocalLoginView();
+            return const CloudLoginView();
+            // return (appStateNotifier.isOnline) ? const CloudLoginView() : const LocalLoginView();
           } else if (state is AuthStateForgotPassword) {
             return const ForgotPasswordView();
           } else if (state is AuthStateRegistering) {

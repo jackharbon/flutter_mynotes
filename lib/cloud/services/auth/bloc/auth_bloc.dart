@@ -1,10 +1,15 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 
-import '../auth_provider.dart';
+import '../../../../shared/services/crud/notes_services.dart';
+import '../firebase/auth_provider.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  final LocalNotesService _notesService = LocalNotesService();
+  DatabaseUser? localCurrentUser;
+
   AuthBloc(AuthProvider provider) : super(const AuthStateUninitialized(isLoading: true)) {
     // user not registered
     on<AuthEventShouldRegister>((event, emit) {
@@ -113,22 +118,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           email: email,
           password: password,
         );
-
+        localCurrentUser = await _notesService.logInLocalUser(
+          email: email,
+          password: password,
+        );
         if (!user.isEmailVerified) {
           emit(
             const AuthStateLoggedOut(
               exception: null,
               isLoading: false,
-              loadingText: "Waiting for verification...",
+              loadingText: "Waiting...",
             ),
           );
           emit(const AuthStateNeedsVerification(isLoading: false));
         } else {
+          await _notesService.updateLocalUserIsEmailVerified(email: email);
+          // ? ------------------------
+          debugPrint('|==> auth_bloc | AuthEventLogIn | email verified: $localCurrentUser');
           emit(
             const AuthStateLoggedOut(
               exception: null,
               isLoading: false,
-              loadingText: "Wait for login...",
+              loadingText: "Wait...",
             ),
           );
           emit(AuthStateLoggedIn(

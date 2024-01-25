@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
-import '../../../cloud/services/auth/auth_service.dart';
+import '../../../cloud/services/auth/firebase/auth_service.dart';
 import '../../extensions/buildcontext/loc.dart';
 import '../../services/crud/notes_services.dart';
 import '../../enums/menu_action.dart';
@@ -17,12 +17,13 @@ PopupMenuButton<MenuAction> popupMenuItems(BuildContext context) {
     onSelected: (value) async {
       final String email = AuthService.firebase().currentUser!.email;
       // ? ----------------------------------------
-      // debugPrint('|===> popup_menu | popupMenuItems() | value: ${value.toString()}');
+      debugPrint('|===> popup_menu | popupMenuItems() | value: ${value.toString()}');
       switch (value) {
         case MenuAction.logout:
           final shouldLogout = await showLogOutDialog(context);
           if (shouldLogout) {
-            // await LocalNotesService().logOut;
+            // await LocalNotesService().close();
+            // TODO: offline AuthEventLogOut
             context.read<AuthBloc>().add(
                   const AuthEventLogOut(),
                 );

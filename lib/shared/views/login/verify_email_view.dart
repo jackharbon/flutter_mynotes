@@ -8,7 +8,7 @@ import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
 import '../../utilities/dialogs/resend_verification.dart';
-import '../../../cloud/services/auth/auth_service.dart';
+import '../../../cloud/services/auth/firebase/auth_service.dart';
 import '../../utilities/actions/popup_menu.dart';
 
 class CloudVerifyEmailView extends StatefulWidget {
@@ -93,7 +93,10 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
                     ? Text(
                         context.loc.verify_email_view_internet_prompt,
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.error),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       )
                     : const SizedBox(
                         height: 20,

@@ -8,7 +8,7 @@ import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
-import '../../services/auth/auth_service.dart';
+import '../../services/auth/firebase/auth_service.dart';
 import '../../services/cloud/cloud_note.dart';
 // import '../../services/cloud/cloud_storage_constants.dart';
 import '../../services/cloud/firebase_cloud_storage.dart';

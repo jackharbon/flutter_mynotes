@@ -7,7 +7,7 @@ import 'package:path/path.dart' show join;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../extensions/list/filter.dart';
+// import '../../extensions/list/filter.dart';
 import 'crud_exceptions.dart';
 import 'local_storage_constants.dart';
 
@@ -21,6 +21,7 @@ class LocalNotesService {
   // ======================== NOTE STREAM ========================
 
   static final LocalNotesService _shared = LocalNotesService._sharedInstance();
+  // private initializer for NotesService
   LocalNotesService._sharedInstance() {
     _notesStreamController = StreamController<List<LocalDatabaseNote>>.broadcast(
       onListen: () {
@@ -28,20 +29,25 @@ class LocalNotesService {
       },
     );
   }
+  // factory constructor for private initializer
   factory LocalNotesService() => _shared;
 
   late final StreamController<List<LocalDatabaseNote>> _notesStreamController;
 
-  Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream.filter((note) {
-        final currentUser = _user;
-        if (currentUser != null) {
-          return note.userId == currentUser.id; // we return boolean in filter function
-        } else {
-          throw UserShouldBeSetBeforeReadingAllNotes();
-        }
-      });
+  Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream;
 
-  // -------------------- _cacheNotes() --------------------
+  // Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream.filter((note) {
+  //       final currentUser = _user;
+  //       if (currentUser != null) {
+  //         // ? ---------------------------------------------------------------
+  //         // debugPrint('|===> notes_services | allLocalNotesStream | currentUser: $currentUser');
+  //         return note.userId == currentUser.id; // we return boolean in filter function
+  //       } else {
+  //         throw LocalUserShouldBeSetBeforeReadingAllNotes();
+  //       }
+  //     });
+
+  // -------------------- _cacheNotes() --------------------130
   Future<void> _cacheLocalNotes() async {
     final allNotes = await getAllLocalNotes();
     _notes = allNotes.toList();
@@ -55,7 +61,7 @@ class LocalNotesService {
   Database _getDatabaseOrThrow() {
     final db = _db;
     if (db == null) {
-      throw DatabaseIsNotOpenException();
+      throw LocalDatabaseIsNotOpenException();
     } else {
       // ? -----------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | _getDatabaseOrThrow() | db: $db');
@@ -66,7 +72,7 @@ class LocalNotesService {
   Future<void> close() async {
     final db = _db;
     if (db == null) {
-      throw DatabaseIsNotOpenException();
+      throw LocalDatabaseIsNotOpenException();
     } else {
       await db.close();
       _db = null;
@@ -78,14 +84,14 @@ class LocalNotesService {
   Future<void> _ensureDbIsOpen() async {
     try {
       await open();
-    } on DatabaseAlreadyOpenException {
+    } on LocalDatabaseAlreadyOpenException {
       // empty
     }
   }
 
   Future<void> open() async {
     if (_db != null) {
-      throw DatabaseAlreadyOpenException();
+      throw LocalDatabaseAlreadyOpenException();
     }
     try {
       final docsPath = await getApplicationDocumentsDirectory();
@@ -103,7 +109,7 @@ class LocalNotesService {
       // debugPrint('|===> notes_services  (shared) | open() | createUserTable: $createUserTable');
       // debugPrint('|===> notes_services  (shared) | open() | createNoteTable: $createNoteTable');
     } on MissingPlatformDirectoryException {
-      throw UnableToGetDocumentsDirectoryException();
+      throw LocalUnableToGetDocumentsDirectoryException();
     }
   }
 
@@ -122,7 +128,7 @@ class LocalNotesService {
     );
 
     if (notes.isEmpty) {
-      throw CouldNotFindLocalNoteException();
+      throw LocalCouldNotFindLocalNoteException();
     } else {
       final note = LocalDatabaseNote.fromRow(notes.first);
       _notes.removeWhere((note) => note.id == id);
@@ -135,7 +141,6 @@ class LocalNotesService {
   }
 
   // -------------------- getAllNotes() --------------------
-  // TODO: is it used anywhere?
   Future<Iterable<LocalDatabaseNote>> getAllLocalNotes() async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
@@ -153,7 +158,7 @@ class LocalNotesService {
     // make sure owner exists in the database with the correct id
     final dbUser = await getLocalUser(email: owner.email);
     if (dbUser != owner) {
-      throw CouldNotFindUserException();
+      throw LocalCouldNotFindUserException();
     }
 
     const title = '';
@@ -213,7 +218,7 @@ class LocalNotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateLocalNoteException();
+      throw LocalCouldNotUpdateLocalNoteException();
     } else {
       final updatedNote = await getLocalNote(id: note.id);
       _notes.removeWhere((note) => note.id == updatedNote.id);
@@ -237,7 +242,7 @@ class LocalNotesService {
     // ? -----------------------------------------------------------
     // debugPrint('|===> notes_services  (shared) | deleteNote() | deletedCount: $deletedCount');
     if (deletedCount == 0) {
-      throw ColdNotDeleteLocalNoteException();
+      throw LocalColdNotDeleteLocalNoteException();
     } else {
       final countBefore = _notes.length;
       _notes.removeWhere((note) => note.id == id);
@@ -281,7 +286,7 @@ class LocalNotesService {
       // ? ----------------------------------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | getOrCreateUser() | get _user: $_user');
       return user;
-    } on CouldNotFindUserException {
+    } on LocalCouldNotFindUserException {
       final createdUser = await createLocalUser(email: email, password: _user!.password);
       if (setAsCurrentUser) {
         _user = createdUser;
@@ -295,21 +300,45 @@ class LocalNotesService {
   }
 
 // -------------------- checkUser() --------------------
-  Future<DatabaseUser> logInLocalUser({required String email, required String password}) async {
+  Future<DatabaseUser> logInLocalUser({
+    required String email,
+    required String password,
+  }) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+    if (email.isEmpty || password.isEmpty) {
+      // ? --------------------------------
+      // debugPrint('|===> notes_services  (shared) | logInUser() | missing data');
+      throw LocalMissingDataAuthException();
+    } else if (email.isNotEmpty && !regex.hasMatch(email)) {
+      // ? --------------------------------
+      // debugPrint('|===> notes_services  (shared) | logInUser() | invalid email');
+      throw LocalInvalidEmailAuthException();
+    }
+    await getLocalUser(email: email);
+    // ? --------------------------------
+    // debugPrint('|===> notes_services  (shared) | logInUser() | user: $user');
     List<Map<String, dynamic>> results = await db.query(
       userTable,
       limit: 1,
       where: 'email = ? and password = ?',
       whereArgs: [email, password],
     );
-    // ? --------------------------------
-    // debugPrint('|===> notes_services  (shared) | logInUser() | results: $results');
     if (results.isEmpty) {
-      throw CouldNotFindUserException();
+      // ? --------------------------------
+      // debugPrint('|===> notes_services  (shared) | logInUser() | wrong password');
+      throw LocalWrongPasswordAuthException();
     } else {
+      // ? --------------------------------
+      // debugPrint('|===> notes_services  (shared) | logInUser() | results: $results');
       return DatabaseUser.fromRow(results.first);
     }
   }
@@ -328,7 +357,7 @@ class LocalNotesService {
     // ? -----------------------------------------------------------
     // debugPrint('|===> notes_services  (shared) | getUser() | results: $results');
     if (results.isEmpty) {
-      throw CouldNotFindUserException();
+      throw LocalCouldNotFindUserException();
     } else {
       return DatabaseUser.fromRow(results.first);
     }
@@ -345,7 +374,7 @@ class LocalNotesService {
       whereArgs: [email.toLowerCase()],
     );
     if (results.isNotEmpty) {
-      throw UserAlreadyExistException();
+      throw LocalUserAlreadyExistException();
     }
 
     String firstName = '';
@@ -413,7 +442,7 @@ class LocalNotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateLocalNoteException();
+      throw LocalCouldNotUpdateLocalNoteException();
     } else {
       final results = await db.query(
         userTable,
@@ -424,7 +453,7 @@ class LocalNotesService {
       // ? -----------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | updateLocalUser() | results: $results');
       if (results.isEmpty) {
-        throw CouldNotFindUserException();
+        throw LocalCouldNotFindUserException();
       } else {
         return DatabaseUser.fromRow(results.first);
       }
@@ -449,7 +478,7 @@ class LocalNotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateLocalNoteException();
+      throw LocalCouldNotUpdateLocalNoteException();
     } else {
       final results = await db.query(
         userTable,
@@ -460,7 +489,7 @@ class LocalNotesService {
       // ? -----------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | updateLocalUserFlexScheme() | results: $results');
       if (results.isEmpty) {
-        throw CouldNotFindUserException();
+        throw LocalCouldNotFindUserException();
       } else {
         return DatabaseUser.fromRow(results.first);
       }
@@ -485,7 +514,7 @@ class LocalNotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateLocalNoteException();
+      throw LocalCouldNotUpdateLocalNoteException();
     } else {
       final results = await db.query(
         userTable,
@@ -496,7 +525,7 @@ class LocalNotesService {
       // ? -----------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | updateLocalUserThemeMode() | results: $results');
       if (results.isEmpty) {
-        throw CouldNotFindUserException();
+        throw LocalCouldNotFindUserException();
       } else {
         return DatabaseUser.fromRow(results.first);
       }
@@ -520,7 +549,7 @@ class LocalNotesService {
     );
 
     if (updatesCount == 0) {
-      throw CouldNotUpdateLocalNoteException();
+      throw LocalCouldNotUpdateLocalNoteException();
     } else {
       final results = await db.query(
         userTable,
@@ -531,7 +560,7 @@ class LocalNotesService {
       // ? -----------------------------------------------------------
       // debugPrint('|===> notes_services  (shared) | updateIsEmailVerified() | results: $results');
       if (results.isEmpty) {
-        throw CouldNotFindUserException();
+        throw LocalCouldNotFindUserException();
       } else {
         return DatabaseUser.fromRow(results.first);
       }
@@ -550,7 +579,7 @@ class LocalNotesService {
     // ? -----------------------------------------------------------
     // debugPrint('|===> notes_services  (shared) | deleteUser() | deletedAccounts: $deletedAccounts');
     if (deletedAccounts != 1) {
-      throw CouldNotDeleteUserException();
+      throw LocalCouldNotDeleteUserException();
     }
   }
 }
@@ -632,19 +661,6 @@ class DatabaseUser {
         avatarUrl = map[avatarUrlColumn] as String,
         createdAtUser = map[createdAtUserColumn] as String,
         isEmailVerified = (map[isEmailVerifiedColumn] as int) == 1 ? true : false;
-
-  // TODO: map for testing
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      'themeMode': themeMode,
-      'flexScheme': flexScheme,
-      'avatarUrl': avatarUrl,
-    };
-  }
 
   @override
   String toString() =>

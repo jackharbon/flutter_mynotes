@@ -48,12 +48,12 @@ class AppNotifier extends ChangeNotifier {
 
   // --------------- User Auth ---------------
 
-  void storeUserEmail(String userEmail) {
-    this.userEmail = userEmail;
-    // ? -------------------------------------
-    // debugPrint('|===> app_notifier | storeUserEmail() | userEmail: $userEmail');
-    notifyListeners();
-  }
+  // void storeUserEmail(String userEmail) {
+  //   this.userEmail = userEmail;
+  //   // ? -------------------------------------
+  //   // debugPrint('|===> app_notifier | storeUserEmail() | userEmail: $userEmail');
+  //   notifyListeners();
+  // }
 
   // --------------- Notes View State ---------------
 

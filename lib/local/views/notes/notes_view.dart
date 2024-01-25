@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../../local/views/notes/notes_list.view.dart';
-import '../../../shared/constants/routes.dart';
+// import '../../../shared/constants/routes.dart';
 import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
@@ -21,6 +22,9 @@ class LocalMyNotesView extends StatefulWidget {
 
 class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   late final LocalNotesService _notesService;
+  late Stream<List<LocalDatabaseNote>> notesStream;
+  final getXArguments = Get.arguments;
+  late String userEmail;
   bool isDescending = true;
   bool isSearchOn = false;
   String sortFieldName = 'created_at';
@@ -28,8 +32,10 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   @override
   void initState() {
     _notesService = LocalNotesService();
+    notesStream = _notesService.allLocalNotesStream;
+    userEmail = getXArguments[0]['email'];
     // ? ---------------------------------------------------------------
-    // debugPrint('|===> notes_view (local) | initState() | _notesService: $_notesService');
+    debugPrint('|===> notes_view (local) | initState() | userEmail: $userEmail');
     super.initState();
   }
 
@@ -44,16 +50,16 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
           children: [
             const OnlineStatusIcon(),
             StreamBuilder(
-              stream: _notesService.allLocalNotesStream,
+              stream: notesStream,
               builder: (context, snapshot) {
+                debugPrint('|===> notes_view (local) | notesStream1 | snapshot: ${snapshot.data}');
                 if (snapshot.hasData) {
-                  // ? --------------------------------------------
-                  // debugPrint('|===> notes_view (local) | notes count snapshot.data: ${snapshot.data}');
                   final noteCount = snapshot.data!.length;
                   final countTitle = context.loc.notes_title(noteCount);
                   return Text(countTitle);
                 } else {
-                  return Text(context.loc.notes_view_title);
+                  // return Text(context.loc.notes_view_title);
+                  return const Text('My Notes(local)');
                 }
               },
             ),
@@ -62,7 +68,9 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+              Get.toNamed('/create', arguments: [
+                {"email": userEmail}
+              ]);
             },
             icon: const Icon(Icons.add),
           ),
@@ -71,16 +79,15 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
       ),
       body: Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
         return FutureBuilder(
-          future: _notesService.getOrCreateLocalUser(email: appStateNotifier.userEmail),
+          future: _notesService.getOrCreateLocalUser(email: userEmail),
           builder: (context, snapshot) {
-            // ? ---------------------------------------------------------------
-            // debugPrint(
-            // '|===> notes_view (local) | email: ${appStateNotifier.userEmail}, User snapshot: ${snapshot.connectionState}, ${snapshot.data}');
             switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
               case ConnectionState.done:
+                // ? ---------------------------------------------------------------
+                debugPrint('|===> notes_view (local) | User snapshot done: ${snapshot.data}');
                 return Column(
                   children: [
+                    // -------------------- TOOLS BAR --------------------------------
                     Container(
                       color: Theme.of(context).colorScheme.primary,
                       height: 50,
@@ -155,7 +162,7 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                         .isNumberVisibleState(!appStateNotifier.isNumberVisible);
                                     // ? --------------------------------------------
                                     // debugPrint(
-                                    // '|===> notes_view (local) | button isNumberVisible: $appStateNotifier.isNumberVisible');
+                                    // '|===> notes_view (local) | button isNumberVisible: ${appStateNotifier.isNumberVisible}');
                                   });
                                 },
                                 icon: (appStateNotifier.isNumberVisible)
@@ -288,19 +295,19 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                         ],
                       ),
                     ),
-                    // =
+                    // -------------------LIST OF ALL NOTES ----------------
                     Flexible(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: StreamBuilder(
-                          stream: _notesService.allLocalNotesStream,
-                          builder: (context, snapshot) {
+                          stream: notesStream,
+                          builder: (BuildContext context, AsyncSnapshot<List<LocalDatabaseNote>> snapshot) {
+                            if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+                            debugPrint('|===> notes_view (local) | notesStream2 snapshot: ${snapshot.data}');
                             switch (snapshot.connectionState) {
                               case ConnectionState.waiting:
                               case ConnectionState.active:
                                 // ======================= STREAM ALL NOTES =======================title
-                                // debugPrint(
-                                // '|===> notes_view (local) | allNotes snapshot: ${snapshot.connectionState}, ${snapshot.data}');
                                 if (snapshot.hasData) {
                                   if (snapshot.data!.isEmpty) {
                                     // -------------- PRESS + to write
@@ -317,7 +324,10 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                         ),
                                         IconButton(
                                             onPressed: () {
-                                              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+                                              // Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+                                              Get.toNamed("/create", arguments: userEmail);
+                                              // ? --------------------
+                                              // debugPrint('|===> notes_view (local) | onPressed | userEmail $userEmail');
                                             },
                                             icon: Icon(
                                               Icons.add,
@@ -338,29 +348,33 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
                                     // ======================= LIST OF NOTES =======================
                                     // snapshot.data is NOT Empty
                                     final allNotes = snapshot.data as List<LocalDatabaseNote>;
-                                    (sortFieldName == 'created_at')
-                                        ? (isDescending)
-                                            ? allNotes.sort((b, a) => a.createdAt.compareTo(b.createdAt))
-                                            : allNotes.sort((a, b) => a.createdAt.compareTo(b.createdAt))
-                                        : (isDescending)
-                                            ? allNotes.sort((b, a) => a.title!.compareTo(b.title!))
-                                            : allNotes.sort((a, b) => a.title!.compareTo(b.title!));
-                                    (isDescending) ? allNotes.reversed : allNotes;
+                                    // ?  --------------------
+                                    debugPrint('|===> notes_view (local) | LocalNotesListView | allNotes: $allNotes');
+                                    // (sortFieldName == 'created_at')
+                                    //     ? (isDescending)
+                                    //         ? allNotes.sort((b, a) => a.createdAt.compareTo(b.createdAt))
+                                    //         : allNotes.sort((a, b) => a.createdAt.compareTo(b.createdAt))
+                                    //     : (isDescending)
+                                    //         ? allNotes.sort((b, a) => a.title!.compareTo(b.title!))
+                                    //         : allNotes.sort((a, b) => a.title!.compareTo(b.title!));
+                                    // (isDescending) ? allNotes.reversed : allNotes;
                                     return LocalNotesListView(
                                       notes: allNotes,
                                       onDeleteNote: (note) async {
                                         await _notesService.deleteLocalNote(id: note.id);
                                       },
                                       onTap: (note) {
-                                        Navigator.of(context).pushNamed(
-                                          createOrUpdateNoteRoute,
-                                          arguments: note,
-                                        );
+                                        // Navigator.of(context).pushNamed(
+                                        //   createOrUpdateNoteRoute,
+                                        //   arguments: note,
+                                        // );
+                                        Get.toNamed('/create', arguments: [
+                                          {"email": userEmail, "note": note}
+                                        ]);
                                       },
                                     );
                                   }
                                 } else {
-                                  // snapshot has NOT data
                                   return const LoadingStandardProgressBar();
                                 }
                               default:

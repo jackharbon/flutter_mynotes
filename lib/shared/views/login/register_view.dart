@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../../../cloud/services/auth/auth_exceptions.dart';
-import '../../../cloud/services/auth/auth_service.dart';
+import '../../../cloud/services/auth/firebase/auth_exceptions.dart';
+import '../../../cloud/services/auth/firebase/auth_service.dart';
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/bloc/auth_state.dart';
-// import '../../services/crud/notes_services.dart';
+import '../../services/crud/notes_services.dart';
 import '../../extensions/buildcontext/loc.dart';
 import '../../helpers/loading/loading_screen.dart';
 import '../../providers/app_notifier.dart';
@@ -22,13 +22,13 @@ class CloudRegisterView extends StatefulWidget {
 }
 
 class _CloudRegisterViewState extends State<CloudRegisterView> {
-  // late final LocalNotesService _notesService;
+  late final LocalNotesService _notesService;
   late final TextEditingController _email;
   late final TextEditingController _password;
 
   @override
   void initState() {
-    // _notesService = LocalNotesService();
+    _notesService = LocalNotesService();
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
@@ -47,7 +47,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
       return BlocListener<AuthBloc, AuthState>(
         listener: (context, state) async {
           if (state is AuthStateRegistering) {
-            if (state.exception is MissingDataAuthException) {
+            if (state.exception is CloudMissingDataAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_missing_credentials,
@@ -58,7 +58,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               );
-            } else if (state.exception is InvalidEmailAuthException) {
+            } else if (state.exception is CloudInvalidEmailAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_invalid_email,
@@ -91,7 +91,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               );
-            } else if (state.exception is UnknownAuthException) {
+            } else if (state.exception is CloudUnknownAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_register_generic,
@@ -102,7 +102,7 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               );
-            } else if (state.exception is GenericAuthException) {
+            } else if (state.exception is CloudGenericAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_register_generic,
@@ -236,6 +236,10 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                                             password: password,
                                           ),
                                         );
+                                    _notesService.createLocalUser(
+                                      email: email,
+                                      password: password,
+                                    );
                                   },
                                   label: Text(
                                     context.loc.register_view_register_button,

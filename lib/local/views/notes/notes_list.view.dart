@@ -27,6 +27,7 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       return ListView.builder(
+          scrollDirection: Axis.vertical,
           itemCount: widget.notes.length,
           itemBuilder: (context, index) {
             final note = widget.notes[index];

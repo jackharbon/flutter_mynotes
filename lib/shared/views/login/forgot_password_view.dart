@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../cloud/services/auth/auth_exceptions.dart';
+import '../../../cloud/services/auth/firebase/auth_exceptions.dart';
 import '../../../cloud/services/auth/bloc/auth_bloc.dart';
 import '../../../cloud/services/auth/bloc/auth_event.dart';
 import '../../../cloud/services/auth/bloc/auth_state.dart';
@@ -42,7 +42,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
             await showPasswordResetSentDialog(context);
           }
           if (state.exception != null) {
-            if (state.exception is MissingDataAuthException) {
+            if (state.exception is CloudMissingDataAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_missing_credentials,
@@ -53,7 +53,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               );
-            } else if (state.exception is InvalidEmailAuthException) {
+            } else if (state.exception is CloudInvalidEmailAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_invalid_email,
@@ -64,7 +64,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
                   color: Theme.of(context).colorScheme.error,
                 ),
               );
-            } else if (state.exception is UserNotFoundAuthException) {
+            } else if (state.exception is CloudUserNotFoundAuthException) {
               await showErrorDialog(
                 context,
                 context.loc.dialog_error_user_not_found,

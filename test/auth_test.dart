@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mynotes/cloud/services/auth/auth_exceptions.dart';
-import 'package:mynotes/cloud/services/auth/auth_provider.dart';
-import 'package:mynotes/cloud/services/auth/auth_user.dart';
+import 'package:mynotes/cloud/services/auth/firebase/auth_exceptions.dart';
+import 'package:mynotes/cloud/services/auth/firebase/auth_provider.dart';
+import 'package:mynotes/cloud/services/auth/firebase/auth_user.dart';
 
 void main() {
   // ========================= TESTS =========================
@@ -42,13 +42,13 @@ void main() {
         password: 'anypassword',
       );
 
-      expect(badEmailUser, throwsA(const TypeMatcher<UserNotFoundAuthException>()));
+      expect(badEmailUser, throwsA(const TypeMatcher<CloudUserNotFoundAuthException>()));
 
       final badPasswordUser = provider.createUser(
         email: 'someone@bar.com',
         password: 'foobar',
       );
-      expect(badPasswordUser, throwsA(const TypeMatcher<WrongPasswordAuthException>()));
+      expect(badPasswordUser, throwsA(const TypeMatcher<CloudWrongPasswordAuthException>()));
 
       final user = await provider.createUser(
         email: 'foo',
@@ -117,8 +117,8 @@ class MockAuthProvider implements AuthProvider {
     required String password,
   }) {
     if (!isInitialized) throw NotInitializedException();
-    if (email == 'foo@bar.com') throw UserNotFoundAuthException();
-    if (password == 'foobar') throw WrongPasswordAuthException();
+    if (email == 'foo@bar.com') throw CloudUserNotFoundAuthException();
+    if (password == 'foobar') throw CloudWrongPasswordAuthException();
     const user = AuthUser(
       id: 'my_id',
       isEmailVerified: false,
@@ -132,7 +132,7 @@ class MockAuthProvider implements AuthProvider {
   @override
   Future<void> logOut() async {
     if (!isInitialized) throw NotInitializedException();
-    if (_user == null) throw UserNotFoundAuthException();
+    if (_user == null) throw CloudUserNotFoundAuthException();
     await Future.delayed(const Duration(seconds: 1));
     _user = null;
   }
@@ -142,7 +142,7 @@ class MockAuthProvider implements AuthProvider {
   Future<void> sendEmailVerification() async {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
-    if (user == null) throw UserNotFoundAuthException();
+    if (user == null) throw CloudUserNotFoundAuthException();
     const newUser = AuthUser(
       id: 'my_id',
       isEmailVerified: true,

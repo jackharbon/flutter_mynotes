@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
 
-import '../../../firebase_options.dart';
+import '../../../../firebase_options.dart';
 import 'auth_user.dart';
 import 'auth_provider.dart';
 import 'auth_exceptions.dart';
@@ -32,20 +32,20 @@ class FirebaseAuthProvider implements AuthProvider {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'channel-error') {
-        throw MissingDataAuthException();
+        throw CloudMissingDataAuthException();
       } else if (e.code == 'invalid-email') {
-        throw InvalidEmailAuthException();
+        throw CloudInvalidEmailAuthException();
       } else if (e.code == 'email-already-in-use') {
         throw EmailAlreadyInUseAuthException();
       } else if (e.code == 'weak-password') {
         throw WeakPasswordAuthException();
       } else if (e.code == 'unknown') {
-        throw UnknownAuthException();
+        throw CloudUnknownAuthException();
       } else {
-        throw GenericAuthException();
+        throw CloudGenericAuthException();
       }
     } catch (_) {
-      throw GenericAuthException();
+      throw CloudGenericAuthException();
     }
   }
 
@@ -86,11 +86,11 @@ class FirebaseAuthProvider implements AuthProvider {
     } catch (e) {
       // ? --------------------------------
       // debugPrint('|===> firebase_auth_provider | deleteAccount() | UnknownAuthException: $e');
-      throw UnknownAuthException();
+      throw CloudUnknownAuthException();
     }
     // ? --------------------------------
     // debugPrint('|===> firebase_auth_provider | deleteAccount() | GenericAuthException');
-    throw GenericAuthException();
+    throw CloudGenericAuthException();
   }
 
   @override
@@ -111,20 +111,20 @@ class FirebaseAuthProvider implements AuthProvider {
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'channel-error') {
-        throw MissingDataAuthException();
+        throw CloudMissingDataAuthException();
       } else if (e.code == 'invalid-email') {
-        throw InvalidEmailAuthException();
+        throw CloudInvalidEmailAuthException();
       } else if (e.code == 'user-not-found') {
-        throw UserNotFoundAuthException();
+        throw CloudUserNotFoundAuthException();
       } else if (e.code == 'wrong-password') {
-        throw WrongPasswordAuthException();
+        throw CloudWrongPasswordAuthException();
       } else if (e.code == 'unknown') {
-        throw UnknownAuthException();
+        throw CloudUnknownAuthException();
       } else {
-        throw GenericAuthException();
+        throw CloudGenericAuthException();
       }
     } catch (_) {
-      throw GenericAuthException();
+      throw CloudGenericAuthException();
     }
   }
 
@@ -155,14 +155,14 @@ class FirebaseAuthProvider implements AuthProvider {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'firebase_auth/invalid_email':
-          throw InvalidEmailAuthException();
+          throw CloudInvalidEmailAuthException();
         case 'firebase_auth/user-not-found':
-          throw UserNotFoundAuthException();
+          throw CloudUserNotFoundAuthException();
         default:
-          throw UnknownAuthException();
+          throw CloudUnknownAuthException();
       }
     } catch (_) {
-      throw GenericAuthException();
+      throw CloudGenericAuthException();
     }
   }
 }

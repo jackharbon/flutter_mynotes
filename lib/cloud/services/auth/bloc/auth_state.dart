@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:equatable/equatable.dart';
 
-import '../auth_user.dart';
+import '../firebase/auth_user.dart';
 
 @immutable
 abstract class AuthState {
@@ -9,7 +9,7 @@ abstract class AuthState {
   final String? loadingText;
   const AuthState({
     required this.isLoading,
-    this.loadingText = 'Please wait a moment',
+    this.loadingText = 'Please wait...',
   });
 }
 
