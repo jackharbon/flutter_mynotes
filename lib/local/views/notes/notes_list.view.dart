@@ -30,6 +30,8 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
           scrollDirection: Axis.vertical,
           itemCount: widget.notes.length,
           itemBuilder: (context, index) {
+            // ? --------------------------------------------
+            debugPrint('|===> notes_list_view (local) | ListView | widget.notes: ${widget.notes}');
             final note = widget.notes[index];
             final positionNumber = index + 1;
             // -------------- deleting by swiping left --------------
@@ -144,11 +146,6 @@ class _LocalNotesListViewState extends State<LocalNotesListView> {
                                             .itemsCheckedToDeleteState(false)
                                         : Provider.of<AppNotifier>(context, listen: false)
                                             .itemsCheckedToDeleteState(true);
-                                    // ? --------------------------------------------
-                                    // debugPrint(
-                                    // '|===> notes_list_view (local) | ListTile | selectedItems: ${appStateNotifier.selectedItems}, noteId: $noteId \n selectedItems length: ${appStateNotifier.selectedItems.length}');
-                                    // debugPrint(
-                                    // '|===> notes_list_view (local) | ListTile | itemsCheckedToDelete: ${appStateNotifier.itemsCheckedToDelete}, isDeletingMode: ${appStateNotifier.isDeletingMode}');
                                   });
                                 },
                                 icon: (appStateNotifier.selectedItems.contains(note.id.toString()))

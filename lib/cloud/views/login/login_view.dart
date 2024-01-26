@@ -239,7 +239,7 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                                               // debugPrint(
                                               //     '|===> login_view (local) | myNotesRoute | email: ${localCurrentUser!.email} ${localCurrentUser!.isEmailVerified}');
                                               Get.offNamed('/notes', arguments: [
-                                                {"email": localCurrentUser!.email}
+                                                {"user": localCurrentUser}
                                               ]);
                                             } else {
                                               // ? --------------------------------

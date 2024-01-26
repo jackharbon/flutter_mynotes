@@ -7,7 +7,7 @@ import 'package:path/path.dart' show join;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// import '../../extensions/list/filter.dart';
+import '../../extensions/list/filter.dart';
 import 'crud_exceptions.dart';
 import 'local_storage_constants.dart';
 
@@ -34,18 +34,16 @@ class LocalNotesService {
 
   late final StreamController<List<LocalDatabaseNote>> _notesStreamController;
 
-  Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream;
-
-  // Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream.filter((note) {
-  //       final currentUser = _user;
-  //       if (currentUser != null) {
-  //         // ? ---------------------------------------------------------------
-  //         // debugPrint('|===> notes_services | allLocalNotesStream | currentUser: $currentUser');
-  //         return note.userId == currentUser.id; // we return boolean in filter function
-  //       } else {
-  //         throw LocalUserShouldBeSetBeforeReadingAllNotes();
-  //       }
-  //     });
+  Stream<List<LocalDatabaseNote>> get allLocalNotesStream => _notesStreamController.stream.filter((note) {
+        final currentUser = _user;
+        if (currentUser != null) {
+          // ? ---------------------------------------------------------------
+          debugPrint('|===> notes_services | allLocalNotesStream | currentUser: $currentUser');
+          return note.userId == currentUser.id; // we return boolean in filter function
+        } else {
+          throw LocalUserShouldBeSetBeforeReadingAllNotes();
+        }
+      });
 
   // -------------------- _cacheNotes() --------------------130
   Future<void> _cacheLocalNotes() async {
