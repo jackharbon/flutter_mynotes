@@ -143,6 +143,9 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            const SizedBox(
+                              height: 30,
+                            ),
                             const CircleAvatar(
                               radius: 60,
                               child: Icon(

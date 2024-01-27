@@ -15,6 +15,7 @@ import 'cloud/views/login/login_view.dart';
 import 'shared/extensions/buildcontext/loc.dart';
 import 'shared/extensions/dependency_injection.dart';
 import 'shared/helpers/loading/loading_screen.dart';
+import 'shared/utilities/actions/user_settings_drawer.dart';
 import 'shared/views/login/forgot_password_view.dart';
 import 'shared/views/login/register_view.dart';
 import 'shared/views/login/verify_email_view.dart';
@@ -226,6 +227,7 @@ class HomePage extends StatelessWidget {
             return const CloudRegisterView();
           } else {
             return Scaffold(
+              drawer: UserSettingsDrawer(),
               appBar: AppBar(
                 title: Text(
                   context.loc.wait,

@@ -10,8 +10,8 @@ import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
-import '../../../shared/utilities/actions/popup_menu.dart';
 import '../../../shared/services/crud/notes_services.dart';
+import '../../../shared/utilities/actions/user_settings_drawer.dart';
 
 class LocalMyNotesView extends StatefulWidget {
   const LocalMyNotesView({
@@ -30,27 +30,26 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
   bool isDescending = true;
   bool isSearchOn = false;
   String sortFieldName = 'created_at';
-  DatabaseUser? owner;
 
-  currentOwner(String email) async {
-    owner = await _notesService.getLocalUser(email: email);
-    final newNote = await _notesService.createLocalNote(owner: owner!);
+  currentOwner(DatabaseUser user) async {
+    final newNote = await _notesService.createLocalNote(owner: user);
     // ? ---------------------------------------------------------------
-    debugPrint('|===> notes_view (local) | currentOwner() | owner: $owner, newNote: $newNote');
+    debugPrint('|===> notes_view (local) | currentOwner() | user: $user, newNote: $newNote');
     await _notesService.deleteLocalNote(id: newNote.id);
-    return owner;
+    return user;
   }
 
   @override
   void initState() {
     _notesService = LocalNotesService();
-    currentOwner(user.email);
+    currentOwner(user);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: UserSettingsDrawer(),
       // ======================= APP BAR =======================
       appBar: AppBar(
         // -------------- APP BAR counting number of notes --------------
@@ -84,7 +83,6 @@ class _LocalMyNotesViewState extends State<LocalMyNotesView> {
             },
             icon: const Icon(Icons.add),
           ),
-          popupMenuItems(context),
         ],
       ),
       // -------------- ALL NOTES page --------------

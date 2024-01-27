@@ -74,6 +74,7 @@ flutter:
     - assets/splash/splash-invert.png
     - assets/splash/splash.png
     - assets/screenshots.jpg
+    - assets/avatars/default.png
 
 flutter_intl:
   enabled: true

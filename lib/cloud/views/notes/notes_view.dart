@@ -8,6 +8,7 @@ import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/providers/app_notifier.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
+import '../../../shared/utilities/actions/user_settings_drawer.dart';
 import '../../services/auth/firebase/auth_service.dart';
 import '../../services/cloud/cloud_note.dart';
 // import '../../services/cloud/cloud_storage_constants.dart';
@@ -49,6 +50,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: UserSettingsDrawer(),
       // ======================= APP BAR =======================
       appBar: AppBar(
         // -------------- APP BAR counting number of notes --------------

@@ -8,6 +8,7 @@ import '../../../shared/utilities/actions/online_status_icon.dart';
 import '../../../shared/services/crud/notes_services.dart';
 // import '../../../shared/utilities/generics/get_arguments.dart';
 import '../../../shared/utilities/actions/popup_menu.dart';
+import '../../../shared/utilities/actions/user_settings_drawer.dart';
 
 class LocalCreateUpdateNoteView extends StatefulWidget {
   const LocalCreateUpdateNoteView({super.key});
