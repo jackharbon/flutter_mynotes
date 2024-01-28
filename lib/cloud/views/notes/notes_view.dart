@@ -50,7 +50,7 @@ class _CloudMyNotesViewState extends State<CloudMyNotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: UserSettingsDrawer(),
+      drawer: const UserSettingsDrawer(),
       // ======================= APP BAR =======================
       appBar: AppBar(
         // -------------- APP BAR counting number of notes --------------

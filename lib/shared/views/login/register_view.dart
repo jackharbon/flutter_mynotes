@@ -149,12 +149,18 @@ class _CloudRegisterViewState extends State<CloudRegisterView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
-                            radius: 60,
-                            child: Icon(
-                              Icons.person_add,
-                              size: 60.0,
-                            ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          CircleAvatar(
+                            radius: 65,
+                            backgroundColor: Colors.grey.shade200,
+                            child: const CircleAvatar(
+                                radius: 62,
+                                child: Icon(
+                                  Icons.person_add,
+                                  size: 90.0,
+                                )),
                           ),
                           const SizedBox(
                             height: 30,

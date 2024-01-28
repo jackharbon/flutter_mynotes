@@ -7,7 +7,6 @@ import '../../extensions/buildcontext/loc.dart';
 import '../../services/crud/notes_services.dart';
 import '../../providers/app_notifier.dart';
 import '../../utilities/actions/online_status_icon.dart';
-import '../../utilities/actions/user_settings_drawer.dart';
 import '../../utilities/dialogs/resend_verification.dart';
 import '../../../cloud/services/auth/firebase/auth_service.dart';
 import '../../utilities/actions/popup_menu.dart';
@@ -59,7 +58,6 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
   Widget build(BuildContext context) {
     return Consumer<AppNotifier>(builder: (context, appStateNotifier, child) {
       return Scaffold(
-        drawer: UserSettingsDrawer(),
         appBar: AppBar(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -81,13 +79,19 @@ class CloudVerifyEmailViewState extends State<CloudVerifyEmailView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  radius: 60,
-                  child: Icon(
-                    Icons.mark_email_read,
-                    size: 60.0,
-                  ), //Text
-                ), //Circle
+                const SizedBox(
+                  height: 30,
+                ),
+                CircleAvatar(
+                  radius: 65,
+                  backgroundColor: Colors.grey.shade200,
+                  child: const CircleAvatar(
+                      radius: 62,
+                      child: Icon(
+                        Icons.mark_email_read,
+                        size: 90.0,
+                      )),
+                ),
                 const SizedBox(
                   height: 30,
                 ),

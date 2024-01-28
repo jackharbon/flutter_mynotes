@@ -110,13 +110,19 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  radius: 60,
-                  child: Icon(
-                    Icons.lock_reset_sharp,
-                    size: 60.0,
-                  ), //Text
-                ), //Circle
+                const SizedBox(
+                  height: 30,
+                ),
+                CircleAvatar(
+                  radius: 65,
+                  backgroundColor: Colors.grey.shade200,
+                  child: const CircleAvatar(
+                      radius: 62,
+                      child: Icon(
+                        Icons.lock_open_outlined,
+                        size: 90.0,
+                      )),
+                ),
                 const SizedBox(
                   height: 30,
                 ),

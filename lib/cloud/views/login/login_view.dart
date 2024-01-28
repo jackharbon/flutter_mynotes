@@ -146,13 +146,16 @@ class _CloudLoginViewState extends State<CloudLoginView> {
                             const SizedBox(
                               height: 30,
                             ),
-                            const CircleAvatar(
-                              radius: 60,
-                              child: Icon(
-                                Icons.person,
-                                size: 60.0,
-                              ), //Text
-                            ), //Circle
+                            CircleAvatar(
+                              radius: 65,
+                              backgroundColor: Colors.grey.shade200,
+                              child: const CircleAvatar(
+                                  radius: 62,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 90.0,
+                                  )),
+                            ),
                             const SizedBox(
                               height: 30,
                             ),

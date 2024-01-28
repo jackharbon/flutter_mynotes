@@ -412,13 +412,8 @@ class LocalNotesService {
   }
 
   // -------------------- updateUser() --------------------
-  Future<DatabaseUser> updateLocalUser({
-    String? password,
-    String? firstName,
-    String? lastName,
-    String? themeMode,
-    String? flexScheme,
-    String? avatarUrl,
+  Future<DatabaseUser> updateLocalUserFirstName({
+    required String firstName,
     required String email,
   }) async {
     await _ensureDbIsOpen();
@@ -428,12 +423,7 @@ class LocalNotesService {
     final updatesCount = await db.update(
       userTable,
       {
-        passwordColumn: password,
         firstNameColumn: firstName,
-        lastNameColumn: lastName,
-        themeModeColumn: themeMode,
-        flexSchemeColumn: flexScheme,
-        avatarUrlColumn: avatarUrl,
       },
       where: 'email = ?',
       whereArgs: [email],
@@ -449,7 +439,43 @@ class LocalNotesService {
         whereArgs: [email.toLowerCase()],
       );
       // ? -----------------------------------------------------------
-      // debugPrint('|===> notes_services  (shared) | updateLocalUser() | results: $results');
+      debugPrint('|===> notes_services  (shared) | updateLocalUserFirstName() | results: $results');
+      if (results.isEmpty) {
+        throw LocalCouldNotFindUserException();
+      } else {
+        return DatabaseUser.fromRow(results.first);
+      }
+    }
+  }
+
+  Future<DatabaseUser> updateLocalUserLastName({
+    required String lastName,
+    required String email,
+  }) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+
+    // update DB
+    final updatesCount = await db.update(
+      userTable,
+      {
+        lastNameColumn: lastName,
+      },
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (updatesCount == 0) {
+      throw LocalCouldNotUpdateLocalNoteException();
+    } else {
+      final results = await db.query(
+        userTable,
+        limit: 1,
+        where: 'email = ?',
+        whereArgs: [email.toLowerCase()],
+      );
+      // ? -----------------------------------------------------------
+      debugPrint('|===> notes_services  (shared) | updateLocalUserLastName() | results: $results');
       if (results.isEmpty) {
         throw LocalCouldNotFindUserException();
       } else {

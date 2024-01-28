@@ -5,7 +5,6 @@ import '../../../shared/constants/routes.dart';
 import '../../../shared/extensions/buildcontext/loc.dart';
 import '../../../shared/helpers/loading/loading_screen.dart';
 import '../../../shared/utilities/actions/online_status_icon.dart';
-import '../../../shared/utilities/actions/user_settings_drawer.dart';
 import '../../../shared/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import '../../services/auth/firebase/auth_service.dart';
 import '../../../shared/utilities/generics/get_arguments.dart';
